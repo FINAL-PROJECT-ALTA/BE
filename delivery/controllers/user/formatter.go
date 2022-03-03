@@ -1,11 +1,49 @@
 package user
 
-import (
-	"HealthFit/entities"
-	// "gorm.io/gorm"
-)
+// "gorm.io/gorm"
 
-// =================== Create User =======================
+type UserCreateResponse struct {
+	User_uid string `json:"user_uid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Gender   string `json:"gender" form:"gender"`
+}
+type UserUpdateResponse struct {
+	User_uid string `json:"user_uid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Gender   string `json:"gender" form:"gender"`
+}
+type UserGetByIdResponse struct {
+	User_uid string `json:"user_uid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Gender   string `json:"gender" form:"gender"`
+}
+
+type UserGoal struct {
+	Height     int `json:"height"`
+	Weight     int `json:"weight"`
+	Age        int `json:"age"`
+	Range_time int `json:"range"`
+}
+type UserHistoryResponse struct {
+	User_uid string `json:"user_uid"`
+	Menu_uid string `json:"menu_uid"`
+}
+
+type UserCompleksResponse struct {
+	User_uid string                `json:"user_uid"`
+	Name     string                `json:"name"`
+	Email    string                `json:"email"`
+	Gender   string                `json:"gender" form:"gender"`
+	Goal     []UserGoal            `json:"goal"`
+	History  []UserHistoryResponse `json:"history"`
+}
+
+//=========================================================
+
+// =================== Create User Request =======================
 type CreateUserRequestFormat struct {
 	Name     string `json:"name" form:"name" validate:"required"`
 	User_uid string
@@ -14,97 +52,10 @@ type CreateUserRequestFormat struct {
 	Gender   string `json:"gender" form:"gender"`
 }
 
-type CreateUserResponseFormat struct {
-	ID       int    `json:"id"`
-	User_uid string `json:"user_uid"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Gender   string `json:"gender"`
-}
-
-func ToCreateUserResponseFormat(UserResponse entities.User) CreateUserResponseFormat {
-	return CreateUserResponseFormat{
-		ID:       int(UserResponse.ID),
-		User_uid: UserResponse.User_uid,
-		Name:     UserResponse.Name,
-		Email:    UserResponse.Email,
-		Gender:   UserResponse.Gender,
-	}
-}
-
-// =================== Update User =======================
+// =================== Update User Request =======================
 type UpdateUserRequestFormat struct {
 	Name     string `json:"name" form:"name"`
-	Email    string `json:"email" form:"email" validate:"required, email"`
+	Email    string `json:"email" form:"email" validate:"required,email"`
 	Password string `json:"password" form:"password"`
 	Gender   string `json:"gender" form:"gender"`
-}
-
-// func (UURF UpdateUserRequestFormat) ToUpdateUserRequestFormat(ID uint) entities.User {
-// 	return entities.User{
-// 		Model:    gorm.Model{ID: ID},
-// 		Name:     UURF.Name,
-// 		Email:    UURF.Email,
-// 		Password: UURF.Password,
-// 	}
-// }
-
-type UpdateUserResponseFormat struct {
-	Name   string `json:"name"`
-	Email  string `json:"email"`
-	Gender string `json:"gender" form:"gender"`
-}
-
-func ToUpdateUserResponseFormat(UserResponse entities.User) UpdateUserResponseFormat {
-	return UpdateUserResponseFormat{
-		Name:   UserResponse.Name,
-		Email:  UserResponse.Email,
-		Gender: UserResponse.Gender,
-	}
-}
-
-type GetUserByIdResponseFormat struct {
-	ID     int    `json:"id"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
-	Gender string `json:"gender" form:"gender"`
-}
-
-func ToGetUserByIdResponseFormat(UserResponse entities.User) GetUserByIdResponseFormat {
-	return GetUserByIdResponseFormat{
-		ID:     int(UserResponse.ID),
-		Name:   UserResponse.Name,
-		Email:  UserResponse.Email,
-		Gender: UserResponse.Gender,
-	}
-}
-
-type InsertUserResponseFormat struct {
-	Code    int           `json:"code"`
-	Message string        `json:"message"`
-	Data    entities.User `json:"data"`
-}
-
-type GetUsersResponseFormat struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
-	Data    []entities.User `json:"data"`
-}
-
-type GetAllUserResponseFormat struct {
-	Code    int           `json:"code"`
-	Message string        `json:"message"`
-	Data    entities.User `json:"data"`
-}
-
-type UpdateResponseFormat struct {
-	Code    int           `json:"code"`
-	Message string        `json:"message"`
-	Data    entities.User `json:"data"`
-}
-
-type DeleteUserResponseFormat struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
 }
