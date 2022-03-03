@@ -36,7 +36,7 @@ func GetConfig() *AppConfig {
 
 func initConfig() *AppConfig {
 	var defaultConfig AppConfig
-	defaultConfig.Port = 8000
+	defaultConfig.Port = 8080
 	defaultConfig.Driver = getEnv("DRIVER", "mysql")
 	defaultConfig.Name = getEnv("NAME", "healthfit")
 	defaultConfig.Address = getEnv("ADDRESS", "localhost")
