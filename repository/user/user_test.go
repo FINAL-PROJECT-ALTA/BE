@@ -57,7 +57,7 @@ func TestGetById(t *testing.T) {
 			t.Fatal()
 		}
 
-		res, err := repo.GetById(1)
+		res, err := repo.GetById("1")
 		assert.Nil(t, err)
 		assert.Equal(t, 1, int(res.ID))
 
@@ -70,7 +70,7 @@ func TestGetById(t *testing.T) {
 			t.Fatal()
 		}
 
-		res, err := repo.GetById(10)
+		res, err := repo.GetById("10")
 		assert.NotNil(t, err)
 		assert.NotEqual(t, 1, int(res.ID))
 	})
@@ -90,7 +90,7 @@ func TestUpdateById(t *testing.T) {
 			t.Fatal()
 		}
 		mockUser := entities.User{Name: "anonim321", Email: "anonim@321", Password: "anonim321"}
-		res, err := repo.Update(1, mockUser)
+		res, err := repo.Update("1", mockUser)
 		assert.Nil(t, err)
 		assert.Equal(t, "anonim321", res.Name)
 		assert.Equal(t, "anonim@321", res.Email)
@@ -99,7 +99,7 @@ func TestUpdateById(t *testing.T) {
 
 	t.Run("fail run UpdateById", func(t *testing.T) {
 		mockUser := entities.User{Name: "anonim456", Email: "anonim@456", Password: "456"}
-		_, err := repo.Update(10, mockUser)
+		_, err := repo.Update("10", mockUser)
 		assert.NotNil(t, err)
 	})
 }
@@ -118,12 +118,12 @@ func TestDeleteById(t *testing.T) {
 			t.Fatal()
 		}
 
-		errA := repo.Delete(1)
+		errA := repo.Delete("1")
 		assert.Nil(t, errA)
 	})
 
 	t.Run("fail run DeleteById", func(t *testing.T) {
-		err := repo.Delete(10)
+		err := repo.Delete("10")
 		assert.NotNil(t, err)
 	})
 }

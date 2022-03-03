@@ -4,6 +4,7 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 
+	"github.com/lithammer/shortuuid"
 	"gorm.io/gorm"
 )
 
@@ -20,6 +21,8 @@ func New(db *gorm.DB) *UserRepository {
 func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 
 	u.Password, _ = middlewares.HashPassword(u.Password)
+	uid := shortuuid.New()
+	u.User_uid = uid
 
 	if err := ur.database.Create(&u).Error; err != nil {
 		return u, err
@@ -28,10 +31,10 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 	return u, nil
 }
 
-func (ur *UserRepository) GetById(userId int) (entities.User, error) {
+func (ur *UserRepository) GetById(user_uid string) (entities.User, error) {
 	arrUser := entities.User{}
 
-	result := ur.database.Where("ID = ?", userId).First(&arrUser)
+	result := ur.database.Where("user_uid = ?", user_uid).First(&arrUser)
 	if err := result.Error; err != nil {
 		return arrUser, err
 	}
@@ -39,10 +42,10 @@ func (ur *UserRepository) GetById(userId int) (entities.User, error) {
 	return arrUser, nil
 }
 
-func (ur *UserRepository) Update(userId int, newUser entities.User) (entities.User, error) {
+func (ur *UserRepository) Update(user_uid string, newUser entities.User) (entities.User, error) {
 
 	var user entities.User
-	ur.database.First(&user, userId)
+	ur.database.Where("user_uid =?", user_uid).First(&user)
 
 	if err := ur.database.Model(&user).Updates(&newUser).Error; err != nil {
 		return user, err
@@ -51,14 +54,14 @@ func (ur *UserRepository) Update(userId int, newUser entities.User) (entities.Us
 	return user, nil
 }
 
-func (ur *UserRepository) Delete(userId int) error {
+func (ur *UserRepository) Delete(user_uid string) error {
 
 	var user entities.User
 
-	if err := ur.database.First(&user, userId).Error; err != nil {
+	if err := ur.database.Where("user_uid =?", user_uid).First(&user).Error; err != nil {
 		return err
 	}
-	ur.database.Delete(&user, userId)
+	ur.database.Delete(&user, user_uid)
 	return nil
 
 }
