@@ -1,39 +1,104 @@
 openapi: "3.0.2"
 info:
-  title: App Clone AirBnB - Grup 3
+  title: Health Fit
   description: API Documentation
   contact:
-    name: BE - Grup 3
+    name: BE
     email: altaBE@mail.com
-  version: '1.2'
+  version: '1.0'
 servers:
-  - url: http://18.136.193.63:8081/{entity}
+  - url: https://aaryadewangga.cloud.okteto.net:8080/{entity}
     variables:
       entity:
         default: users
         enum:
-          - admin
           - users
-          - rooms
-          - category
-          - payment methods
-          - booking
-          - transaction
-
+          - goals
+          - user history
+          - foods
+          - menu
+          - menu details
 tags:
-  - name: Admin
-    description: Admin
   - name: Users
     description: Users Resgister/Update/Delete
-  - name: Images
-    description: Rooms Images
-  - name: Rooms
-    description: Rooms Methods
-  - name: Category
-    description: Category Methods
-  - name: Payment Methods
-    description: Payment Methods Register
+  - name: Goals
+    description: Users Goals
+  - name: User History
+    description: User History of Foods/Goals
+  - name: Foods
+    description: Foods Methods
+  - name: Menus
+    description: Menu 
+  - name: Menus Details
+    description: Menu Detail 
 paths:
+  /users/register:
+    post:
+      summary: Register New Users
+      tags:
+        - Users
+      description: Get a New Account
+      requestBody:
+        required: true
+        description: Create Account with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                gender:
+                  type: string
+                  enum:
+                    - Pria
+                    - Wanita
+              example:
+                name: test
+                email: test@test.com
+                password: test
+                gender: Pria
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user_uid: 
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      gender:
+                        type: string
+                        enum:
+                          - Pria
+                          - Wanita
+                example:
+                  code: 200
+                  message: success to get new Account
+                  data:
+                    user_uid: jksfbkjfkjabruablnlab
+                    name: test
+                    email: test@test.com
+                    gender: Pria
+        '400':
+          $ref: '#/components/responses/400'
   /users/login:
     post:
       tags:
@@ -57,7 +122,6 @@ paths:
                 code: 200
                 message: Success login, get a new token
                 data:
-                  email: testp@test.com
                   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
         '500':
           description: Invalid Authorization
@@ -69,207 +133,6 @@ paths:
                 code: 500
                 message: There are something problem on server
                 data:
-  /admin/register:
-    post:
-      summary: Register New Users
-      tags:
-        - Admin
-      description: Create a New Admin Account
-      requestBody:
-        required: true
-        description: Create Account with valid value
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                  format: password
-              example:
-                name: test
-                email: test@test.com
-                password: test
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new Account
-                  data:
-                    name: test
-                    email: test@test.com
-        '400':
-          $ref: '#/components/responses/400'
-  /admin/login:
-    post:
-      tags:
-        - Admin
-      summary: Login admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: '#/components/schemas/UserLogin'
-      responses:
-        '200':
-          description: User terautorisasi
-          content:
-            application/json:
-              schema:
-                type: object
-                # $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                message: Success login, get a new token
-                data:
-                  email: testp@test.com
-                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-        '500':
-          description: Invalid Authorization
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 500
-                message: There are something problem on server
-                data:
-  /admin/users:
-    get:
-        summary: Get all Users
-        tags:
-          - Admin
-        description: Just For Admin
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    code:
-                      type: integer
-                      example: 200
-                    message :
-                      type: string
-                      example: Success to get all users
-                    data:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        email:
-                          type: string
-                        password:
-                          type: string
-                          format: password
-                        dob:
-                          type: string
-                          format: date
-                        gender:
-                          type: boolean
-                        created_at:
-                          type: string
-                          format: date-time
-                        updated_at:
-                          type: string
-                          format: date-time
-                        deleted_at:
-                          type: string
-                          format: date-time
-                      example:
-                        - id: 1
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
-                        - id: 2
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
-  /users/register:
-    post:
-      summary: Register New Users
-      tags:
-        - Users
-      description: Get a New Account
-      requestBody:
-        required: true
-        description: Create Account with valid schema
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                  format: password
-              example:
-                name: test
-                email: test@test.com
-                password: test
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new Account
-                  data:
-                    name: test
-                    email: test@test.com
-        '400':
-          $ref: '#/components/responses/400'
   /users:
     get:
         summary: User Profile
@@ -295,8 +158,8 @@ paths:
                     data:
                       type: object
                       properties:
-                        id:
-                          type: integer
+                        user_uid:
+                          type: string
                         name:
                           type: string
                         email:
@@ -304,27 +167,16 @@ paths:
                         password:
                           type: string
                           format: password
-                        dob:
-                          type: string
-                          format: date
                         gender:
-                          type: boolean
-                        created_at:
                           type: string
-                          format: date-time
-                        updated_at:
-                          type: string
-                          format: date-time
-                        deleted_at:
-                          type: string
-                          format: date-time
+                          enum:
+                            - Pria
+                            - Wanita
                       example:
-                          id: 1
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
+                          user_uid: jksfbkjfkjabruablnlab
+                          name: test
+                          email: test@test.com
+                          gender: Pria
     put:
       summary: Update By ID
       tags:
@@ -351,8 +203,6 @@ paths:
               example:
                 code: 200
                 message: Success to Update User Data
-                data:
-                  name: Test Update
         '204':
           $ref: '#/components/responses/204'
     delete:
@@ -372,453 +222,11 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
-                data:
-  /admin/categories:
+  /foods:
     post:
-      summary: Add / Create Category (For Admin)
+      summary: Add / Create Foods Data
       tags:
-        - Category
-      requestBody:
-        required: true
-        description: Create / Add Category Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              example:
-                name: Surabaya
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 201
-                  message: success to create new category
-                  data:
-                    id: 1
-                    name : Surabaya
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /categories:
-    get:
-      summary: get all Category
-      tags:
-        - Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items :
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        rooms:
-                          type: array
-                example:
-                    code: 201
-                    message: success to get all category
-                    data:
-                    - id: 1
-                      name: Surabaya
-                      rooms: [{}]
-                    - id: 2
-                      name: Bandung
-                      rooms: [{}]
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /category/{id}:
-    get:
-      summary: Get Category By ID
-      tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID category
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: array
-                example:
-                  code: 200
-                  message: Success to get category by id
-                  data:
-                    id: 1
-                    name: Surabaya
-                    rooms:
-                    - id: 1
-                      name: villa mewah 4 kamar
-                      price: 20000
-                    - id: 2
-                      name: villa minimalis 
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    put:
-      summary: Update category data
-      tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID category
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Updata category data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              example:
-                name: Bandung
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: string
-                example:
-                  code: 200
-                  message: Berhasil mengupdate data produk
-                  data:
-                    id: 1
-                    name: Bandung
-                    rooms: [{}]
-    delete:
-      summary: Delete a category
-      tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID Category
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 200
-                message: success to delete
-                data:
-  /images:
-    post:
-      summary: Add / Create Images for rooms
-      tags:
-        - Images
-      requestBody:
-        required: true
-        description: Create / Add Category Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                images_1:
-                  type: string
-              example:
-                rooms_id: 1
-                images: http://aefibeabibign.jpg
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 201
-                  message: success to create new images
-                  data:
-                    id: 1
-                    images: http://aefibeabibign.jpg
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    # get:
-    #   summary: get all Category
-    #   tags:
-    #     - Images
-    #   responses:
-    #     '200':
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             type: object
-    #             properties:
-    #               code:
-    #                 type: integer
-    #               message:
-    #                 type: string
-    #               data:
-    #                 type: array
-    #                 items :
-    #                   type: object
-    #                   properties:
-    #                     id:
-    #                       type: integer
-    #                     name:
-    #                       type: string
-    #                     rooms:
-    #                       type: array
-    #             example:
-    #                 code: 201
-    #                 message: success to get all category
-    #                 data:
-    #                 - id: 1
-    #                   name: Surabaya
-    #                   rooms: [{}]
-    #                 - id: 2
-    #                   name: Bandung
-    #                   rooms: [{}]
-    #     '400':
-    #       $ref: '#/components/responses/400'
-    #     '500':
-    #       $ref: '#/components/responses/500'
-  /images/{id}:
-    get:
-      summary: Get Images By ID
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID Images
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      images_1:
-                        type: string
-                example:
-                  code: 200
-                  message: Success to get images by id
-                  data:
-                    id: 1
-                    images_1: http://aefibeabibign.jpg
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    put:
-      summary: Update images data
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID Images
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Updata images data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                image_(numb):
-                  type: string
-              example:
-                image_1: http://jbaejcyjahbckabk.jpg
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: string
-                example:
-                  code: 200
-                  message: success to update images
-                  data:
-                   id: 1
-                   images_1: http://jbaejcyjahbckabk.jpg
-                   images_2: http://aefibeabibign.jpg
-                   images_3: http://aefibeabibign.jpg
-                   images_4: http://aefibeabibign.jpg
-                   images_5: http://aefibeabibign.jpg
-                   images_6: http://aefibeabibign.jpg
-                   images_7: http://aefibeabibign.jpg
-    delete:
-      summary: Delete images
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID images
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 200
-                message: success to delete
-                data:
-  /rooms:
-    post:
-      summary: Add / Create Rooms Data
-      tags:
-        - Rooms
+        - Foods
       requestBody:
         required: true
         description: Create / Add Rooms Data
@@ -1182,632 +590,6 @@ paths:
                 code: 200
                 message: success to delete rooms
                 data:
-  /booking:
-    post:
-      summary: create new booking
-      tags:
-        - Booking
-      requestBody:
-        required: true
-        description: add new booking
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                rooms_id:
-                  type: integer
-                price:
-                  type: integer
-                date_time:
-                  type: integer
-              example:
-                rooms_id: 5
-                price: 200000
-                date_time: 2
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
-                        type: string
-                example:
-                  code: 200
-                  message: success to create a new booking
-                  data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
-        '400':
-          $ref: '#/components/responses/400'
-  /booking/{id}:  
-    get:
-      summary: get booking by ID
-      tags:
-        - Booking
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get booking
-                  data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  message: Failed User Authorization
-                  data:
-    put:
-      summary: Update booking
-      tags:
-        - Booking
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Update Booking data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date_time:
-                  type: integer
-              example:
-                  date_time: 5
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
-                        type: string
-                example:
-                  code: 200
-                  message: success to update booking data
-                  data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  success: false
-                  message: Failed User Authorization
-                  data: {}
-    delete:
-      summary: Delete booking
-      tags:
-        - Booking
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                code: 200
-                message: success to delete booking
-                data:
-  /transaction:
-    post:
-      summary: Create Transaction
-      tags:
-        - Transaction
-      requestBody:
-        required: true
-        description: Create New Transaction
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                booking_id:
-                  type: integer
-                payment_method_id:
-                  type: integer
-                phone:
-                  type: integer
-                status:
-                  type: string
-                  enum:
-                    - waiting
-                    - payed
-                    - cancel
-              example:
-                booking_id: 1
-                payment_method_id: 1
-                phone: +6282828828282
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      transaction_id:
-                        type: integer
-                      booking_id:
-                        type: integer
-                      payment_method_id:
-                        type: integer
-                      phone:
-                        type: string
-                      status:
-                        type: string
-                        enum:
-                        - payed
-                        - cancel
-                example:
-                  code: 200
-                  message: success to create newTransaction
-                  data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: payed
-        '400':
-          $ref: '#/components/responses/400'
-    get:
-      summary: get Transaction detail
-      tags:
-        - Transaction
-      security:
-      - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      transaction_id:
-                        type: integer
-                      booking_id:
-                        type: integer
-                      payment_method_id:
-                        type: integer
-                      phone:
-                        type: string
-                      status:
-                        type: string
-                        enum:
-                        - payed
-                        - cancel
-                example:
-                  code: 200
-                  success: true
-                  message: Berhasil mendapatkan semua Booking
-                  data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: ongoing
-    put:
-      summary: Update transaction 
-      tags:
-        - Transaction
-      parameters:
-        - name: id
-          in: path
-          description: user ID
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: update new data transaction
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                payment_method_id:
-                  type: integer
-                status:
-                  type: string
-                  enum:
-                    - ongoing
-                    - payed
-                    - cancel
-              example:
-                  payment_method_id: 5
-                  status: payed
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      phone:
-                        type: string
-                      status:
-                        type: string
-                        format: timestamp
-                example:
-                  code: 200
-                  message: success to update transaction
-                  data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: payed
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  message: Failed User Authorization
-                  data: {}
-  /paymentmethods:
-    post:
-      summary: Create a new payment method
-      tags:
-        - Payment Methods
-      requestBody:
-        required: true
-        description: Add new payment method to database
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              example:
-                name: OVO
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new category
-                  data:
-                    id: 1
-                    name: OVO
-        '400':
-          $ref: '#/components/responses/400'
-    get:
-      summary: get all payment methods
-      tags:
-        - Payment Methods
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                example:
-                  code: 200
-                  success: true
-                  message: success to get all payment methods
-                  data:
-                  - id: 1
-                    name: OVO
-                  - id: 2
-                    name: Dana
-  /paymentmethods/{id}:  
-    put:
-      summary: Update payment methods
-      tags:
-        - Payment Methods
-      parameters:
-        - name: id
-          in: path
-          description: ID payment method 
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Update Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              example:
-                id: 1
-                name: Bank Jago
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 200
-                  success: true
-                  message: success to update payment methods
-                  data:
-                    id: 1
-                    name: Bank Jago
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  success: false
-                  message: Failed User Authorization
-                  data: {}
-    delete:
-      summary: Delete All Payment Methods
-      tags:
-        - Payment Methods
-      parameters:
-        - name: id
-          in: path
-          description: ID payment method 
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                success: true
-                message: Success to delete a Payment Methods
-                data: {}
 components:
   parameters:
     UserID:
