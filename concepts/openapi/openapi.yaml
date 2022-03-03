@@ -1,4 +1,4 @@
-openapi: "3.0.2"
+openapi: 3.0.2
 info:
   title: Health Fit
   description: API Documentation
@@ -222,6 +222,312 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
+  /goals/register:
+    post:
+      summary: Register New Goals For Users
+      tags:
+        - Goals
+      description: Get a New Account
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create Account with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                height:
+                  type: integer
+                weight:
+                  type: integer
+                age:
+                  type: integer
+                range_time:
+                  type: integer
+              example:
+                height: 175
+                weight: 75
+                age: 24
+                range_time: 30
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      height:
+                        type: integer
+                      weight:
+                        type: integer
+                      age:
+                        type: integer
+                      range_time:
+                        type: integer
+                example:
+                  id: 1
+                  user_uid: kaehbiafbkajfl
+                  height: 175
+                  weight: 75
+                  age: 24
+                  range_time: 30
+        '400':
+          $ref: '#/components/responses/400'
+  /goals/{user_uid}:
+    get:
+        summary: Goals by User Profile
+        tags:
+          - Goals
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
+      tags:
+        - Goals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
+      tags:
+        - Goals
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
+  /history/register:
+    post:
+      summary: Register New History For Users
+      tags:
+        - User History
+      description: Get a New History
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create History with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_uid:
+                  type: string
+                menu_uid:
+                  type: string
+              example:
+                user_uid: jabfkanflabe
+                menu_uid: fkeabflnalef
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      menu_uid:
+                        type: string
+                example:
+                  id: 1
+                  user_uid: jabfkanflabe
+                  menu_uid: fkeabflnalef
+                  menu:
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Nasi Goreng
+                      calories: 244
+                      category: foods
+                      image: Nasi_images.jpg (image using form-data for uplaod)
+                    - id : 6
+                      food_uid: kjnlvanlfwf
+                      name: Mie Ayam
+                      calories: 143
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+  /history/{user_uid}:
+    get:
+        summary: Goals by User Profile
+        tags:
+          - User History
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
+      tags:
+        - User History
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
+      tags:
+        - User History
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
   /foods:
     post:
       summary: Add / Create Foods Data
@@ -229,7 +535,7 @@ paths:
         - Foods
       requestBody:
         required: true
-        description: Create / Add Rooms Data
+        description: Create / Add Foods Data
         content:
           application/json:
             schema:
@@ -237,35 +543,23 @@ paths:
               properties:
                 name:
                   type: string
-                category_id:
+                calories:
                   type: integer
-                description:
+                category:
                   type: string
-                price:
-                  type: integer
-                image_id:
-                  type: integer
-                date_stock:
+                  enum:
+                    - fruit
+                    - drink
+                    - junk food
+                    - food
+                    - snack
+                image :
                   type: string
-                total_person:
-                  type: integer
-                total_rooms:
-                  type: integer
-                size_bed:
-                  type: string
-                user_id:
-                  type: integer
               example:
-                name: Villa Mewah
-                category_id: 1
-                description: villa daerah dingin, 2 lantai
-                price: 20000
-                image_id : 1
-                date_stock:
-                total_person: 2
-                total_rooms: 1
-                size_bed: queen
-                user_id: 1
+                name: Soto Ayam
+                calories: 244
+                category: foods
+                image: soto_images.jpg (image using form-data for uplaod)
       security:
         - bearerAuth: []
       responses:
@@ -287,47 +581,37 @@ paths:
                         type: integer
                       name:
                         type: string
-                      category_id:
+                      calories:
                         type: integer
-                      description:
+                      category:
                         type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
                 example:
                   code: 201
-                  message: sukses menambahkan produk baru
+                  message: sukses menambahkan foods baru
                   data:
                     id : 1
-                    name: Villa Mewah
-                    category_id: 1
-                    description: villa daerah dingin, 2 lantai
-                    price: 20000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
+                    food_uid: kshefkaefk
+                    name: Soto Ayam
+                    calories: 244
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  /foods/all:  
     get:
-      summary: Get All Rooms
+      summary: Get All Foods
       tags:
-        - Rooms
+        - Foods
       responses:
         '200':
           description: OK
@@ -338,8 +622,6 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
@@ -347,63 +629,47 @@ paths:
                       items:
                         type: object
                         properties:
-                           id:
-                            type: integer
-                           name:
+                          id:
+                             type: integer
+                          name:
                             type: string
-                           category_id:
+                          calories:
                             type: integer
-                           description:
+                          category:
                             type: string
-                           price:
-                            type: integer
-                           image_id:
-                            type: integer
-                           date_stock:
+                            enum:
+                              - fruit
+                              - drink
+                              - junk food
+                              - food
+                              - snack
+                          image :
                             type: string
-                           total_person:
-                            type: integer
-                           total_rooms:
-                            type: integer
-                           size_bed:
-                            type: string
-                           user_id:
-                            type: integer
                 example:
                     code: 200
-                    message: success to get all rooms
+                    message: success to get all foods
                     data:
                       - id : 1
-                        name: Villa Mewah
-                        category_id: 1
-                        description: villa daerah dingin, 2 lantai
-                        price: 20000
-                        image_id : 1
-                        date_stock:
-                        total_person: 2
-                        total_rooms: 1
-                        size_bed: queen
-                        user_id: 1
+                        food_uid: kshefkaefk
+                        name: Soto Ayam
+                        calories: 244
+                        category: foods
+                        image: soto_images.jpg (image using form-data for uplaod)
                       - id : 2
-                        name: Villa Mewah
-                        category_id: 1
-                        description: villa daerah dingin, 2 lantai
-                        price: 20000
-                        image_id : 1
-                        date_stock:
-                        total_person: 2
-                        total_rooms: 1
-                        size_bed: queen
-                        user_id: 1
-  /rooms/{id}:
+                        food_uid: kjnlvanlfwf
+                        name: Nasi Campur
+                        calories: 244
+                        category: foods
+                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+  /foods/{foods_uid}:
     get:
-      summary: Update Rooms Data
+      summary: Get Foods by foods_uid
       tags:
-        - Rooms
+        - Foods
       parameters:
         - name: id
           in: path
-          description: ID Rooms
+          description: Foods UID
           required: true
           schema:
             type: integer
@@ -430,65 +696,117 @@ paths:
                         type: integer
                       name:
                         type: string
-                      category_id:
+                      calories:
                         type: integer
-                      description:
+                      category:
                         type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
                 example:
                   code: 200
-                  message: Berhasil mengupdate data produk
+                  message: Berhasil mendapatkan data foods
                   data:
-                    id : 2
-                    name: Villa Mewah
-                    category_id: 1
-                    description: villa daerah dingin, 2 lantai
-                    price: 20000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
-    put:
-      summary: Update Rooms Data
+                    id : 1
+                    food_uid: kshefkaefk
+                    name: Soto Ayam
+                    calories: 244
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
+  /foods/{calories}:
+    get:
+      summary: Get Foods by foods calories
       tags:
-        - Rooms
+        - Foods
+      parameters:
+        - name: calories
+          in: path
+          description: calories
+          required: true
+          schema:
+            type: integer
+      security:
+         - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                             type: integer
+                          name:
+                            type: string
+                          calories:
+                            type: integer
+                          category:
+                            type: string
+                            enum:
+                              - fruit
+                              - drink
+                              - junk food
+                              - food
+                              - snack
+                          image :
+                            type: string
+                example:
+                    code: 200
+                    message: success to get all foods
+                    data:
+                      - id : 3
+                        food_uid: kshefkaefk
+                        name: Nasi Goreng
+                        calories: 244
+                        category: foods
+                        image: Nasi_images.jpg (image using form-data for uplaod)
+                      - id : 6
+                        food_uid: kjnlvanlfwf
+                        name: Mie Ayam
+                        calories: 143
+                        category: foods
+                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+    put:
+      summary: Update Foods Data
+      tags:
+        - Foods
       parameters:
         - name: id
           in: path
-          description: ID Rooms
+          description: Foods UID
           required: true
           schema:
             type: integer
       requestBody:
         required: true
-        description: Update Rooms Data
+        description: Update Foods Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                price:
+                name:
                   type: integer
-                description:
+                calories:
                   type: string
               example:
-                price: 70000
-                description: update rooms description 
+                name: Bakso
+                calories: 312 
       security:
         - bearerAuth: []
       responses:
@@ -501,8 +819,6 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
@@ -512,39 +828,28 @@ paths:
                         type: integer
                       name:
                         type: string
-                      category_id:
+                      calories:
                         type: integer
-                      description:
+                      category:
                         type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
                 example:
                   code: 200
-                  message: Berhasil mengupdate data produk
+                  message: Berhasil mengupdate data foods
                   data:
-                    id : 2
-                    name: Villa Mewah
-                    category_id: 1
-                    description: update rooms description
-                    price: 70000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
+                    id : 1
+                    food_uid: kshefkaefk
+                    name: Bakso
+                    calories: 312
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -567,9 +872,9 @@ paths:
                   message: Failed User Authorization
                   data:
     delete:
-      summary: Delete Rooms
+      summary: Delete Foods
       tags:
-        - Rooms
+        - Foods
       parameters:
         - name: id
           in: path
@@ -588,8 +893,426 @@ paths:
                 type: object
               example:
                 code: 200
-                message: success to delete rooms
+                message: success to delete foods
                 data:
+  /menus:
+    post:
+      summary: Add / Create Menus Data
+      tags:
+        - Menus
+      requestBody:
+        required: true
+        description: Create / Add Menus Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
+              example:
+                menu_categories: breakfast
+                total_calories: 1000  
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                    id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /menus/{menus_uid}:
+    put:
+      summary: Update Menus Data
+      tags:
+        - Menus
+      parameters:
+        - name: menus_uid
+          in: path
+          description: menus_uid
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Update Menus Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu_uid:
+                  type: string
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
+              example:
+                menu_uid: kshefkaefk
+                menu_categories: dinner
+                total_calories: 2000  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses mengubah data menu
+                  data:
+                    id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: dinner
+                    total_calories: 2000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete Menus
+      tags:
+        - Menus
+      parameters:
+        - name: menus_uid
+          in: path
+          description: menus_uid
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                code: 200
+                message: success to delete menus
+                data:
+  /menus/categories:  
+    get:
+      summary: Get Menu By Menu Category
+      tags:
+        - Menus
+      requestBody:
+        required: true
+        description: Create / Add Menus Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
+              example:
+                menu_categories: breakfast
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                  - id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)     
+                  - id : 2
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1500
+                    foods: 
+                    - id : 10
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 453
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 18
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 21
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 26
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 221
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)     
+  /menus/calories:  
+    get:
+      summary: Get Menu By Total Calories
+      tags:
+        - Menus
+      requestBody:
+        required: true
+        description: Create / Add Menus Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
+              example:
+                total_calories: 1500
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                  - id : 2
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1500
+                    foods: 
+                    - id : 10
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 453
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 18
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 21
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 26
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 221
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
+
 components:
   parameters:
     UserID:
