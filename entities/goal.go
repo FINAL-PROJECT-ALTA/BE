@@ -9,4 +9,5 @@ type Goal struct {
 	Weight     int
 	Age        int
 	Range_time int
+	Target     string `gorm:"type:enum('gain weight','lose Weight','none');default:'none'"`
 }
