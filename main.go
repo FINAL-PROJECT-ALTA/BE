@@ -14,11 +14,19 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/midtrans/midtrans-go"
 	"github.com/midtrans/midtrans-go/coreapi"
 )
 
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 func main() {
 	config := config.GetConfig()
 	db := utils.InitDB(config)
@@ -35,6 +43,7 @@ func main() {
 	authController := _authController.New(authRepo)
 
 	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
 
 	route.RegisterPath(e,
 		userController,

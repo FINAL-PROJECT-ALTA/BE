@@ -24,7 +24,10 @@ func (ac *UserController) Register() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := CreateUserRequestFormat{}
 
-		if err := c.Bind(&user); err != nil || user.Email == "" || user.Password == "" {
+		c.Bind(&user)
+		err := c.Validate(&user)
+
+		if err != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
@@ -40,9 +43,9 @@ func (ac *UserController) Register() echo.HandlerFunc {
 
 func (ac *UserController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userId := int(middlewares.ExtractTokenId(c))
+		user_uid := middlewares.ExtractTokenUserUid(c)
 
-		res, err := ac.repo.GetById(userId)
+		res, err := ac.repo.GetById(user_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "Not Found", nil))
@@ -54,14 +57,18 @@ func (ac *UserController) GetById() echo.HandlerFunc {
 
 func (ac *UserController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userId := int(middlewares.ExtractTokenId(c))
+		user_uid := middlewares.ExtractTokenUserUid(c)
 		var newUser = UpdateUserRequestFormat{}
+		c.Bind(&newUser)
 
-		if err := c.Bind(&newUser); err != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+		if newUser.Email != "" {
+			err := c.Validate(&newUser)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+			}
 		}
 
-		res, err := ac.repo.Update(userId, entities.User{Name: newUser.Name, Email: newUser.Email, Password: newUser.Password, Gender: newUser.Gender})
+		res, err := ac.repo.Update(user_uid, entities.User{Name: newUser.Name, Email: newUser.Email, Password: newUser.Password, Gender: newUser.Gender})
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -73,9 +80,9 @@ func (ac *UserController) Update() echo.HandlerFunc {
 
 func (ac *UserController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userId := int(middlewares.ExtractTokenId(c))
+		user_uid := middlewares.ExtractTokenUserUid(c)
 
-		err := ac.repo.Delete(userId)
+		err := ac.repo.Delete(user_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))

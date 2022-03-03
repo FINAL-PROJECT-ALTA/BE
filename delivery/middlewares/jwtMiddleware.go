@@ -17,11 +17,11 @@ func GenerateToken(u entities.User) (string, error) {
 	}
 
 	codes := jwt.MapClaims{
-		"id": u.ID,
-		// "email":    u.Email,
-		// "password": u.Password,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
-		"auth": true,
+		"user_uid": u.User_uid,
+		"email":    u.Email,
+		"password": u.Password,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		"auth":     true,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, codes)
@@ -29,14 +29,14 @@ func GenerateToken(u entities.User) (string, error) {
 	return token.SignedString([]byte(config.JWT_SECRET))
 }
 
-func ExtractTokenId(e echo.Context) float64 {
+func ExtractTokenUserUid(e echo.Context) string {
 	user := e.Get("user").(*jwt.Token) //convert to jwt token from interface
 	if user.Valid {
 		codes := user.Claims.(jwt.MapClaims)
-		id := codes["id"].(float64)
+		id := codes["user_uid"].(string)
 		return id
 	}
-	return 0
+	return ""
 }
 
 func ExtractRoles(e echo.Context) bool {

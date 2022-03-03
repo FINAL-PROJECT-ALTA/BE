@@ -7,32 +7,35 @@ import (
 
 // =================== Create User =======================
 type CreateUserRequestFormat struct {
-	Name     string `json:"name" form:"name"`
-	Email    string `json:"email" form:"email"`
-	Password string `json:"password" form:"password"`
+	Name     string `json:"name" form:"name" validate:"required"`
+	User_uid string
+	Email    string `json:"email" form:"email" validate:"required, email"`
+	Password string `json:"password" form:"password" validate:"required"`
 	Gender   string `json:"gender" form:"gender"`
 }
 
 type CreateUserResponseFormat struct {
-	ID     int    `json:"id"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
-	Gender string `json:"gender"`
+	ID       int    `json:"id"`
+	User_uid string `json:"user_uid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Gender   string `json:"gender"`
 }
 
 func ToCreateUserResponseFormat(UserResponse entities.User) CreateUserResponseFormat {
 	return CreateUserResponseFormat{
-		ID:     int(UserResponse.ID),
-		Name:   UserResponse.Name,
-		Email:  UserResponse.Email,
-		Gender: UserResponse.Gender,
+		ID:       int(UserResponse.ID),
+		User_uid: UserResponse.User_uid,
+		Name:     UserResponse.Name,
+		Email:    UserResponse.Email,
+		Gender:   UserResponse.Gender,
 	}
 }
 
 // =================== Update User =======================
 type UpdateUserRequestFormat struct {
 	Name     string `json:"name" form:"name"`
-	Email    string `json:"email" form:"email"`
+	Email    string `json:"email" form:"email" validate:"required, email"`
 	Password string `json:"password" form:"password"`
 	Gender   string `json:"gender" form:"gender"`
 }
