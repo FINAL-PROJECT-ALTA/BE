@@ -9,7 +9,7 @@ import (
 type CreateUserRequestFormat struct {
 	Name     string `json:"name" form:"name" validate:"required"`
 	User_uid string
-	Email    string `json:"email" form:"email" validate:"required, email"`
+	Email    string `json:"email" form:"email" validate:"required,email"`
 	Password string `json:"password" form:"password" validate:"required"`
 	Gender   string `json:"gender" form:"gender"`
 }
