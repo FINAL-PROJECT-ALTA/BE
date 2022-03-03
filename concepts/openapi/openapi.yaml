@@ -1,39 +1,104 @@
-openapi: "3.0.2"
+openapi: 3.0.2
 info:
-  title: App Clone AirBnB - Grup 3
+  title: Health Fit
   description: API Documentation
   contact:
-    name: BE - Grup 3
+    name: BE
     email: altaBE@mail.com
-  version: '1.2'
+  version: '1.0'
 servers:
-  - url: http://18.136.193.63:8081/{entity}
+  - url: https://aaryadewangga.cloud.okteto.net:8080/{entity}
     variables:
       entity:
         default: users
         enum:
-          - admin
           - users
-          - rooms
-          - category
-          - payment methods
-          - booking
-          - transaction
-
+          - goals
+          - user history
+          - foods
+          - menu
+          - menu details
 tags:
-  - name: Admin
-    description: Admin
   - name: Users
     description: Users Resgister/Update/Delete
-  - name: Images
-    description: Rooms Images
-  - name: Rooms
-    description: Rooms Methods
-  - name: Category
-    description: Category Methods
-  - name: Payment Methods
-    description: Payment Methods Register
+  - name: Goals
+    description: Users Goals
+  - name: User History
+    description: User History of Foods/Goals
+  - name: Foods
+    description: Foods Methods
+  - name: Menus
+    description: Menu 
+  - name: Menus Details
+    description: Menu Detail 
 paths:
+  /users/register:
+    post:
+      summary: Register New Users
+      tags:
+        - Users
+      description: Get a New Account
+      requestBody:
+        required: true
+        description: Create Account with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                gender:
+                  type: string
+                  enum:
+                    - Pria
+                    - Wanita
+              example:
+                name: test
+                email: test@test.com
+                password: test
+                gender: Pria
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user_uid: 
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      gender:
+                        type: string
+                        enum:
+                          - Pria
+                          - Wanita
+                example:
+                  code: 200
+                  message: success to get new Account
+                  data:
+                    user_uid: jksfbkjfkjabruablnlab
+                    name: test
+                    email: test@test.com
+                    gender: Pria
+        '400':
+          $ref: '#/components/responses/400'
   /users/login:
     post:
       tags:
@@ -57,7 +122,6 @@ paths:
                 code: 200
                 message: Success login, get a new token
                 data:
-                  email: testp@test.com
                   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
         '500':
           description: Invalid Authorization
@@ -69,207 +133,6 @@ paths:
                 code: 500
                 message: There are something problem on server
                 data:
-  /admin/register:
-    post:
-      summary: Register New Users
-      tags:
-        - Admin
-      description: Create a New Admin Account
-      requestBody:
-        required: true
-        description: Create Account with valid value
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                  format: password
-              example:
-                name: test
-                email: test@test.com
-                password: test
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new Account
-                  data:
-                    name: test
-                    email: test@test.com
-        '400':
-          $ref: '#/components/responses/400'
-  /admin/login:
-    post:
-      tags:
-        - Admin
-      summary: Login admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: '#/components/schemas/UserLogin'
-      responses:
-        '200':
-          description: User terautorisasi
-          content:
-            application/json:
-              schema:
-                type: object
-                # $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                message: Success login, get a new token
-                data:
-                  email: testp@test.com
-                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-        '500':
-          description: Invalid Authorization
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 500
-                message: There are something problem on server
-                data:
-  /admin/users:
-    get:
-        summary: Get all Users
-        tags:
-          - Admin
-        description: Just For Admin
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    code:
-                      type: integer
-                      example: 200
-                    message :
-                      type: string
-                      example: Success to get all users
-                    data:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        email:
-                          type: string
-                        password:
-                          type: string
-                          format: password
-                        dob:
-                          type: string
-                          format: date
-                        gender:
-                          type: boolean
-                        created_at:
-                          type: string
-                          format: date-time
-                        updated_at:
-                          type: string
-                          format: date-time
-                        deleted_at:
-                          type: string
-                          format: date-time
-                      example:
-                        - id: 1
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
-                        - id: 2
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
-  /users/register:
-    post:
-      summary: Register New Users
-      tags:
-        - Users
-      description: Get a New Account
-      requestBody:
-        required: true
-        description: Create Account with valid schema
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                  format: password
-              example:
-                name: test
-                email: test@test.com
-                password: test
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new Account
-                  data:
-                    name: test
-                    email: test@test.com
-        '400':
-          $ref: '#/components/responses/400'
   /users:
     get:
         summary: User Profile
@@ -295,8 +158,8 @@ paths:
                     data:
                       type: object
                       properties:
-                        id:
-                          type: integer
+                        user_uid:
+                          type: string
                         name:
                           type: string
                         email:
@@ -304,27 +167,16 @@ paths:
                         password:
                           type: string
                           format: password
-                        dob:
-                          type: string
-                          format: date
                         gender:
-                          type: boolean
-                        created_at:
                           type: string
-                          format: date-time
-                        updated_at:
-                          type: string
-                          format: date-time
-                        deleted_at:
-                          type: string
-                          format: date-time
+                          enum:
+                            - Pria
+                            - Wanita
                       example:
-                          id: 1
-                          name: Frans Ihsan
-                          email: frans@frans.com
-                          created_at: 2022-02-15T05:19:20Z
-                          updated_at: 2022-02-15T05:20:20Z
-                          deleted_at: 2022-02-15T05:21:20Z
+                          user_uid: jksfbkjfkjabruablnlab
+                          name: test
+                          email: test@test.com
+                          gender: Pria
     put:
       summary: Update By ID
       tags:
@@ -351,8 +203,6 @@ paths:
               example:
                 code: 200
                 message: Success to Update User Data
-                data:
-                  name: Test Update
         '204':
           $ref: '#/components/responses/204'
     delete:
@@ -372,28 +222,37 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
-                data:
-  /admin/categories:
+  /goals/register:
     post:
-      summary: Add / Create Category (For Admin)
+      summary: Register New Goals For Users
       tags:
-        - Category
+        - Goals
+      description: Get a New Account
+      security:
+          - bearerAuth: []
       requestBody:
         required: true
-        description: Create / Add Category Data
+        description: Create Account with valid schema
         content:
           application/json:
             schema:
               type: object
               properties:
-                name:
-                  type: string
+                height:
+                  type: integer
+                weight:
+                  type: integer
+                age:
+                  type: integer
+                range_time:
+                  type: integer
               example:
-                name: Surabaya
-      security:
-        - bearerAuth: []
+                height: 175
+                weight: 75
+                age: 24
+                range_time: 30
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -409,72 +268,234 @@ paths:
                     properties:
                       id:
                         type: integer
-                      name:
+                      user_uid: 
                         type: string
+                      height:
+                        type: integer
+                      weight:
+                        type: integer
+                      age:
+                        type: integer
+                      range_time:
+                        type: integer
                 example:
-                  code: 201
-                  message: success to create new category
-                  data:
-                    id: 1
-                    name : Surabaya
+                  id: 1
+                  user_uid: kaehbiafbkajfl
+                  height: 175
+                  weight: 75
+                  age: 24
+                  range_time: 30
         '400':
           $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /categories:
+  /goals/{user_uid}:
     get:
-      summary: get all Category
-      tags:
-        - Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items :
+        summary: Goals by User Profile
+        tags:
+          - Goals
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
                       type: object
                       properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        rooms:
-                          type: array
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
+      tags:
+        - Goals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
+      tags:
+        - Goals
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
+  /history/register:
+    post:
+      summary: Register New History For Users
+      tags:
+        - User History
+      description: Get a New History
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create History with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_uid:
+                  type: string
+                menu_uid:
+                  type: string
+              example:
+                user_uid: jabfkanflabe
+                menu_uid: fkeabflnalef
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      menu_uid:
+                        type: string
                 example:
-                    code: 201
-                    message: success to get all category
+                  id: 1
+                  user_uid: jabfkanflabe
+                  menu_uid: fkeabflnalef
+                  menu:
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Nasi Goreng
+                      calories: 244
+                      category: foods
+                      image: Nasi_images.jpg (image using form-data for uplaod)
+                    - id : 6
+                      food_uid: kjnlvanlfwf
+                      name: Mie Ayam
+                      calories: 143
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+  /history/{user_uid}:
+    get:
+        summary: Goals by User Profile
+        tags:
+          - User History
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
                     data:
-                    - id: 1
-                      name: Surabaya
-                      rooms: [{}]
-                    - id: 2
-                      name: Bandung
-                      rooms: [{}]
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /category/{id}:
-    get:
-      summary: Get Category By ID
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
       tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID category
-          required: true
-          schema:
-            type: integer
+        - User History
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
       security:
         - bearerAuth: []
       responses:
@@ -484,52 +505,37 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: array
-                example:
-                  code: 200
-                  message: Success to get category by id
-                  data:
-                    id: 1
-                    name: Surabaya
-                    rooms:
-                    - id: 1
-                      name: villa mewah 4 kamar
-                      price: 20000
-                    - id: 2
-                      name: villa minimalis 
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    put:
-      summary: Update category data
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
       tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID category
-          required: true
-          schema:
-            type: integer
+        - User History
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
+  /foods:
+    post:
+      summary: Add / Create Foods Data
+      tags:
+        - Foods
       requestBody:
         required: true
-        description: Updata category data
+        description: Create / Add Foods Data
         content:
           application/json:
             schema:
@@ -537,82 +543,23 @@ paths:
               properties:
                 name:
                   type: string
-              example:
-                name: Bandung
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: string
-                example:
-                  code: 200
-                  message: Berhasil mengupdate data produk
-                  data:
-                    id: 1
-                    name: Bandung
-                    rooms: [{}]
-    delete:
-      summary: Delete a category
-      tags:
-        - Category
-      parameters:
-        - name: id
-          in: path
-          description: ID Category
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 200
-                message: success to delete
-                data:
-  /images:
-    post:
-      summary: Add / Create Images for rooms
-      tags:
-        - Images
-      requestBody:
-        required: true
-        description: Create / Add Category Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                images_1:
+                calories:
+                  type: integer
+                category:
+                  type: string
+                  enum:
+                    - fruit
+                    - drink
+                    - junk food
+                    - food
+                    - snack
+                image :
                   type: string
               example:
-                rooms_id: 1
-                images: http://aefibeabibign.jpg
+                name: Soto Ayam
+                calories: 244
+                category: foods
+                image: soto_images.jpg (image using form-data for uplaod)
       security:
         - bearerAuth: []
       responses:
@@ -633,293 +580,38 @@ paths:
                       id:
                         type: integer
                       name:
+                        type: string
+                      calories:
+                        type: integer
+                      category:
+                        type: string
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
                 example:
                   code: 201
-                  message: success to create new images
-                  data:
-                    id: 1
-                    images: http://aefibeabibign.jpg
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    # get:
-    #   summary: get all Category
-    #   tags:
-    #     - Images
-    #   responses:
-    #     '200':
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             type: object
-    #             properties:
-    #               code:
-    #                 type: integer
-    #               message:
-    #                 type: string
-    #               data:
-    #                 type: array
-    #                 items :
-    #                   type: object
-    #                   properties:
-    #                     id:
-    #                       type: integer
-    #                     name:
-    #                       type: string
-    #                     rooms:
-    #                       type: array
-    #             example:
-    #                 code: 201
-    #                 message: success to get all category
-    #                 data:
-    #                 - id: 1
-    #                   name: Surabaya
-    #                   rooms: [{}]
-    #                 - id: 2
-    #                   name: Bandung
-    #                   rooms: [{}]
-    #     '400':
-    #       $ref: '#/components/responses/400'
-    #     '500':
-    #       $ref: '#/components/responses/500'
-  /images/{id}:
-    get:
-      summary: Get Images By ID
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID Images
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      images_1:
-                        type: string
-                example:
-                  code: 200
-                  message: Success to get images by id
-                  data:
-                    id: 1
-                    images_1: http://aefibeabibign.jpg
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    put:
-      summary: Update images data
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID Images
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Updata images data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                image_(numb):
-                  type: string
-              example:
-                image_1: http://jbaejcyjahbckabk.jpg
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      rooms:
-                        type: string
-                example:
-                  code: 200
-                  message: success to update images
-                  data:
-                   id: 1
-                   images_1: http://jbaejcyjahbckabk.jpg
-                   images_2: http://aefibeabibign.jpg
-                   images_3: http://aefibeabibign.jpg
-                   images_4: http://aefibeabibign.jpg
-                   images_5: http://aefibeabibign.jpg
-                   images_6: http://aefibeabibign.jpg
-                   images_7: http://aefibeabibign.jpg
-    delete:
-      summary: Delete images
-      tags:
-        - Images
-      parameters:
-        - name: id
-          in: path
-          description: ID images
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                code: 200
-                message: success to delete
-                data:
-  /rooms:
-    post:
-      summary: Add / Create Rooms Data
-      tags:
-        - Rooms
-      requestBody:
-        required: true
-        description: Create / Add Rooms Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                category_id:
-                  type: integer
-                description:
-                  type: string
-                price:
-                  type: integer
-                image_id:
-                  type: integer
-                date_stock:
-                  type: string
-                total_person:
-                  type: integer
-                total_rooms:
-                  type: integer
-                size_bed:
-                  type: string
-                user_id:
-                  type: integer
-              example:
-                name: Villa Mewah
-                category_id: 1
-                description: villa daerah dingin, 2 lantai
-                price: 20000
-                image_id : 1
-                date_stock:
-                total_person: 2
-                total_rooms: 1
-                size_bed: queen
-                user_id: 1
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      category_id:
-                        type: integer
-                      description:
-                        type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
-                        type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
-                example:
-                  code: 201
-                  message: sukses menambahkan produk baru
+                  message: sukses menambahkan foods baru
                   data:
                     id : 1
-                    name: Villa Mewah
-                    category_id: 1
-                    description: villa daerah dingin, 2 lantai
-                    price: 20000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
+                    food_uid: kshefkaefk
+                    name: Soto Ayam
+                    calories: 244
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  /foods/all:  
     get:
-      summary: Get All Rooms
+      summary: Get All Foods
       tags:
-        - Rooms
+        - Foods
       responses:
         '200':
           description: OK
@@ -930,8 +622,6 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
@@ -939,63 +629,47 @@ paths:
                       items:
                         type: object
                         properties:
-                           id:
-                            type: integer
-                           name:
+                          id:
+                             type: integer
+                          name:
                             type: string
-                           category_id:
+                          calories:
                             type: integer
-                           description:
+                          category:
                             type: string
-                           price:
-                            type: integer
-                           image_id:
-                            type: integer
-                           date_stock:
+                            enum:
+                              - fruit
+                              - drink
+                              - junk food
+                              - food
+                              - snack
+                          image :
                             type: string
-                           total_person:
-                            type: integer
-                           total_rooms:
-                            type: integer
-                           size_bed:
-                            type: string
-                           user_id:
-                            type: integer
                 example:
                     code: 200
-                    message: success to get all rooms
+                    message: success to get all foods
                     data:
                       - id : 1
-                        name: Villa Mewah
-                        category_id: 1
-                        description: villa daerah dingin, 2 lantai
-                        price: 20000
-                        image_id : 1
-                        date_stock:
-                        total_person: 2
-                        total_rooms: 1
-                        size_bed: queen
-                        user_id: 1
+                        food_uid: kshefkaefk
+                        name: Soto Ayam
+                        calories: 244
+                        category: foods
+                        image: soto_images.jpg (image using form-data for uplaod)
                       - id : 2
-                        name: Villa Mewah
-                        category_id: 1
-                        description: villa daerah dingin, 2 lantai
-                        price: 20000
-                        image_id : 1
-                        date_stock:
-                        total_person: 2
-                        total_rooms: 1
-                        size_bed: queen
-                        user_id: 1
-  /rooms/{id}:
+                        food_uid: kjnlvanlfwf
+                        name: Nasi Campur
+                        calories: 244
+                        category: foods
+                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+  /foods/{foods_uid}:
     get:
-      summary: Update Rooms Data
+      summary: Get Foods by foods_uid
       tags:
-        - Rooms
+        - Foods
       parameters:
         - name: id
           in: path
-          description: ID Rooms
+          description: Foods UID
           required: true
           schema:
             type: integer
@@ -1022,65 +696,117 @@ paths:
                         type: integer
                       name:
                         type: string
-                      category_id:
+                      calories:
                         type: integer
-                      description:
+                      category:
                         type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
                 example:
                   code: 200
-                  message: Berhasil mengupdate data produk
+                  message: Berhasil mendapatkan data foods
                   data:
-                    id : 2
-                    name: Villa Mewah
-                    category_id: 1
-                    description: villa daerah dingin, 2 lantai
-                    price: 20000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
-    put:
-      summary: Update Rooms Data
+                    id : 1
+                    food_uid: kshefkaefk
+                    name: Soto Ayam
+                    calories: 244
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
+  /foods/{calories}:
+    get:
+      summary: Get Foods by foods calories
       tags:
-        - Rooms
+        - Foods
+      parameters:
+        - name: calories
+          in: path
+          description: calories
+          required: true
+          schema:
+            type: integer
+      security:
+         - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                             type: integer
+                          name:
+                            type: string
+                          calories:
+                            type: integer
+                          category:
+                            type: string
+                            enum:
+                              - fruit
+                              - drink
+                              - junk food
+                              - food
+                              - snack
+                          image :
+                            type: string
+                example:
+                    code: 200
+                    message: success to get all foods
+                    data:
+                      - id : 3
+                        food_uid: kshefkaefk
+                        name: Nasi Goreng
+                        calories: 244
+                        category: foods
+                        image: Nasi_images.jpg (image using form-data for uplaod)
+                      - id : 6
+                        food_uid: kjnlvanlfwf
+                        name: Mie Ayam
+                        calories: 143
+                        category: foods
+                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+    put:
+      summary: Update Foods Data
+      tags:
+        - Foods
       parameters:
         - name: id
           in: path
-          description: ID Rooms
+          description: Foods UID
           required: true
           schema:
             type: integer
       requestBody:
         required: true
-        description: Update Rooms Data
+        description: Update Foods Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                price:
+                name:
                   type: integer
-                description:
+                calories:
                   type: string
               example:
-                price: 70000
-                description: update rooms description 
+                name: Bakso
+                calories: 312 
       security:
         - bearerAuth: []
       responses:
@@ -1093,8 +819,6 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
@@ -1104,39 +828,28 @@ paths:
                         type: integer
                       name:
                         type: string
-                      category_id:
+                      calories:
                         type: integer
-                      description:
+                      category:
                         type: string
-                      price:
-                        type: integer
-                      image_id:
-                        type: integer
-                      date_stock:
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
                         type: string
-                      total_person:
-                        type: integer
-                      total_rooms:
-                        type: integer
-                      size_bed:
-                        type: string
-                      user_id:
-                        type: integer
                 example:
                   code: 200
-                  message: Berhasil mengupdate data produk
+                  message: Berhasil mengupdate data foods
                   data:
-                    id : 2
-                    name: Villa Mewah
-                    category_id: 1
-                    description: update rooms description
-                    price: 70000
-                    image_id : 1
-                    date_stock:
-                    total_person: 2
-                    total_rooms: 1
-                    size_bed: queen
-                    user_id: 1
+                    id : 1
+                    food_uid: kshefkaefk
+                    name: Bakso
+                    calories: 312
+                    category: foods
+                    image: soto_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -1159,9 +872,9 @@ paths:
                   message: Failed User Authorization
                   data:
     delete:
-      summary: Delete Rooms
+      summary: Delete Foods
       tags:
-        - Rooms
+        - Foods
       parameters:
         - name: id
           in: path
@@ -1180,31 +893,32 @@ paths:
                 type: object
               example:
                 code: 200
-                message: success to delete rooms
+                message: success to delete foods
                 data:
-  /booking:
+  /menus:
     post:
-      summary: create new booking
+      summary: Add / Create Menus Data
       tags:
-        - Booking
+        - Menus
       requestBody:
         required: true
-        description: add new booking
+        description: Create / Add Menus Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                rooms_id:
-                  type: integer
-                price:
-                  type: integer
-                date_time:
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
                   type: integer
               example:
-                rooms_id: 5
-                price: 200000
-                date_time: 2
+                menu_categories: breakfast
+                total_calories: 1000  
       security:
         - bearerAuth: []
       responses:
@@ -1224,119 +938,91 @@ paths:
                     properties:
                       id:
                         type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
+                      menu_uid:
                         type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
                 example:
-                  code: 200
-                  message: success to create a new booking
+                  code: 201
+                  message: sukses menambahkan menu baru
                   data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
+                    id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
-  /booking/{id}:  
-    get:
-      summary: get booking by ID
-      tags:
-        - Booking
-      parameters:
-        - name: id
-          in: path
-          description: User ID
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get booking
-                  data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  message: Failed User Authorization
-                  data:
+        '500':
+          $ref: '#/components/responses/500'
+  /menus/{menus_uid}:
     put:
-      summary: Update booking
+      summary: Update Menus Data
       tags:
-        - Booking
+        - Menus
       parameters:
-        - name: id
+        - name: menus_uid
           in: path
-          description: User ID
+          description: menus_uid
           required: true
           schema:
             type: integer
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
-        description: Update Booking data
+        description: Update Menus Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                date_time:
+                menu_uid:
+                  type: string
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
                   type: integer
               example:
-                  date_time: 5
-      security:
-        - bearerAuth: []
+                menu_uid: kshefkaefk
+                menu_categories: dinner
+                total_calories: 2000  
       responses:
         '200':
           description: OK
@@ -1347,8 +1033,6 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
@@ -1356,53 +1040,63 @@ paths:
                     properties:
                       id:
                         type: integer
-                      rooms_id:
-                        type: integer
-                      user_id:
-                        type: integer
-                      price:
-                        type: integer
-                      date_time:
+                      menu_uid:
                         type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
                 example:
-                  code: 200
-                  message: success to update booking data
+                  code: 201
+                  message: sukses mengubah data menu
                   data:
-                    id: 1
-                    rooms_id: 1
-                    user_id: 2
-                    price: 200000
-                    date_time: 2
+                    id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: dinner
+                    total_calories: 2000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
         '400':
           $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  success: false
-                  message: Failed User Authorization
-                  data: {}
+        '500':
+          $ref: '#/components/responses/500'
     delete:
-      summary: Delete booking
+      summary: Delete Menus
       tags:
-        - Booking
+        - Menus
       parameters:
-        - name: id
+        - name: menus_uid
           in: path
-          description: User ID
+          description: menus_uid
           required: true
           schema:
             type: integer
@@ -1415,163 +1109,33 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
               example:
                 code: 200
-                message: success to delete booking
+                message: success to delete menus
                 data:
-  /transaction:
-    post:
-      summary: Create Transaction
-      tags:
-        - Transaction
-      requestBody:
-        required: true
-        description: Create New Transaction
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                booking_id:
-                  type: integer
-                payment_method_id:
-                  type: integer
-                phone:
-                  type: integer
-                status:
-                  type: string
-                  enum:
-                    - waiting
-                    - payed
-                    - cancel
-              example:
-                booking_id: 1
-                payment_method_id: 1
-                phone: +6282828828282
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      transaction_id:
-                        type: integer
-                      booking_id:
-                        type: integer
-                      payment_method_id:
-                        type: integer
-                      phone:
-                        type: string
-                      status:
-                        type: string
-                        enum:
-                        - payed
-                        - cancel
-                example:
-                  code: 200
-                  message: success to create newTransaction
-                  data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: payed
-        '400':
-          $ref: '#/components/responses/400'
+  /menus/categories:  
     get:
-      summary: get Transaction detail
+      summary: Get Menu By Menu Category
       tags:
-        - Transaction
-      security:
-      - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      transaction_id:
-                        type: integer
-                      booking_id:
-                        type: integer
-                      payment_method_id:
-                        type: integer
-                      phone:
-                        type: string
-                      status:
-                        type: string
-                        enum:
-                        - payed
-                        - cancel
-                example:
-                  code: 200
-                  success: true
-                  message: Berhasil mendapatkan semua Booking
-                  data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: ongoing
-    put:
-      summary: Update transaction 
-      tags:
-        - Transaction
-      parameters:
-        - name: id
-          in: path
-          description: user ID
-          required: true
-          schema:
-            type: integer
+        - Menus
       requestBody:
         required: true
-        description: update new data transaction
+        description: Create / Add Menus Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                payment_method_id:
-                  type: integer
-                status:
+                menu_categories:
                   type: string
                   enum:
-                    - ongoing
-                    - payed
-                    - cancel
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
               example:
-                  payment_method_id: 5
-                  status: payed
-      security:
-        - bearerAuth: []
+                menu_categories: breakfast
       responses:
         '200':
           description: OK
@@ -1582,67 +1146,110 @@ paths:
                 properties:
                   code:
                     type: integer
-                  success:
-                    type: boolean
                   message:
                     type: string
                   data:
                     type: object
                     properties:
-                      phone:
+                      id:
+                        type: integer
+                      menu_uid:
                         type: string
-                      status:
+                      menu_category:
                         type: string
-                        format: timestamp
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
                 example:
-                  code: 200
-                  message: success to update transaction
+                  code: 201
+                  message: sukses menambahkan menu baru
                   data:
-                    transaction_id: 1
-                    booking_id: 1
-                    payment_method_id: 1
-                    phone: '0822626262626'
-                    status: payed
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  message: Failed User Authorization
-                  data: {}
-  /paymentmethods:
-    post:
-      summary: Create a new payment method
+                  - id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)     
+                  - id : 2
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1500
+                    foods: 
+                    - id : 10
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 453
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 18
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 21
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 26
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 221
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)     
+  /menus/calories:  
+    get:
+      summary: Get Menu By Total Calories
       tags:
-        - Payment Methods
+        - Menus
       requestBody:
         required: true
-        description: Add new payment method to database
+        description: Create / Add Menus Data
         content:
           application/json:
             schema:
               type: object
               properties:
-                name:
+                menu_categories:
                   type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
               example:
-                name: OVO
-      security:
-        - bearerAuth: []
+                total_calories: 1500
       responses:
         '200':
           description: OK
@@ -1653,161 +1260,59 @@ paths:
                 properties:
                   code:
                     type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                  - id : 2
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1500
+                    foods: 
+                    - id : 10
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 453
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 18
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 21
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 26
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 221
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
 
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 200
-                  message: success to get new category
-                  data:
-                    id: 1
-                    name: OVO
-        '400':
-          $ref: '#/components/responses/400'
-    get:
-      summary: get all payment methods
-      tags:
-        - Payment Methods
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                example:
-                  code: 200
-                  success: true
-                  message: success to get all payment methods
-                  data:
-                  - id: 1
-                    name: OVO
-                  - id: 2
-                    name: Dana
-  /paymentmethods/{id}:  
-    put:
-      summary: Update payment methods
-      tags:
-        - Payment Methods
-      parameters:
-        - name: id
-          in: path
-          description: ID payment method 
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        description: Update Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              example:
-                id: 1
-                name: Bank Jago
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                example:
-                  code: 200
-                  success: true
-                  message: success to update payment methods
-                  data:
-                    id: 1
-                    name: Bank Jago
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          description: Authorization Failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-              example:
-                  code: 401
-                  success: false
-                  message: Failed User Authorization
-                  data: {}
-    delete:
-      summary: Delete All Payment Methods
-      tags:
-        - Payment Methods
-      parameters:
-        - name: id
-          in: path
-          description: ID payment method 
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                success: true
-                message: Success to delete a Payment Methods
-                data: {}
 components:
   parameters:
     UserID:
