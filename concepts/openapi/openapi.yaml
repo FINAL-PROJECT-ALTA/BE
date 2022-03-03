@@ -7,21 +7,24 @@ info:
     email: altaBE@mail.com
   version: '1.0'
 servers:
-  - url: https://aaryadewangga.cloud.okteto.net:8080/{entity}
+  - url: https://aaryadewangga.cloud.okteto.net:8000/{entity}
     variables:
       entity:
         default: users
         enum:
+          - admin
           - users
-          - goals
-          - user history
+          - users goals
+          - users history
           - foods
           - menu
           - menu details
 tags:
+  - name: Admin
+    description: Admin Register/Update/Delete
   - name: Users
-    description: Users Resgister/Update/Delete
-  - name: Goals
+    description: Users Register/Update/Delete
+  - name: Users Goals
     description: Users Goals
   - name: User History
     description: User History of Foods/Goals
@@ -32,11 +35,11 @@ tags:
   - name: Menus Details
     description: Menu Detail 
 paths:
-  /users/register:
+  /admin/register:
     post:
-      summary: Register New Users
+      summary: Register New Admin
       tags:
-        - Users
+        - Admin
       description: Get a New Account
       requestBody:
         required: true
@@ -60,7 +63,7 @@ paths:
                     - Wanita
               example:
                 name: test
-                email: test@test.com
+                email: test@mail.com
                 password: test
                 gender: Pria
       responses:
@@ -95,7 +98,108 @@ paths:
                   data:
                     user_uid: jksfbkjfkjabruablnlab
                     name: test
-                    email: test@test.com
+                    email: test@mail.com
+                    gender: Pria
+        '400':
+          $ref: '#/components/responses/400'
+  /admin/login:
+    post:
+      tags:
+        - Admin
+      summary: Login admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: User terautorisasi
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                code: 200
+                message: Success login, get a new token
+                data:
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        '500':
+          description: Invalid Authorization
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                code: 500
+                message: There are something problem on server
+                data:
+  /users/register:
+    post:
+      summary: Register New Users
+      tags:
+        - Users
+      description: Get a New Account
+      requestBody:
+        required: true
+        description: Create Account with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                gender:
+                  type: string
+                  enum:
+                    - Pria
+                    - Wanita
+              example:
+                name: test
+                email: test@mail.com
+                password: test
+                gender: Pria
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user_uid: 
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      gender:
+                        type: string
+                        enum:
+                          - Pria
+                          - Wanita
+                example:
+                  code: 200
+                  message: success to get new Account
+                  data:
+                    user_uid: jksfbkjfkjabruablnlab
+                    name: test
+                    email: test@mail.com
                     gender: Pria
         '400':
           $ref: '#/components/responses/400'
@@ -222,11 +326,11 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
-  /goals/register:
+  /users/goals:
     post:
       summary: Register New Goals For Users
       tags:
-        - Goals
+        - Users Goals
       description: Get a New Account
       security:
           - bearerAuth: []
@@ -287,11 +391,11 @@ paths:
                   range_time: 30
         '400':
           $ref: '#/components/responses/400'
-  /goals/{user_uid}:
+  /users/me/goals:  
     get:
         summary: Goals by User Profile
         tags:
-          - Goals
+          - Users Goals
         description: User Profile
         security:
           - bearerAuth: []
@@ -334,7 +438,7 @@ paths:
     put:
       summary: Update By ID
       tags:
-        - Goals
+        - Users Goals
       requestBody:
         required: true
         content:
@@ -361,7 +465,7 @@ paths:
           $ref: '#/components/responses/204'
     delete:
       tags:
-        - Goals
+        - Users Goals
       summary: delete goals user data
       security:
         - bearerAuth: []
@@ -376,72 +480,9 @@ paths:
               example:
                 code: 200
                 message: success to delete goals user data
-  /history/register:
-    post:
-      summary: Register New History For Users
-      tags:
-        - User History
-      description: Get a New History
-      security:
-          - bearerAuth: []
-      requestBody:
-        required: true
-        description: Create History with valid schema
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_uid:
-                  type: string
-                menu_uid:
-                  type: string
-              example:
-                user_uid: jabfkanflabe
-                menu_uid: fkeabflnalef
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      user_uid: 
-                        type: string
-                      menu_uid:
-                        type: string
-                example:
-                  id: 1
-                  user_uid: jabfkanflabe
-                  menu_uid: fkeabflnalef
-                  menu:
-                    - id : 3
-                      food_uid: kshefkaefk
-                      name: Nasi Goreng
-                      calories: 244
-                      category: foods
-                      image: Nasi_images.jpg (image using form-data for uplaod)
-                    - id : 6
-                      food_uid: kjnlvanlfwf
-                      name: Mie Ayam
-                      calories: 143
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-        '400':
-          $ref: '#/components/responses/400'
-  /history/{user_uid}:
+  /users/me/history:
     get:
-        summary: Goals by User Profile
+        summary: History by User Profile
         tags:
           - User History
         description: User Profile
@@ -477,57 +518,42 @@ paths:
                           range_time:
                             type: integer
                       example:
-                          id: 1
-                          user_uid: kaehbiafbkajfl
-                          height: 175
-                          weight: 75
-                          age: 24
-                          range_time: 30
-    put:
-      summary: Update By ID
-      tags:
-        - User History
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: '#/components/schemas/UserInput'
-            example:
-              height: 165
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                message: Success to Update Goals User Data
-        '204':
-          $ref: '#/components/responses/204'
-    delete:
-      tags:
-        - User History
-      summary: delete goals user data
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: '#/components/schemas/SuccessSingleResponse'
-              example:
-                code: 200
-                message: success to delete goals user data
+                          code: 201
+                          message: sukses menambahkan menu baru
+                          data:
+                            id: 1
+                            user_uid: jabfkanflabe
+                            menu_uid: fkeabflnalef
+                            menu:
+                              - id : 3
+                                food_uid: kshefkaefk
+                                name: Nasi Goreng
+                                calories: 244
+                                category: foods
+                                image: Nasi_images.jpg (image using form-data for uplaod)
+                              - id : 6
+                                food_uid: kjnlvanlfwf
+                                name: Mie Ayam
+                                calories: 143
+                                category: foods
+                                image: nasi-campur_images.jpg (image using form-data for uplaod)
+    # delete:
+    #   tags:
+    #     - User History
+    #   summary: delete goals user data
+    #   security:
+    #     - bearerAuth: []
+    #   responses:
+    #     '200':
+    #       description: OK
+    #       content:
+    #         application/json:
+    #           schema:
+    #             type: object
+    #             $ref: '#/components/schemas/SuccessSingleResponse'
+    #           example:
+    #             code: 200
+    #             message: success to delete goals user data
   /foods:
     post:
       summary: Add / Create Foods Data
@@ -1312,7 +1338,128 @@ paths:
                       calories: 221
                       category: drink
                       image: es-teh_images.jpg (image using form-data for uplaod)
-
+  /menus-detail:
+    post:
+      summary: Create Menus Details
+      tags:
+        - Menus Details
+      description: Create Menus Details
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create Menus Details with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_uid:
+                  type: string
+                menu_uid:
+                  type: string
+              example:
+                user_uid: jabfkanflabe
+                menu_uid: fkeabflnalef
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      menu_uid:
+                        type: string
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                    id: 1
+                    user_uid: jabfkanflabe
+                    menu_uid: fkeabflnalef
+                    menu:
+                      - id : 3
+                        food_uid: kshefkaefk
+                        name: Nasi Goreng
+                        calories: 244
+                        category: foods
+                        image: Nasi_images.jpg (image using form-data for uplaod)
+                      - id : 6
+                        food_uid: kjnlvanlfwf
+                        name: Mie Ayam
+                        calories: 143
+                        category: foods
+                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+    get:
+        summary: Get Menus Details
+        tags:
+          - Menus Details
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          code: 200
+                          message: sukses menambahkan menu baru
+                          data:
+                            id: 1
+                            user_uid: jabfkanflabe
+                            menu_uid: fkeabflnalef
+                            menu:
+                              - id : 3
+                                food_uid: kshefkaefk
+                                name: Nasi Goreng
+                                calories: 244
+                                category: foods
+                                image: Nasi_images.jpg (image using form-data for uplaod)
+                              - id : 6
+                                food_uid: kjnlvanlfwf
+                                name: Mie Ayam
+                                calories: 143
+                                category: foods
+                                image: nasi-campur_images.jpg (image using form-data for uplaod)
 components:
   parameters:
     UserID:
@@ -1330,7 +1477,7 @@ components:
         password:
           type: string
       example:
-        email: test@test.com
+        email: test@mail.com
         password: test
     UserInput:
       type: object
