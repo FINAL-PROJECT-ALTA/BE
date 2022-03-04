@@ -222,7 +222,7 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
-  /goals:
+  /goals/register:
     post:
       summary: Register New Goals For Users
       tags:
@@ -287,6 +287,7 @@ paths:
                   range_time: 30
         '400':
           $ref: '#/components/responses/400'
+  /goals/{user_uid}:
     get:
         summary: Goals by User Profile
         tags:
@@ -361,6 +362,158 @@ paths:
     delete:
       tags:
         - Goals
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
+  /history/register:
+    post:
+      summary: Register New History For Users
+      tags:
+        - User History
+      description: Get a New History
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create History with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_uid:
+                  type: string
+                menu_uid:
+                  type: string
+              example:
+                user_uid: jabfkanflabe
+                menu_uid: fkeabflnalef
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      menu_uid:
+                        type: string
+                example:
+                  id: 1
+                  user_uid: jabfkanflabe
+                  menu_uid: fkeabflnalef
+                  menu:
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Nasi Goreng
+                      calories: 244
+                      category: foods
+                      image: Nasi_images.jpg (image using form-data for uplaod)
+                    - id : 6
+                      food_uid: kjnlvanlfwf
+                      name: Mie Ayam
+                      calories: 143
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+  /history/{user_uid}:
+    get:
+        summary: Goals by User Profile
+        tags:
+          - User History
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
+      tags:
+        - User History
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
+      tags:
+        - User History
       summary: delete goals user data
       security:
         - bearerAuth: []
@@ -742,6 +895,98 @@ paths:
                 code: 200
                 message: success to delete foods
                 data:
+  /menus:
+    post:
+      summary: Add / Create Menus Data
+      tags:
+        - Menus
+      requestBody:
+        required: true
+        description: Create / Add Menus Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu_categories:
+                  type: string
+                  enum:
+                    - breakfast
+                    - lunch
+                    - dinner
+                total_calories:
+                  type: integer
+              example:
+                menu_categories: breakfast
+                total_calories: 1000  
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses menambahkan menu baru
+                  data:
+                    id : 1
+                    menu_uid: kshefkaefk
+                    menu_category: breakfast
+                    total_calories: 1000
+                    foods: 
+                    - id : 3
+                      food_uid: kshefkaefk
+                      name: Soto Ayam
+                      calories: 356
+                      category: foods
+                      image: soto_images.jpg (image using form-data for uplaod)
+                    - id : 7
+                      food_uid: kjnlvanlfwf
+                      name: Nasi Campur
+                      calories: 392
+                      category: foods
+                      image: nasi-campur_images.jpg (image using form-data for uplaod)
+                    - id : 8
+                      food_uid: ehbfkablfnan
+                      name: Es Campur
+                      calories: 196
+                      category: drink
+                      image: es-campur_images.jpg (image using form-data for uplaod)
+                    - id : 10
+                      food_uid: ehblfnlebukvbe
+                      name: Es Teh
+                      calories: 100
+                      category: drink
+                      image: es-teh_images.jpg (image using form-data for uplaod)
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
 components:
   parameters:
     UserID:
