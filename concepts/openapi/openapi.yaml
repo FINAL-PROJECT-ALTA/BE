@@ -222,6 +222,159 @@ paths:
               example:
                 code: 200
                 message: success to delete user data
+  /goals:
+    post:
+      summary: Register New Goals For Users
+      tags:
+        - Goals
+      description: Get a New Account
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        description: Create Account with valid schema
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                height:
+                  type: integer
+                weight:
+                  type: integer
+                age:
+                  type: integer
+                range_time:
+                  type: integer
+              example:
+                height: 175
+                weight: 75
+                age: 24
+                range_time: 30
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_uid: 
+                        type: string
+                      height:
+                        type: integer
+                      weight:
+                        type: integer
+                      age:
+                        type: integer
+                      range_time:
+                        type: integer
+                example:
+                  id: 1
+                  user_uid: kaehbiafbkajfl
+                  height: 175
+                  weight: 75
+                  age: 24
+                  range_time: 30
+        '400':
+          $ref: '#/components/responses/400'
+    get:
+        summary: Goals by User Profile
+        tags:
+          - Goals
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: object
+                      properties:
+                          id:
+                            type: integer
+                          user_uid: 
+                            type: string
+                          height:
+                            type: integer
+                          weight:
+                            type: integer
+                          age:
+                            type: integer
+                          range_time:
+                            type: integer
+                      example:
+                          id: 1
+                          user_uid: kaehbiafbkajfl
+                          height: 175
+                          weight: 75
+                          age: 24
+                          range_time: 30
+    put:
+      summary: Update By ID
+      tags:
+        - Goals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              height: 165
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+    delete:
+      tags:
+        - Goals
+      summary: delete goals user data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: success to delete goals user data
   /foods:
     post:
       summary: Add / Create Foods Data
