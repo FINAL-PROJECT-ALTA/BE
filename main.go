@@ -6,9 +6,11 @@ import (
 	utils "HealthFit/utils/mysql"
 
 	_authController "HealthFit/delivery/controllers/auth"
+	_goalController "HealthFit/delivery/controllers/goal"
 	_userController "HealthFit/delivery/controllers/user"
 
 	_authRepo "HealthFit/repository/auth"
+	_goalRepo "HealthFit/repository/goal"
 	_userRepo "HealthFit/repository/user"
 
 	"fmt"
@@ -35,12 +37,14 @@ func main() {
 	midtransConfig.New(config.Midtrans, midtrans.Sandbox)
 
 	//REPOSITORY-DATABASE
-	userRepo := _userRepo.New(db)
 	authRepo := _authRepo.New(db)
+	userRepo := _userRepo.New(db)
+	goalRepo := _goalRepo.New(db)
 
 	//CONTROLLER
-	userController := _userController.New(userRepo)
 	authController := _authController.New(authRepo)
+	userController := _userController.New(userRepo)
+	goalController := _goalController.New(goalRepo)
 
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
@@ -48,6 +52,7 @@ func main() {
 	route.RegisterPath(e,
 		userController,
 		authController,
+		goalController,
 	)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
