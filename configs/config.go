@@ -36,13 +36,13 @@ func GetConfig() *AppConfig {
 
 func initConfig() *AppConfig {
 	var defaultConfig AppConfig
-	defaultConfig.Port = 8080
+	defaultConfig.Port = 8000
 	defaultConfig.Driver = getEnv("DRIVER", "mysql")
 	defaultConfig.Name = getEnv("NAME", "healthfit")
 	defaultConfig.Address = getEnv("ADDRESS", "localhost")
 	defaultConfig.DB_Port = 3306
 	defaultConfig.Username = getEnv("USERNAME", "root") /* "root" */
-	defaultConfig.Password = getEnv("PASSWORD", "adol1122")
+	defaultConfig.Password = getEnv("PASSWORD", "root")
 	defaultConfig.S3_KEY = getEnv("S3_KEY", "AKIAVOMUO3KKNSP4RXWR")
 	defaultConfig.S3_SECRET = getEnv("S3_SECRET", "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")
 	defaultConfig.S3_REGION = getEnv("S3_REGION", "ap-southeast-1")
@@ -55,7 +55,7 @@ func initConfig() *AppConfig {
 }
 
 func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok && value != "Thinkpad X250" {
+	if value, ok := os.LookupEnv(key); ok && value != "user" {
 		fmt.Println(value)
 		return value
 	}
