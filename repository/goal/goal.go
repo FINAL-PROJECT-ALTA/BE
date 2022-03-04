@@ -55,7 +55,9 @@ func (ur *GoalRepository) Delete(goal_uid string) error {
 	if err := ur.database.Where("goal_uid =?", goal_uid).First(&goal).Error; err != nil {
 		return err
 	}
-	ur.database.Delete(&goal, goal_uid)
+	if err := ur.database.Delete(&goal, goal_uid).Error; err != nil {
+		return err
+	}
 	return nil
 
 }
