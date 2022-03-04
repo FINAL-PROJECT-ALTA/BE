@@ -1,0 +1,47 @@
+name: Deploy
+on: 
+  push:
+    branches:
+      - "main"
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v1
+      
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Login To Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Build and Push
+      uses: docker/build-push-action@v2
+      with: 
+        push: true
+        tags: aryadewangga/fp-alta:latest
+    
+    - name: checkout
+      uses: actions/checkout@master
+      
+    - name: Login Okteto
+      uses: okteto/login@master
+      with:
+        token: ${{ secrets.OKTETO_PASSWORD }}
+    
+    - name: "Activate personal namespace"
+      uses: okteto/namespace@master
+      with:
+        namespace: aaryadewangga
+        
+    - name: "create deployment"
+      uses: okteto/apply@master
+      with:
+        manifest: ./deployment/app-pod.yaml
