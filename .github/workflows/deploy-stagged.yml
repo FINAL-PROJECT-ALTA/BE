@@ -34,7 +34,7 @@ jobs:
     - name: Login Okteto
       uses: okteto/login@master
       with:
-        token: ${{ secrets.OKTETO_PASSWORD }}
+        token: ${{ secrets.OKTETO_TOKEN }}
     
     - name: "Activate personal namespace"
       uses: okteto/namespace@master
