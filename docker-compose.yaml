@@ -8,7 +8,7 @@ services:
       DB_PORT: 3306
       USERNAME: "admin"
       PASSWORD: "aryadewangga"
-      NAME: "healthfit"
+      NAME: "app_fp"
     restart: always
     ports:
       - 8081:8000
