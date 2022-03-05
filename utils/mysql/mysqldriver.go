@@ -34,6 +34,7 @@ func InitDB(config *config.AppConfig) *gorm.DB {
 
 func AutoMigrate(DB *gorm.DB) {
 	DB.AutoMigrate(&entities.User{})
+	DB.AutoMigrate(&entities.Admin{})
 	DB.AutoMigrate(&entities.Goal{})
 	DB.AutoMigrate(&entities.User_history{})
 	DB.AutoMigrate(&entities.Foods{})
