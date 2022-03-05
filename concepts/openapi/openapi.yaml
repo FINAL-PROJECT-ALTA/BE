@@ -7,7 +7,7 @@ info:
     email: altaBE@mail.com
   version: '1.0'
 servers:
-  - url: https://aaryadewangga.cloud.okteto.net:8000/{entity}
+  - url: https://aaryadewangga.cloud.okteto.net/{entity}
     variables:
       entity:
         default: users

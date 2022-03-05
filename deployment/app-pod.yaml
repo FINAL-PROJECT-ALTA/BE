@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-healthfit-deployment
-  labels:
-    app: app-healthfit
+  name: go-app-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: app-healthfit
+      app: go-app
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: app-healthfit
+        app: go-app
     spec:
       containers:
       - image: aryadewangga/project:latest
-        name: app-healthfit
+        name: go-app
         env:
           - name: "PORT"
             value: "8000"
@@ -47,7 +47,7 @@ spec:
       port: 8080
       targetPort: 8000
   selector:
-    app: app-healthfit
+    app: go-app
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -60,5 +60,5 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: nginx-service
-          servicePort: 8000
+          serviceName: go-app-service
+          servicePort: 8080
