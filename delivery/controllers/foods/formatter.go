@@ -67,3 +67,8 @@ type FoodsUpdateRequestFormat struct {
 	Protein       int    `json:"protein"`
 	Food_category string `json:"food_categories"`
 }
+
+type FoodsSearchRequestFormat struct {
+	Name     string `json:"name"`
+	Calories int    `json:"calories"`
+}

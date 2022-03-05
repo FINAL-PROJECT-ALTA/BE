@@ -2,8 +2,8 @@ package route
 
 import (
 	"HealthFit/delivery/controllers/auth"
+	"HealthFit/delivery/controllers/foods"
 	"HealthFit/delivery/controllers/goal"
-
 	"HealthFit/delivery/controllers/user"
 	"HealthFit/delivery/middlewares"
 
@@ -15,6 +15,7 @@ func RegisterPath(e *echo.Echo,
 	uc *user.UserController,
 	aa *auth.AuthController,
 	gc *goal.GoalController,
+	fc *foods.FoodsController,
 ) {
 
 	//CORS
@@ -40,4 +41,8 @@ func RegisterPath(e *echo.Echo,
 	e.GET("/goals/:goal_uid", gc.GetById(), middlewares.JwtMiddleware())
 	e.PUT("/goals/:goal_uid", gc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/goals/:goal_uid", gc.Delete(), middlewares.JwtMiddleware())
+
+	//ROUTE FOODS
+	e.POST("/foods", fc.Create(), middlewares.JwtMiddleware())
+	e.GET("foods", fc.GetAll())
 }

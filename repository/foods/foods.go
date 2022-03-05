@@ -25,10 +25,11 @@ func (fr *FoodsRepository) Create(f entities.Foods) (entities.Foods, error) {
 	return f, nil
 }
 
-func (fr *FoodsRepository) Search(input entities.Foods) (entities.Foods, error) {
+func (fr *FoodsRepository) Search(input string) (entities.Foods, error) {
+
 	foods := entities.Foods{}
 
-	result := fr.database.Where("name = ?", input).Or("calories", input).First(&foods)
+	result := fr.database.Where("name = ?", input).Or("calories", input).Find(&foods)
 
 	if err := result.Error; err != nil {
 		return foods, err

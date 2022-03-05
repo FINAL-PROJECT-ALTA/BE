@@ -64,6 +64,30 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 	}
 }
 
+func (fc *FoodsController) Search() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		name := c.Param("name")
+
+		res, err := fc.repo.Search(name)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := FoodsSearchResponse{}
+
+		response.Food_uid = res.Food_uid
+		response.Name = res.Name
+		response.Calories = res.Calories
+		response.Energy = res.Energy
+		response.Carbohidrate = res.Carbohidrate
+		response.Protein = res.Protein
+		response.Food_category = res.Food_category
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get foods", response))
+	}
+}
+
 func (fc *FoodsController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
