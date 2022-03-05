@@ -6,10 +6,12 @@ import (
 	utils "HealthFit/utils/mysql"
 
 	_authController "HealthFit/delivery/controllers/auth"
+	_foodsController "HealthFit/delivery/controllers/foods"
 	_goalController "HealthFit/delivery/controllers/goal"
 	_userController "HealthFit/delivery/controllers/user"
 
 	_authRepo "HealthFit/repository/auth"
+	_foodsRepo "HealthFit/repository/foods"
 	_goalRepo "HealthFit/repository/goal"
 	_userRepo "HealthFit/repository/user"
 
@@ -40,11 +42,13 @@ func main() {
 	authRepo := _authRepo.New(db)
 	userRepo := _userRepo.New(db)
 	goalRepo := _goalRepo.New(db)
+	foodsRepo := _foodsRepo.New(db)
 
 	//CONTROLLER
 	authController := _authController.New(authRepo)
 	userController := _userController.New(userRepo)
 	goalController := _goalController.New(goalRepo)
+	foodsController := _foodsController.New(foodsRepo)
 
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
@@ -53,6 +57,7 @@ func main() {
 		userController,
 		authController,
 		goalController,
+		foodsController,
 	)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
