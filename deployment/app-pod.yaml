@@ -48,3 +48,17 @@ spec:
       targetPort: 8000
   selector:
     app: app-healthfit
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: go-app-ingress
+  annotations:
+    dev.okteto.com/generate-host: "domain"
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: nginx-service
+          servicePort: 8000
