@@ -1,3 +1,7 @@
+# cloud.google.com/go v0.100.2
+## explicit; go 1.11
+# cloud.google.com/go/compute v1.5.0
+## explicit; go 1.15
 # github.com/aws/aws-sdk-go v1.43.10
 ## explicit; go 1.11
 github.com/aws/aws-sdk-go/aws
@@ -72,6 +76,8 @@ github.com/go-sql-driver/mysql
 # github.com/golang-jwt/jwt v3.2.2+incompatible
 ## explicit
 github.com/golang-jwt/jwt
+# github.com/golang/protobuf v1.5.2
+## explicit; go 1.9
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
@@ -84,6 +90,8 @@ github.com/jinzhu/now
 # github.com/jmespath/go-jmespath v0.4.0
 ## explicit; go 1.14
 github.com/jmespath/go-jmespath
+# github.com/kr/pretty v0.1.0
+## explicit
 # github.com/labstack/echo/v4 v4.7.0
 ## explicit; go 1.17
 github.com/labstack/echo/v4
@@ -128,14 +136,16 @@ golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
-# golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+# golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 ## explicit; go 1.17
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
 golang.org/x/net/http2/h2c
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
-# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
+# golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
+## explicit; go 1.11
+# golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9
 ## explicit; go 1.17
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
@@ -148,6 +158,12 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20201208040808-7e3f01d25324
 ## explicit
 golang.org/x/time/rate
+# google.golang.org/appengine v1.6.7
+## explicit; go 1.11
+# google.golang.org/protobuf v1.27.1
+## explicit; go 1.9
+# gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127
+## explicit
 # gopkg.in/go-playground/assert.v1 v1.2.1
 ## explicit
 # gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
