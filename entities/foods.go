@@ -2,7 +2,7 @@ package entities
 
 import "gorm.io/gorm"
 
-type Food struct {
+type Foods struct {
 	gorm.Model
 	Food_uid      string `gorm:"index;type:varchar(22)"`
 	Name          string `gorm:"type:varchar(100)"`
