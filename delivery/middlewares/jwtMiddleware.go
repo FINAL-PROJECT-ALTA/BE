@@ -28,12 +28,38 @@ func GenerateToken(u entities.User) (string, error) {
 	// fmt.Println(token)
 	return token.SignedString([]byte(config.JWT_SECRET))
 }
-
 func ExtractTokenUserUid(e echo.Context) string {
 	user := e.Get("user").(*jwt.Token) //convert to jwt token from interface
 	if user.Valid {
 		codes := user.Claims.(jwt.MapClaims)
 		id := codes["user_uid"].(string)
+		return id
+	}
+	return ""
+}
+func GenerateTokenAdmin(a entities.Admin) (string, error) {
+	if a.ID == 0 {
+		return "cannot Generate token", errors.New("id == 0")
+	}
+
+	codes := jwt.MapClaims{
+		"admin_uid": a.Admin_uid,
+		"email":     a.Email,
+		"password":  a.Password,
+		"exp":       time.Now().Add(time.Hour * 24).Unix(),
+		"auth":      true,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, codes)
+	// fmt.Println(token)
+	return token.SignedString([]byte(config.JWT_SECRET))
+}
+
+func ExtractTokenAdminUid(e echo.Context) string {
+	admin := e.Get("admin").(*jwt.Token) //convert to jwt token from interface
+	if admin.Valid {
+		codes := admin.Claims.(jwt.MapClaims)
+		id := codes["admin_uid"].(string)
 		return id
 	}
 	return ""
