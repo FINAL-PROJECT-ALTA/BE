@@ -62,23 +62,31 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 
 func (fc *FoodsController) Search() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		name := c.Param("name")
+		input := c.QueryParam("input")
+		category := c.QueryParam("category")
 
-		res, err := fc.repo.Search(name)
+		res, err := fc.repo.Search(input, category)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := FoodsSearchResponse{}
+		response := []FoodsSearchResponse{}
+		for i := 0; i < len(res); i++ {
+			resObj := FoodsSearchResponse{}
+			resObj.Food_uid = res[i].Food_uid
+			resObj.Name = res[i].Name
+			resObj.Calories = res[i].Calories
+			resObj.Energy = res[i].Energy
+			resObj.Carbohidrate = res[i].Carbohidrate
+			resObj.Protein = res[i].Protein
+			resObj.Food_category = res[i].Food_category
 
-		response.Food_uid = res.Food_uid
-		response.Name = res.Name
-		response.Calories = res.Calories
-		response.Energy = res.Energy
-		response.Carbohidrate = res.Carbohidrate
-		response.Protein = res.Protein
-		response.Food_category = res.Food_category
+			resObj.Images = res[i].Images
+
+			response = append(response, resObj)
+
+		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get foods", response))
 	}
