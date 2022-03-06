@@ -35,7 +35,7 @@ func RegisterPath(e *echo.Echo,
 
 	//ROUTE ADMIN
 	e.POST("/admin/register", ac.Register())
-	e.POST("/admin/login", aa.Login())
+	e.POST("/admin/login", aa.AdminLogin())
 	e.GET("/admin", ac.GetById(), middlewares.JwtMiddleware())
 	e.PUT("/admin", ac.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/admin", ac.Delete(), middlewares.JwtMiddleware())

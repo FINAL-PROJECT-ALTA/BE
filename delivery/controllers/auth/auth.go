@@ -59,7 +59,7 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		if err := c.Bind(&Userlogin); err != nil || Userlogin.Email == "" || Userlogin.Password == "" {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(nil, "error in input file", nil))
 		}
-		checkedUser, err := ac.repo.Login(Userlogin.Email, Userlogin.Password)
+		checkedUser, err := ac.repo.LoginAdmin(Userlogin.Email, Userlogin.Password)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(nil, "error in call database", nil))
