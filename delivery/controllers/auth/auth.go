@@ -64,7 +64,7 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(nil, "error in call database", nil))
 		}
-		token, err := middlewares.GenerateToken(checkedUser)
+		token, err := middlewares.GenerateTokenAdmin(checkedUser)
 
 		if err != nil {
 			return c.JSON(http.StatusNotAcceptable, common.BadRequest(http.StatusNotAcceptable, "error in process token", nil))

@@ -56,7 +56,7 @@ func GenerateTokenAdmin(a entities.Admin) (string, error) {
 }
 
 func ExtractTokenAdminUid(e echo.Context) string {
-	admin := e.Get("admin").(*jwt.Token) //convert to jwt token from interface
+	admin := e.Get("user").(*jwt.Token) //convert to jwt token from interface
 	if admin.Valid {
 		codes := admin.Claims.(jwt.MapClaims)
 		id := codes["admin_uid"].(string)

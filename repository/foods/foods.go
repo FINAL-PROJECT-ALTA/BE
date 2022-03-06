@@ -4,6 +4,9 @@ import (
 	"HealthFit/entities"
 	"errors"
 	"fmt"
+	"strconv"
+
+	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
 )
@@ -19,6 +22,9 @@ func New(db *gorm.DB) *FoodsRepository {
 }
 
 func (fr *FoodsRepository) Create(f entities.Foods) (entities.Foods, error) {
+
+	uid := shortuuid.New()
+	f.Food_uid = uid
 	if err := fr.database.Create(&f).Error; err != nil {
 		return f, err
 	}
@@ -31,8 +37,12 @@ func (fr *FoodsRepository) Search(input, category string) ([]entities.Foods, err
 	foods := []entities.Foods{}
 	sql := "SELECT * FROM foods"
 
-	if input != "" && category != "" {
-		sql = fmt.Sprintf("%s WHERE category =%s && name LIKE '%%%s%%'", sql, category, input)
+	if category == "name" {
+		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%'", sql, input)
+	}
+	if category == "calories" {
+		input, _ := strconv.Atoi(input)
+		sql = fmt.Sprintf("%s WHERE calories < %d", sql, input)
 	}
 
 	if err := fr.database.Preload(("Image")).Raw(sql).Scan(&foods).Error; err != nil {
