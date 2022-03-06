@@ -5,11 +5,13 @@ import (
 	route "HealthFit/delivery/routes"
 	utils "HealthFit/utils/mysql"
 
+	_adminController "HealthFit/delivery/controllers/admin"
 	_authController "HealthFit/delivery/controllers/auth"
 	_foodsController "HealthFit/delivery/controllers/foods"
 	_goalController "HealthFit/delivery/controllers/goal"
 	_userController "HealthFit/delivery/controllers/user"
 
+	_adminRepo "HealthFit/repository/admin"
 	_authRepo "HealthFit/repository/auth"
 	_foodsRepo "HealthFit/repository/foods"
 	_goalRepo "HealthFit/repository/goal"
@@ -40,12 +42,14 @@ func main() {
 
 	//REPOSITORY-DATABASE
 	authRepo := _authRepo.New(db)
+	adminRepo := _adminRepo.New(db)
 	userRepo := _userRepo.New(db)
 	goalRepo := _goalRepo.New(db)
 	foodsRepo := _foodsRepo.New(db)
 
 	//CONTROLLER
 	authController := _authController.New(authRepo)
+	adminController := _adminController.New(adminRepo)
 	userController := _userController.New(userRepo)
 	goalController := _goalController.New(goalRepo)
 	foodsController := _foodsController.New(foodsRepo)
@@ -58,6 +62,7 @@ func main() {
 		authController,
 		goalController,
 		foodsController,
+		adminController,
 	)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
