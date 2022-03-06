@@ -1,4 +1,4 @@
-package foods
+package food
 
 import (
 	"HealthFit/entities"
@@ -11,17 +11,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type FoodsRepository struct {
+type FoodRepository struct {
 	database *gorm.DB
 }
 
-func New(db *gorm.DB) *FoodsRepository {
-	return &FoodsRepository{
+func New(db *gorm.DB) *FoodRepository {
+	return &FoodRepository{
 		database: db,
 	}
 }
 
-func (fr *FoodsRepository) Create(f entities.Foods) (entities.Foods, error) {
+func (fr *FoodRepository) Create(f entities.Food) (entities.Food, error) {
 
 	uid := shortuuid.New()
 	f.Food_uid = uid
@@ -32,9 +32,9 @@ func (fr *FoodsRepository) Create(f entities.Foods) (entities.Foods, error) {
 	return f, nil
 }
 
-func (fr *FoodsRepository) Search(input, category string) ([]entities.Foods, error) {
+func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error) {
 
-	foods := []entities.Foods{}
+	foods := []entities.Food{}
 	sql := "SELECT * FROM foods"
 
 	if category == "name" {
@@ -58,9 +58,9 @@ func (fr *FoodsRepository) Search(input, category string) ([]entities.Foods, err
 	return foods, nil
 }
 
-func (fr *FoodsRepository) Update(food_uid string, newFoods entities.Foods) (entities.Foods, error) {
+func (fr *FoodRepository) Update(food_uid string, newFoods entities.Food) (entities.Food, error) {
 
-	var foods entities.Foods
+	var foods entities.Food
 	fr.database.Where("food_uid =?", food_uid).First(&foods)
 
 	if err := fr.database.Model(&foods).Updates(&newFoods).Error; err != nil {
@@ -70,9 +70,9 @@ func (fr *FoodsRepository) Update(food_uid string, newFoods entities.Foods) (ent
 	return foods, nil
 }
 
-func (fr *FoodsRepository) Delete(food_uid string) error {
+func (fr *FoodRepository) Delete(food_uid string) error {
 
-	var foods entities.Foods
+	var foods entities.Food
 
 	if err := fr.database.Where("food_uid =?", food_uid).First(&foods).Error; err != nil {
 		return err
@@ -85,8 +85,8 @@ func (fr *FoodsRepository) Delete(food_uid string) error {
 	return nil
 }
 
-func (fr *FoodsRepository) GetAll() ([]entities.Foods, error) {
-	foods := []entities.Foods{}
+func (fr *FoodRepository) GetAll() ([]entities.Food, error) {
+	foods := []entities.Food{}
 	fr.database.Find(&foods)
 	if len(foods) < 1 {
 		return nil, errors.New("nil value")

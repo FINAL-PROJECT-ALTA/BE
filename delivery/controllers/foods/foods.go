@@ -4,17 +4,17 @@ import (
 	"HealthFit/delivery/controllers/common"
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
-	"HealthFit/repository/foods"
+	food "HealthFit/repository/foods"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type FoodsController struct {
-	repo foods.Foods
+	repo food.Food
 }
 
-func New(repository foods.Foods) *FoodsController {
+func New(repository food.Food) *FoodsController {
 	return &FoodsController{
 		repo: repository,
 	}
@@ -32,7 +32,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := fc.repo.Create(entities.Foods{
+		res, err := fc.repo.Create(entities.Food{
 			Food_uid:      isAdmin,
 			Name:          newFoods.Name,
 			Calories:      newFoods.Calories,
@@ -82,7 +82,7 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 			resObj.Protein = res[i].Protein
 			resObj.Food_category = res[i].Food_category
 
-			resObj.Images = res[i].Images
+			resObj.Images = res[i].Image
 
 			response = append(response, resObj)
 
@@ -109,7 +109,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := fc.repo.Update(food_uid, entities.Foods{
+		res, err := fc.repo.Update(food_uid, entities.Food{
 			Name:          updateFoods.Name,
 			Calories:      updateFoods.Calories,
 			Energy:        updateFoods.Energy,
