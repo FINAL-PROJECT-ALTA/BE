@@ -31,3 +31,16 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 
 	return user, nil
 }
+func (ad *AuthDb) LoginAdmin(email, password string) (entities.Admin, error) {
+	admin := entities.Admin{}
+
+	ad.db.Model(&admin).Where("email = ?", email).First(&admin)
+
+	match := middlewares.CheckPasswordHash(password, admin.Password)
+
+	if !match {
+		return entities.Admin{}, errors.New("incorrect password")
+	}
+
+	return admin, nil
+}
