@@ -1,5 +1,7 @@
 package foods
 
+import "HealthFit/entities"
+
 type FoodsCreateResponse struct {
 	Food_uid      string `json:"food_uid"`
 	Name          string `json:"name"`
@@ -8,7 +10,7 @@ type FoodsCreateResponse struct {
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
 	Food_category string `json:"food_categories"`
-	Images        []Images
+	Images        entities.Image
 }
 
 type FoodsUpdateResponse struct {
@@ -19,7 +21,7 @@ type FoodsUpdateResponse struct {
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
 	Food_category string `json:"food_categories"`
-	Images        []Images
+	Images        entities.Image
 }
 
 type FoodsSearchResponse struct {
@@ -30,7 +32,7 @@ type FoodsSearchResponse struct {
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
 	Food_category string `json:"food_categories"`
-	Images        []Images
+	Images        entities.Image
 }
 
 type FoodsGetAllResponse struct {
@@ -41,7 +43,7 @@ type FoodsGetAllResponse struct {
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
 	Food_category string `json:"food_categories"`
-	Images        []Images
+	Images        entities.Image
 }
 
 type Images struct {

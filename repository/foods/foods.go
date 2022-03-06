@@ -3,6 +3,7 @@ package foods
 import (
 	"HealthFit/entities"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -25,15 +26,24 @@ func (fr *FoodsRepository) Create(f entities.Foods) (entities.Foods, error) {
 	return f, nil
 }
 
-func (fr *FoodsRepository) Search(input string) (entities.Foods, error) {
+func (fr *FoodsRepository) Search(input, category string) ([]entities.Foods, error) {
 
-	foods := entities.Foods{}
+	foods := []entities.Foods{}
+	sql := "SELECT * FROM foods"
 
-	result := fr.database.Where("name = ?", input).Or("calories", input).Find(&foods)
+	if input != "" && category != "" {
+		sql = fmt.Sprintf("%s WHERE category =%s && name LIKE '%%%s%%'", sql, category, input)
+	}
 
-	if err := result.Error; err != nil {
+	if err := fr.database.Preload(("Image")).Raw(sql).Scan(&foods).Error; err != nil {
 		return foods, err
 	}
+
+	// result := fr.database.Where("name = ?", input).Or("calories", input).Find(&foods)
+
+	// if err := result.Error; err != nil {
+	// 	return foods, err
+	// }
 
 	return foods, nil
 }
