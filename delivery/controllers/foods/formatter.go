@@ -49,6 +49,7 @@ type Images struct {
 }
 
 type FoodsCreateRequestFormat struct {
+	Admin         string
 	Food_uid      string
 	Name          string `json:"name"`
 	Calories      int    `json:"calories"`
@@ -59,6 +60,7 @@ type FoodsCreateRequestFormat struct {
 }
 
 type FoodsUpdateRequestFormat struct {
+	Admin_uid     string
 	Food_uid      string
 	Name          string `json:"name"`
 	Calories      int    `json:"calories"`
