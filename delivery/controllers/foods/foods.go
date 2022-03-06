@@ -23,12 +23,7 @@ func New(repository foods.Foods) *FoodsController {
 func (fc *FoodsController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractRoles(c) // jangan lupa ganti extract token admin
-
-		if !isAdmin {
-			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
-		}
-
+		isAdmin := middlewares.ExtractTokenAdminUid(c)
 		newFoods := FoodsCreateRequestFormat{}
 
 		c.Bind(&newFoods)
@@ -38,6 +33,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		}
 
 		res, err := fc.repo.Create(entities.Foods{
+			Food_uid:      isAdmin,
 			Name:          newFoods.Name,
 			Calories:      newFoods.Calories,
 			Energy:        newFoods.Energy,
