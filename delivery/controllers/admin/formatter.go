@@ -20,17 +20,17 @@ type AdminGetByIdResponse struct {
 
 // =================== Create User Request =======================
 type CreateAdminRequestFormat struct {
-	Name      string `json:"name" form:"name" validate:"required"`
+	Name      string `json:"name" form:"name" validate:"required,min=3,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Admin_uid string
 	Email     string `json:"email" form:"email" validate:"required,email"`
-	Password  string `json:"password" form:"password" validate:"required"`
+	Password  string `json:"password" form:"password" validate:"required,min=3,max=20"`
 	Gender    string `json:"gender" form:"gender"`
 }
 
 // =================== Update User Request =======================
 type UpdateAdminRequestFormat struct {
-	Name     string `json:"name" form:"name"`
-	Email    string `json:"email" form:"email" validate:"required,email"`
+	Name     string `json:"name" form:"name" validate:"min=3,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Email    string `json:"email" form:"email" validate:"omitempty,email"`
 	Password string `json:"password" form:"password"`
 	Gender   string `json:"gender" form:"gender"`
 }
