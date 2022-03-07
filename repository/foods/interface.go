@@ -1,11 +1,11 @@
-package foods
+package food
 
 import "HealthFit/entities"
 
-type Foods interface {
-	Create(f entities.Foods) (entities.Foods, error)
-	Search(input, category string) ([]entities.Foods, error)
-	Update(food_uid string, newFoods entities.Foods) (entities.Foods, error)
+type Food interface {
+	Create(f entities.Food) (entities.Food, error)
+	Search(input, category string) ([]entities.Food, error)
+	Update(food_uid string, newFood entities.Food) (entities.Food, error)
 	Delete(food_uid string) error
-	GetAll() ([]entities.Foods, error)
+	GetAll() ([]entities.Food, error)
 }
