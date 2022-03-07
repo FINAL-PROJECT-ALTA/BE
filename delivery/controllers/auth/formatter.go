@@ -17,3 +17,9 @@ type UserLoginResponse struct {
 	Email    string `json:"email"`
 	Token    string `json:"token"`
 }
+type AdminLoginResponse struct {
+	Admin_uid string `json:"admin_uid"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	Token     string `json:"token"`
+}

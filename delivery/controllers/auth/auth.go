@@ -54,23 +54,32 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 
 func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		Userlogin := LoginReqFormat{}
+		AdminLogin := LoginReqFormat{}
 
-		if err := c.Bind(&Userlogin); err != nil || Userlogin.Email == "" || Userlogin.Password == "" {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(nil, "error in input file", nil))
+		c.Bind(&AdminLogin)
+		err := c.Validate(&AdminLogin)
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
-		checkedUser, err := ac.repo.LoginAdmin(Userlogin.Email, Userlogin.Password)
+		checkedAdmin, err := ac.repo.LoginAdmin(AdminLogin.Email, AdminLogin.Password)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(nil, "error in call database", nil))
 		}
-		token, err := middlewares.GenerateTokenAdmin(checkedUser)
+		token, err := middlewares.GenerateTokenAdmin(checkedAdmin)
+		response := AdminLoginResponse{
+			Admin_uid: checkedAdmin.Admin_uid,
+			Name:      checkedAdmin.Name,
+			Email:     checkedAdmin.Email,
+			Token:     token,
+		}
 
 		if err != nil {
 			return c.JSON(http.StatusNotAcceptable, common.BadRequest(http.StatusNotAcceptable, "error in process token", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "ADMIN - berhasil masuk, mendapatkan token baru", token))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "ADMIN - berhasil masuk, mendapatkan token baru", response))
 
 	}
 }
