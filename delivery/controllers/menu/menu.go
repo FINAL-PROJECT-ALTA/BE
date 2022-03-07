@@ -28,7 +28,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		c.Bind(&newMenu)
 		err := c.Validate(&newMenu)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
 		res, err := fc.repo.Create(entities.Menu{})
