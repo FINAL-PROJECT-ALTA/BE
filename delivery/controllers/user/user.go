@@ -94,11 +94,9 @@ func (ac *UserController) Update() echo.HandlerFunc {
 		var newUser = UpdateUserRequestFormat{}
 		c.Bind(&newUser)
 
-		if newUser.Email != "" {
-			err := c.Validate(&newUser)
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
-			}
+		err := c.Validate(&newUser)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
 		res, err := ac.repo.Update(user_uid, entities.User{Name: newUser.Name, Email: newUser.Email, Password: newUser.Password, Gender: newUser.Gender})
