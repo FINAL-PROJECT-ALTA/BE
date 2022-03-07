@@ -391,7 +391,7 @@ paths:
                   range_time: 30
         '400':
           $ref: '#/components/responses/400'
-  /users/me/goals:  
+  /users/goals/{goal_uid}:  
     get:
         summary: Goals by User Profile
         tags:
@@ -480,7 +480,7 @@ paths:
               example:
                 code: 200
                 message: success to delete goals user data
-  /users/me/history:
+  /users/history:
     get:
         summary: History by User Profile
         tags:
@@ -501,29 +501,17 @@ paths:
                       example: 200
                     message :
                       type: string
-                      example: Success to get goals users profile
+                      example: Success to get users history
                     data:
                       type: object
-                      properties:
-                          id:
-                            type: integer
-                          user_uid: 
-                            type: string
-                          height:
-                            type: integer
-                          weight:
-                            type: integer
-                          age:
-                            type: integer
-                          range_time:
-                            type: integer
                       example:
                           code: 201
-                          message: sukses menambahkan menu baru
+                          message: success to get users history
                           data:
                             id: 1
                             user_uid: jabfkanflabe
-                            menu_uid: fkeabflnalef
+                            menu_category: breakfast
+                            created_at: 07:32:32
                             menu:
                               - id : 3
                                 food_uid: kshefkaefk
@@ -537,23 +525,6 @@ paths:
                                 calories: 143
                                 category: foods
                                 image: nasi-campur_images.jpg (image using form-data for uplaod)
-    # delete:
-    #   tags:
-    #     - User History
-    #   summary: delete goals user data
-    #   security:
-    #     - bearerAuth: []
-    #   responses:
-    #     '200':
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             type: object
-    #             $ref: '#/components/schemas/SuccessSingleResponse'
-    #           example:
-    #             code: 200
-    #             message: success to delete goals user data
   /foods:
     post:
       summary: Add / Create Foods Data
@@ -632,8 +603,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '500':
-          $ref: '#/components/responses/500'
-  /foods/all:  
+          $ref: '#/components/responses/500'  
     get:
       summary: Get All Foods
       tags:
@@ -687,18 +657,27 @@ paths:
                         calories: 244
                         category: foods
                         image: nasi-campur_images.jpg (image using form-data for uplaod)
-  /foods/{foods_uid}:
+  /foods/search/{param}:
     get:
-      summary: Get Foods by foods_uid
+      summary: Get Foods by Name or Calories
+      description: http://aaryadewangga.cloud.okteto.net/foods/search?input=coba || 100 &category=name || calories
       tags:
         - Foods
       parameters:
-        - name: id
-          in: path
-          description: Foods UID
+        - name: Input calories
+          in: query
+          description: get food by calories
           required: true
           schema:
             type: integer
+          example: {calories: 500}
+        - name: Input name
+          in: query
+          description: get food by name
+          required: true
+          schema:
+            type: string
+          example: {name: banana}
       security:
          - bearerAuth: []
       responses:
@@ -744,69 +723,7 @@ paths:
                     calories: 244
                     category: foods
                     image: soto_images.jpg (image using form-data for uplaod)
-  /foods/{calories}:
-    get:
-      summary: Get Foods by foods calories
-      tags:
-        - Foods
-      parameters:
-        - name: calories
-          in: path
-          description: calories
-          required: true
-          schema:
-            type: integer
-      security:
-         - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                             type: integer
-                          name:
-                            type: string
-                          calories:
-                            type: integer
-                          category:
-                            type: string
-                            enum:
-                              - fruit
-                              - drink
-                              - junk food
-                              - food
-                              - snack
-                          image :
-                            type: string
-                example:
-                    code: 200
-                    message: success to get all foods
-                    data:
-                      - id : 3
-                        food_uid: kshefkaefk
-                        name: Nasi Goreng
-                        calories: 244
-                        category: foods
-                        image: Nasi_images.jpg (image using form-data for uplaod)
-                      - id : 6
-                        food_uid: kjnlvanlfwf
-                        name: Mie Ayam
-                        calories: 143
-                        category: foods
-                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+  /foods/{food_uid}:  
     put:
       summary: Update Foods Data
       tags:
@@ -921,7 +838,7 @@ paths:
                 code: 200
                 message: success to delete foods
                 data:
-  /menus:
+  /menu:
     post:
       summary: Add / Create Menus Data
       tags:

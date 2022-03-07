@@ -46,14 +46,15 @@ func RegisterPath(e *echo.Echo,
 	e.DELETE("/users", uc.Delete(), middlewares.JwtMiddleware())
 
 	//ROUTE GOALS
-	e.POST("/goals", gc.Create(), middlewares.JwtMiddleware())
-	e.GET("/goals/:goal_uid", gc.GetById(), middlewares.JwtMiddleware())
-	e.PUT("/goals/:goal_uid", gc.Update(), middlewares.JwtMiddleware())
-	e.DELETE("/goals/:goal_uid", gc.Delete(), middlewares.JwtMiddleware())
+	e.POST("/users/goals", gc.Create(), middlewares.JwtMiddleware())
+	e.GET("/users/goals/:goal_uid", gc.GetById(), middlewares.JwtMiddleware())
+	e.PUT("/users/goals/:goal_uid", gc.Update(), middlewares.JwtMiddleware())
+	e.DELETE("/users/goals/:goal_uid", gc.Delete(), middlewares.JwtMiddleware())
 
 	//ROUTE FOODS
 	e.POST("/foods", fc.Create(), middlewares.JwtMiddleware())
 	e.GET("/foods", fc.GetAll())
+	e.GET("/foods/search", fc.Search())
 	e.PUT("/foods/:food_uid", fc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/foods/:food_uid", fc.Delete(), middlewares.JwtMiddleware())
 
