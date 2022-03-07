@@ -7,6 +7,9 @@ info:
     email: altaBE@mail.com
   version: '1.0'
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/aaryadewangga/Final_Project/1.0
   - url: https://aaryadewangga.cloud.okteto.net/{entity}
     variables:
       entity:
@@ -391,7 +394,7 @@ paths:
                   range_time: 30
         '400':
           $ref: '#/components/responses/400'
-  /users/goals/{goal_uid}:  
+  /users/goals/:goal_uid:  
     get:
         summary: Goals by User Profile
         tags:
@@ -657,7 +660,7 @@ paths:
                         calories: 244
                         category: foods
                         image: nasi-campur_images.jpg (image using form-data for uplaod)
-  /foods/search/{param}:
+  /foods/search/:
     get:
       summary: Get Foods by Name or Calories
       description: http://aaryadewangga.cloud.okteto.net/foods/search?input=coba || 100 &category=name || calories
@@ -723,7 +726,7 @@ paths:
                     calories: 244
                     category: foods
                     image: soto_images.jpg (image using form-data for uplaod)
-  /foods/{food_uid}:  
+  /foods/:food_uid:  
     put:
       summary: Update Foods Data
       tags:
@@ -838,7 +841,7 @@ paths:
                 code: 200
                 message: success to delete foods
                 data:
-  /menu:
+  /menus:
     post:
       summary: Add / Create Menus Data
       tags:
@@ -930,7 +933,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /menus/{menus_uid}:
+  /menus/:menus_uid:
     put:
       summary: Update Menus Data
       tags:
@@ -1255,7 +1258,7 @@ paths:
                       calories: 221
                       category: drink
                       image: es-teh_images.jpg (image using form-data for uplaod)
-  /menus-detail:
+  /menus/detail:
     post:
       summary: Create Menus Details
       tags:
