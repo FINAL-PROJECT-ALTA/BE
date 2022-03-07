@@ -5,6 +5,7 @@ import (
 	"HealthFit/delivery/controllers/auth"
 	"HealthFit/delivery/controllers/foods"
 	"HealthFit/delivery/controllers/goal"
+	"HealthFit/delivery/controllers/menu"
 	"HealthFit/delivery/controllers/user"
 	"HealthFit/delivery/middlewares"
 
@@ -18,6 +19,7 @@ func RegisterPath(e *echo.Echo,
 	gc *goal.GoalController,
 	fc *foods.FoodsController,
 	ac *admin.AdminController,
+	mc *menu.MenuController,
 ) {
 
 	//CORS
@@ -54,5 +56,12 @@ func RegisterPath(e *echo.Echo,
 	e.GET("/foods/search", fc.Search())
 	e.PUT("/foods/:food_uid", fc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/foods/:food_uid", fc.Delete(), middlewares.JwtMiddleware())
+
+	//ROUTE MENU
+	e.POST("/menu", mc.Create(), middlewares.JwtMiddleware())
+	e.GET("/menu", mc.GetAll())
+	e.GET("/menu/:menu_category", mc.GetMenuByMenuCategory())
+	e.PUT("/menu/:menu_uid", mc.Update(), middlewares.JwtMiddleware())
+	e.DELETE("/menu/:menu_uid", mc.Delete(), middlewares.JwtMiddleware())
 
 }

@@ -2,7 +2,6 @@ package menu
 
 import (
 	"HealthFit/entities"
-	"errors"
 
 	"github.com/lithammer/shortuuid"
 
@@ -42,6 +41,17 @@ func (mr *MenuRepository) GetMenuByCategory(category string) (entities.Menu, err
 	return menu, nil
 }
 
+func (mr *MenuRepository) GetAllMenu() ([]entities.Menu, error) {
+	menu := []entities.Menu{}
+
+	res := mr.database.Preload("Foods").Find(&menu)
+
+	if err := res.Error; err != nil {
+		return menu, err
+	}
+	return menu, nil
+}
+
 func (mr *MenuRepository) Update(menu_uid string, updateMenu entities.Menu) (entities.Menu, error) {
 	var menu entities.Menu
 	mr.database.Where("menu_uid = ?", menu_uid).First(&menu)
@@ -65,14 +75,4 @@ func (mr *MenuRepository) Delete(menu_uid string) error {
 	}
 	return nil
 
-}
-
-func (mr *MenuRepository) GetAll() ([]entities.Menu, error) {
-	menu := []entities.Menu{}
-
-	mr.database.Find(&menu)
-	if len(menu) < 1 {
-		return nil, errors.New("nil value")
-	}
-	return menu, nil
 }

@@ -44,8 +44,13 @@ type Foods struct {
 	Images        []Images `json:"images"`
 }
 
+type Detail_menu struct {
+	Menu_uid string `json:"menu_uid"`
+	Food_uid string `json:"food_uid"`
+}
+
 type MenuGetResponse struct {
-	Menu_uid      string  `json:"menu_uid"`
-	Menu_category string  `json:"menu_category"`
-	Foods         []Foods `json:"foods"`
+	Menu_uid      string        `json:"menu_uid"`
+	Menu_category string        `json:"menu_category"`
+	Foods         []Detail_menu `json:"foods"`
 }

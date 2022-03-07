@@ -10,22 +10,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type FoodsController struct {
+type MenuController struct {
 	repo menu.Menu
 }
 
-func New(repository menu.Menu) *FoodsController {
-	return &FoodsController{
+func New(repository menu.Menu) *MenuController {
+	return &MenuController{
 		repo: repository,
 	}
 }
 
-func (fc *FoodsController) Create() echo.HandlerFunc {
+func (mc *MenuController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		isAdmin := middlewares.ExtractRoles(c)
 		if !isAdmin {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied ", nil))
 		}
 		newMenu := MenuCreateRequestFormat{}
 
@@ -35,7 +35,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		res, err := fc.repo.Create(entities.Menu{
+		res, err := mc.repo.Create(entities.Menu{
 			Menu_category: newMenu.Menu_category,
 		})
 
@@ -47,12 +47,50 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create foods", response))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create menu", response))
 
 	}
 }
 
-func (fc *FoodsController) Update() echo.HandlerFunc {
+func (mc *MenuController) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := mc.repo.GetAllMenu()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetResponse{}
+		for _, result := range res {
+			response = append(response, MenuGetResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				// Foods: result.Foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu Category", response))
+	}
+}
+
+func (mc *MenuController) GetMenuByMenuCategory() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		menuCategory := c.Param("menu_category")
+
+		res, err := mc.repo.GetMenuByCategory(menuCategory)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := MenuGetResponse{}
+		response.Menu_uid = res.Menu_uid
+		response.Menu_category = res.Menu_category
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Category", response))
+	}
+}
+
+func (mc *MenuController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		isAdmin := middlewares.ExtractRoles(c)
@@ -60,7 +98,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		food_uid := c.Param("menu_uid")
+		menu_uid := c.Param("menu_uid")
 		newMenu := MenuUpdateRequestFormat{}
 
 		c.Bind(&newMenu)
@@ -69,7 +107,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		res, err := fc.repo.Update(food_uid, entities.Menu{
+		res, err := mc.repo.Update(menu_uid, entities.Menu{
 			Menu_category: newMenu.Menu_category,
 		})
 
@@ -81,12 +119,12 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create foods", response))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update menu", response))
 
 	}
 }
 
-func (fc *FoodsController) Delete() echo.HandlerFunc {
+func (mc *MenuController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		isAdmin := middlewares.ExtractRoles(c)
@@ -94,14 +132,14 @@ func (fc *FoodsController) Delete() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		food_uid := c.Param("menu_uid")
-		err := fc.repo.Delete(food_uid)
+		menu_uid := c.Param("menu_uid")
+		err := mc.repo.Delete(menu_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create foods", nil))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success delete menu", nil))
 
 	}
 }
