@@ -15,7 +15,7 @@ spec:
         app: go-app
     spec:
       containers:
-      - image: aryadewangga/project:latest
+      - image: aryadewangga/fp_alta:latest
         name: go-app
         env:
           - name: "PORT"
