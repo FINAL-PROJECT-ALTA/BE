@@ -7,5 +7,5 @@ type Food interface {
 	Search(input, category string) ([]entities.Food, error)
 	Update(food_uid string, newFood entities.Food) (entities.Food, error)
 	Delete(food_uid string) error
-	GetAll() ([]entities.Food, error)
+	GetAll(category string) ([]entities.Food, error)
 }
