@@ -18,33 +18,42 @@ func New(db *gorm.DB) *MenuRepository {
 	}
 }
 
-func (mr *MenuRepository) Create(newMenu entities.Menu) (entities.Menu, error) {
+func (mr *MenuRepository) Create(foods []entities.Food, newMenu entities.Menu) (entities.Menu, error) {
 
 	uid := shortuuid.New()
 	newMenu.Menu_uid = uid
 
-	if err := mr.database.Create(&newMenu).Error; err != nil {
+	if err := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Create(&newMenu).Error; err != nil {
 		return newMenu, err
+	}
+	for i := 0; i < len(foods); i++ {
+		detail := entities.Detail_menu{
+			Menu_uid: newMenu.Menu_uid,
+			Food_uid: foods[i].Food_uid,
+		}
+		if err := mr.database.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
+			return newMenu, err
+		}
 	}
 
 	return newMenu, nil
 }
 
-func (mr *MenuRepository) GetMenuByCategory(category string) (entities.Menu, error) {
-	menu := entities.Menu{}
+func (mr *MenuRepository) GetMenuByCategory(category string) ([]entities.Menu, error) {
+	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Foods").Where("menu_category = ?", category).First(&menu)
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category = ?", category).Find(&menus)
 
 	if err := res.Error; err != nil {
-		return menu, err
+		return menus, err
 	}
-	return menu, nil
+	return menus, nil
 }
 
 func (mr *MenuRepository) GetAllMenu() ([]entities.Menu, error) {
 	menu := []entities.Menu{}
 
-	res := mr.database.Preload("Foods").Find(&menu)
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Find(&menu)
 
 	if err := res.Error; err != nil {
 		return menu, err
@@ -54,7 +63,7 @@ func (mr *MenuRepository) GetAllMenu() ([]entities.Menu, error) {
 
 func (mr *MenuRepository) Update(menu_uid string, updateMenu entities.Menu) (entities.Menu, error) {
 	var menu entities.Menu
-	mr.database.Where("menu_uid = ?", menu_uid).First(&menu)
+	mr.database.Where("menu_uid = ?", menu_uid).Preload("Detail_menu").Preload("Detail_menu.Food").First(&menu)
 
 	if err := mr.database.Model(&menu).Updates(&updateMenu).Error; err != nil {
 		return updateMenu, err

@@ -5,6 +5,7 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	"HealthFit/repository/menu"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -34,7 +35,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		res, err := mc.repo.Create(entities.Menu{User_uid: newMenu.User_uid,
+		res, err := mc.repo.Create(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
 			Menu_category: newMenu.Menu_category,
 		})
 
@@ -58,14 +59,19 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := []MenuGetResponse{}
-		for _, result := range res {
-			response = append(response, MenuGetResponse{
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
 				Menu_uid:      result.Menu_uid,
 				Menu_category: result.Menu_category,
-				// Foods: result.Foods,
+				Foods:         foods,
 			})
 		}
+		fmt.Println(res)
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu Category", response))
 	}
@@ -81,9 +87,18 @@ func (mc *MenuController) GetMenuByMenuCategory() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := MenuGetResponse{}
-		response.Menu_uid = res.Menu_uid
-		response.Menu_category = res.Menu_category
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Category", response))
 	}
@@ -117,6 +132,11 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		response := MenuUpdateResponse{}
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
+		var foods []entities.Food
+		for _, result := range res.Detail_menu {
+			foods = append(foods, result.Food)
+		}
+		response.Foods = foods
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update menu", response))
 
