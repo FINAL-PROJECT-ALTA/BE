@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-app-deployment
+      name: go-app-deployment
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: go-app
@@ -15,7 +15,7 @@ spec:
         app: go-app
     spec:
       containers:
-      - image: aryadewangga/fp_alta:latest
+      - image: aryadewangga/fp-alta:latest
         name: go-app
         env:
           - name: "PORT"
