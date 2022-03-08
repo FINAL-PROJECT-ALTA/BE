@@ -24,7 +24,7 @@ type CreateAdminRequestFormat struct {
 	Admin_uid string
 	Email     string `json:"email" form:"email" validate:"required,email"`
 	Password  string `json:"password" form:"password" validate:"required"`
-	Gender    string `json:"gender" form:"gender" validate:"required"`
+	Gender    string `json:"gender" form:"gender"`
 }
 
 // =================== Update User Request =======================

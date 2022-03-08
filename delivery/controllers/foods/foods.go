@@ -23,12 +23,12 @@ func New(repository food.Food) *FoodsController {
 func (fc *FoodsController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin, errA := middlewares.ExtractTokenAdminUid(c)
-		if errA != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Access Denied", nil))
 		}
-		newFoods := FoodsCreateRequestFormat{}
 
+		newFoods := FoodsCreateRequestFormat{}
 		c.Bind(&newFoods)
 		errB := c.Validate(&newFoods)
 		if errB != nil {
@@ -36,7 +36,6 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		}
 
 		res, err := fc.repo.Create(entities.Food{
-			Admin_uid:     isAdmin,
 			Name:          newFoods.Name,
 			Calories:      newFoods.Calories,
 			Energy:        newFoods.Energy,
@@ -98,8 +97,8 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 func (fc *FoodsController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin, errA := middlewares.ExtractTokenAdminUid(c) // jangan lupa ganti extract token admin
-		if errA != nil {
+		isAdmin := middlewares.ExtractRoles(c) // jangan lupa ganti extract token admin
+		if !isAdmin {
 			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
 		}
 
@@ -113,7 +112,6 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		}
 
 		res, err := fc.repo.Update(food_uid, entities.Food{
-			Admin_uid:     isAdmin,
 			Name:          updateFoods.Name,
 			Calories:      updateFoods.Calories,
 			Energy:        updateFoods.Energy,
@@ -141,8 +139,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 
 func (fc *FoodsController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		_, errA := middlewares.ExtractTokenAdminUid(c)
-		if errA != nil {
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
 			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
 		}
 

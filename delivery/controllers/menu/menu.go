@@ -23,8 +23,8 @@ func New(repository menu.Menu) *FoodsController {
 func (fc *FoodsController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin, errA := middlewares.ExtractTokenAdminUid(c)
-		if errA != nil {
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 		newMenu := MenuCreateRequestFormat{}
@@ -36,7 +36,6 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		}
 
 		res, err := fc.repo.Create(entities.Menu{
-			Admin_uid:     isAdmin,
 			Menu_category: newMenu.Menu_category,
 		})
 
@@ -56,9 +55,9 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 func (fc *FoodsController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin, errA := middlewares.ExtractTokenAdminUid(c)
-		if errA != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
 		food_uid := c.Param("menu_uid")
@@ -71,7 +70,6 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		}
 
 		res, err := fc.repo.Update(food_uid, entities.Menu{
-			Admin_uid:     isAdmin,
 			Menu_category: newMenu.Menu_category,
 		})
 
@@ -91,9 +89,9 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 func (fc *FoodsController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		_, errA := middlewares.ExtractTokenAdminUid(c)
-		if errA != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
 		food_uid := c.Param("menu_uid")

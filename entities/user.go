@@ -11,6 +11,7 @@ type User struct {
 	Email    string `gorm:"unique"`
 	Password string
 	Gender   string         `gorm:"type:enum('Pria','Wanita','None');default:'None'"`
+	Roles    bool           `gorm:"type:bool" json:"roles"`
 	Goal     []Goal         `gorm:"foreignKey:User_uid;references:User_uid"`
 	History  []User_history `gorm:"foreignKey:User_uid;references:User_uid"`
 }

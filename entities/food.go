@@ -4,7 +4,6 @@ import "gorm.io/gorm"
 
 type Food struct {
 	gorm.Model
-	Admin_uid     string `gorm:"index;type:varchar(22)"`
 	Food_uid      string `gorm:"index;type:varchar(22)"`
 	Name          string `gorm:"type:varchar(100)"`
 	Calories      int    `gorm:"type:int(100)"`

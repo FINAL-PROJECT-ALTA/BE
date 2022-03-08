@@ -2,7 +2,6 @@ package admin
 
 import (
 	"HealthFit/delivery/controllers/common"
-	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	"HealthFit/repository/admin"
 	"net/http"
@@ -31,14 +30,14 @@ func (ac *AdminController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Register(entities.Admin{Name: admin.Name, Email: admin.Email, Password: admin.Password, Gender: admin.Gender})
+		res, err := ac.repo.Register(entities.User{Name: admin.Name, Email: admin.Email, Password: admin.Password, Gender: admin.Gender, Roles: true})
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
 		response := AdminResponse{}
-		response.Admin_uid = res.Admin_uid
+		response.Admin_uid = res.User_uid
 		response.Name = res.Name
 		response.Email = res.Email
 		response.Gender = res.Gender
@@ -47,66 +46,67 @@ func (ac *AdminController) Register() echo.HandlerFunc {
 
 	}
 }
-func (ac *AdminController) GetById() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 
-		res, err := ac.repo.GetById(admin_uid)
+// func (ac *AdminController) GetById() echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
+// 		res, err := ac.repo.GetById(admin_uid)
 
-		response := AdminResponse{}
+// 		if err != nil {
+// 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+// 		}
 
-		response.Admin_uid = res.Admin_uid
-		response.Name = res.Name
-		response.Email = res.Email
-		response.Gender = res.Gender
+// 		response := AdminResponse{}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get admin", response))
-	}
-}
+// 		response.Admin_uid = res.Admin_uid
+// 		response.Name = res.Name
+// 		response.Email = res.Email
+// 		response.Gender = res.Gender
 
-func (ac *AdminController) Update() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
-		var newAdmin = UpdateAdminRequestFormat{}
-		c.Bind(&newAdmin)
+// 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get admin", response))
+// 	}
+// }
 
-		if newAdmin.Email != "" {
-			err := c.Validate(&newAdmin)
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
-			}
-		}
+// func (ac *AdminController) Update() echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
+// 		var newAdmin = UpdateAdminRequestFormat{}
+// 		c.Bind(&newAdmin)
 
-		res, err := ac.repo.Update(admin_uid, entities.Admin{Name: newAdmin.Name, Email: newAdmin.Email, Password: newAdmin.Password, Gender: newAdmin.Gender})
+// 		if newAdmin.Email != "" {
+// 			err := c.Validate(&newAdmin)
+// 			if err != nil {
+// 				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+// 			}
+// 		}
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
+// 		res, err := ac.repo.Update(admin_uid, entities.Admin{Name: newAdmin.Name, Email: newAdmin.Email, Password: newAdmin.Password, Gender: newAdmin.Gender})
 
-		response := AdminResponse{}
-		response.Admin_uid = res.Admin_uid
-		response.Name = res.Name
-		response.Email = res.Email
-		response.Gender = res.Gender
+// 		if err != nil {
+// 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+// 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update admin", response))
-	}
-}
+// 		response := AdminResponse{}
+// 		response.Admin_uid = res.Admin_uid
+// 		response.Name = res.Name
+// 		response.Email = res.Email
+// 		response.Gender = res.Gender
 
-func (ac *AdminController) Delete() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
+// 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update admin", response))
+// 	}
+// }
 
-		err := ac.repo.Delete(admin_uid)
+// func (ac *AdminController) Delete() echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
+// 		err := ac.repo.Delete(admin_uid)
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success delete admin", nil))
-	}
-}
+// 		if err != nil {
+// 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+// 		}
+
+// 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success delete admin", nil))
+// 	}
+// }
