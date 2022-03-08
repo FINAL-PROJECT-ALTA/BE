@@ -55,14 +55,14 @@ func GenerateTokenAdmin(a entities.Admin) (string, error) {
 	return token.SignedString([]byte(config.JWT_SECRET))
 }
 
-func ExtractTokenAdminUid(e echo.Context) string {
+func ExtractTokenAdminUid(e echo.Context) (string, error) {
 	admin := e.Get("user").(*jwt.Token) //convert to jwt token from interface
 	if admin.Valid {
 		codes := admin.Claims.(jwt.MapClaims)
 		id := codes["admin_uid"].(string)
-		return id
+		return id, nil
 	}
-	return ""
+	return "", errors.New("failed to extract")
 }
 
 func ExtractRoles(e echo.Context) bool {
@@ -74,14 +74,3 @@ func ExtractRoles(e echo.Context) bool {
 	}
 	return false
 }
-
-// func ExtractTokenAdmin(e echo.Context) (result [2]string) {
-// 	user := e.Get("user").(*jwt.Token) //convert to jwt token from interface
-// 	if user.Valid {
-// 		codes := user.Claims.(jwt.MapClaims)
-// 		result[0] = codes["email"].(string)
-// 		result[1] = codes["password"].(string)
-// 		return result
-// 	}
-// 	return [2]string{}
-// }

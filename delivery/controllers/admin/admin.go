@@ -49,7 +49,7 @@ func (ac *AdminController) Register() echo.HandlerFunc {
 }
 func (ac *AdminController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		admin_uid := middlewares.ExtractTokenAdminUid(c)
+		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 
 		res, err := ac.repo.GetById(admin_uid)
 
@@ -70,7 +70,7 @@ func (ac *AdminController) GetById() echo.HandlerFunc {
 
 func (ac *AdminController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		admin_uid := middlewares.ExtractTokenAdminUid(c)
+		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 		var newAdmin = UpdateAdminRequestFormat{}
 		c.Bind(&newAdmin)
 
@@ -99,7 +99,7 @@ func (ac *AdminController) Update() echo.HandlerFunc {
 
 func (ac *AdminController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		admin_uid := middlewares.ExtractTokenAdminUid(c)
+		admin_uid, _ := middlewares.ExtractTokenAdminUid(c)
 
 		err := ac.repo.Delete(admin_uid)
 

@@ -3,35 +3,30 @@ package menu
 // ========== Menu Request =========== //
 
 type MenuCreateRequestFormat struct {
-	Menu_uid       string
-	Menu_category  string `json:"menu_category"`
-	Total_calories int    `json:"total_calories"`
+	Menu_uid      string
+	Menu_category string `json:"menu_category"`
 }
 
 type MenuUpdateRequestFormat struct {
-	Menu_uid       string
-	Menu_category  string `json:"menu_category"`
-	Total_calories int    `json:"total_calories"`
+	Menu_uid      string
+	Menu_category string `json:"menu_category"`
 }
 
 // ========= Menu Response =========== //
 
 type MenuCreateResponse struct {
-	Menu_uid       string `json:"menu_uid"`
-	Menu_category  string `json:"menu_category"`
-	Total_calories int    `json:"total_calories"`
+	Menu_uid      string `json:"menu_uid"`
+	Menu_category string `json:"menu_category"`
 }
 
 type MenuUpdateResponse struct {
-	Menu_uid       string `json:"menu_uid"`
-	Menu_category  string `json:"menu_category"`
-	Total_calories int    `json:"total_calories"`
+	Menu_uid      string `json:"menu_uid"`
+	Menu_category string `json:"menu_category"`
 }
 
 type MenuDeleteResponse struct {
-	Menu_uid       string `json:"menu_uid"`
-	Menu_category  string `json:"menu_category"`
-	Total_calories int    `json:"total_calories"`
+	Menu_uid      string `json:"menu_uid"`
+	Menu_category string `json:"menu_category"`
 }
 
 type Images struct {
@@ -50,8 +45,7 @@ type Foods struct {
 }
 
 type MenuGetResponse struct {
-	Menu_uid       string  `json:"menu_uid"`
-	Menu_category  string  `json:"menu_category"`
-	Total_calories int     `json:"total_calories"`
-	Foods          []Foods `json:"foods"`
+	Menu_uid      string  `json:"menu_uid"`
+	Menu_category string  `json:"menu_category"`
+	Foods         []Foods `json:"foods"`
 }

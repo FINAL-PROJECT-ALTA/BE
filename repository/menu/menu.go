@@ -4,6 +4,8 @@ import (
 	"HealthFit/entities"
 	"errors"
 
+	"github.com/lithammer/shortuuid"
+
 	"gorm.io/gorm"
 )
 
@@ -18,6 +20,9 @@ func New(db *gorm.DB) *MenuRepository {
 }
 
 func (mr *MenuRepository) Create(newMenu entities.Menu) (entities.Menu, error) {
+
+	uid := shortuuid.New()
+	newMenu.Menu_uid = uid
 
 	if err := mr.database.Create(&newMenu).Error; err != nil {
 		return newMenu, err

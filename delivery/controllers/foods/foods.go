@@ -23,17 +23,20 @@ func New(repository food.Food) *FoodsController {
 func (fc *FoodsController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractTokenAdminUid(c)
+		isAdmin, errA := middlewares.ExtractTokenAdminUid(c)
+		if errA != nil {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
+		}
 		newFoods := FoodsCreateRequestFormat{}
 
 		c.Bind(&newFoods)
-		err := c.Validate(&newFoods)
-		if err != nil {
+		errB := c.Validate(&newFoods)
+		if errB != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
 		res, err := fc.repo.Create(entities.Food{
-			Food_uid:      isAdmin,
+			Admin_uid:     isAdmin,
 			Name:          newFoods.Name,
 			Calories:      newFoods.Calories,
 			Energy:        newFoods.Energy,
@@ -95,8 +98,8 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 func (fc *FoodsController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractRoles(c) // jangan lupa ganti extract token admin
-		if !isAdmin {
+		isAdmin, errA := middlewares.ExtractTokenAdminUid(c) // jangan lupa ganti extract token admin
+		if errA != nil {
 			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
 		}
 
@@ -104,12 +107,13 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		var updateFoods = FoodsUpdateRequestFormat{}
 		c.Bind(&updateFoods)
 
-		err := c.Validate(&updateFoods)
-		if err != nil {
+		errB := c.Validate(&updateFoods)
+		if errB != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
 		res, err := fc.repo.Update(food_uid, entities.Food{
+			Admin_uid:     isAdmin,
 			Name:          updateFoods.Name,
 			Calories:      updateFoods.Calories,
 			Energy:        updateFoods.Energy,
@@ -137,8 +141,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 
 func (fc *FoodsController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		isAdmin := middlewares.ExtractRoles(c) // jangan lupa ganti extract token admin
-		if !isAdmin {
+		_, errA := middlewares.ExtractTokenAdminUid(c)
+		if errA != nil {
 			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
 		}
 
