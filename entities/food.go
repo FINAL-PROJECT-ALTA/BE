@@ -11,5 +11,5 @@ type Food struct {
 	Carbohidrate  int    `gorm:"type:int(100)"`
 	Protein       int    `gorm:"type:int(100)"`
 	Food_category string `gorm:"type:enum('fruit','drink','junk food','food','snack','None');default:'None'"`
-	Image         Image  `gorm:"foreignKey:Food_uid;references:Food_uid"`
+	Image         string `gorm:"type:varchar(100)"`
 }

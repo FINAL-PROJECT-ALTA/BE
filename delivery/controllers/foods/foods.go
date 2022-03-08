@@ -56,6 +56,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		response.Carbohidrate = res.Carbohidrate
 		response.Protein = res.Protein
 		response.Food_category = res.Food_category
+		response.Image = res.Food_category
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create foods", response))
 
@@ -84,7 +85,7 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 			resObj.Protein = res[i].Protein
 			resObj.Food_category = res[i].Food_category
 
-			resObj.Images = res[i].Image
+			resObj.Image = res[i].Image
 
 			response = append(response, resObj)
 
@@ -132,6 +133,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		response.Carbohidrate = res.Carbohidrate
 		response.Protein = res.Protein
 		response.Food_category = res.Food_category
+		response.Image = res.Image
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update foods", response))
 	}
@@ -175,7 +177,7 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 				Carbohidrate:  result.Carbohidrate,
 				Protein:       result.Protein,
 				Food_category: result.Food_category,
-				// Images: result.Images,
+				Image:         result.Image,
 			})
 		}
 
