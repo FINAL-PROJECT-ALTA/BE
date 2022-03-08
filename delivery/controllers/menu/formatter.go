@@ -4,11 +4,13 @@ package menu
 
 type MenuCreateRequestFormat struct {
 	Menu_uid      string
+	User_uid      string
 	Menu_category string `json:"menu_category"`
 }
 
 type MenuUpdateRequestFormat struct {
 	Menu_uid      string
+	User_uid      string
 	Menu_category string `json:"menu_category"`
 }
 
@@ -29,19 +31,17 @@ type MenuDeleteResponse struct {
 	Menu_category string `json:"menu_category"`
 }
 
-type Images struct {
-	Url string `json:"url"`
-}
-
 type Foods struct {
-	Food_uid      string   `json:"food_uid"`
-	Name          string   `json:"name"`
-	Calories      int      `json:"calories"`
-	Energy        int      `json:"energy" form:"energy"`
-	Carbohidrate  int      `json:"carbohidrate"`
-	Protein       int      `json:"protein"`
-	Food_category string   `json:"food_categories"`
-	Images        []Images `json:"images"`
+	Food_uid      string `json:"food_uid"`
+	Name          string `json:"name"`
+	Calories      int    `json:"calories"`
+	Energy        int    `json:"energy" form:"energy"`
+	Carbohidrate  int    `json:"carbohidrate"`
+	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
+	Food_category string `json:"food_categories"`
+	Images        string `json:"images"`
 }
 
 type Detail_menu struct {

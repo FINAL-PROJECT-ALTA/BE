@@ -7,6 +7,8 @@ type FoodsCreateResponse struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 	Image         string `json:"image"`
 }
@@ -18,6 +20,8 @@ type FoodsUpdateResponse struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 	Image         string `json:"image"`
 }
@@ -29,6 +33,8 @@ type FoodsSearchResponse struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 	Image         string `json:"image"`
 }
@@ -40,6 +46,8 @@ type FoodsGetAllResponse struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 	Image         string `json:"image"`
 }
@@ -56,6 +64,8 @@ type FoodsCreateRequestFormat struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 }
 
@@ -67,10 +77,7 @@ type FoodsUpdateRequestFormat struct {
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
 	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
-}
-
-type FoodsSearchRequestFormat struct {
-	Name     string `json:"name"`
-	Calories int    `json:"calories"`
 }

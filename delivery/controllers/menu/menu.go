@@ -23,11 +23,10 @@ func New(repository menu.Menu) *MenuController {
 func (mc *MenuController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractRoles(c)
-		if !isAdmin {
-			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied ", nil))
-		}
+		user := middlewares.ExtractTokenUserUid(c)
+
 		newMenu := MenuCreateRequestFormat{}
+		newMenu.User_uid = user
 
 		c.Bind(&newMenu)
 		errB := c.Validate(&newMenu)
@@ -35,7 +34,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		res, err := mc.repo.Create(entities.Menu{
+		res, err := mc.repo.Create(entities.Menu{User_uid: newMenu.User_uid,
 			Menu_category: newMenu.Menu_category,
 		})
 
