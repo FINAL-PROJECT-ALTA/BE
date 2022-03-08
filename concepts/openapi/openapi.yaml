@@ -9,7 +9,6 @@ info:
 servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/aaryadewangga/Final_Project/1.0
   - url: https://aaryadewangga.cloud.okteto.net/{entity}
     variables:
       entity:
