@@ -1,27 +1,37 @@
 package menu
 
+import "HealthFit/entities"
+
 // ========== Menu Request =========== //
 
 type MenuCreateRequestFormat struct {
 	Menu_uid      string
-	Menu_category string `json:"menu_category"`
+	User_uid      string
+	Menu_category string          `json:"menu_category"`
+	Foods         []entities.Food `json:"foods"`
+}
+type foods struct {
+	Foods_uid string `json:"food_uid"`
 }
 
 type MenuUpdateRequestFormat struct {
 	Menu_uid      string
+	User_uid      string
 	Menu_category string `json:"menu_category"`
 }
 
 // ========= Menu Response =========== //
 
 type MenuCreateResponse struct {
-	Menu_uid      string `json:"menu_uid"`
-	Menu_category string `json:"menu_category"`
+	Menu_uid      string          `json:"menu_uid"`
+	Menu_category string          `json:"menu_category"`
+	Foods         []entities.Food `json:"foods"`
 }
 
 type MenuUpdateResponse struct {
-	Menu_uid      string `json:"menu_uid"`
-	Menu_category string `json:"menu_category"`
+	Menu_uid      string          `json:"menu_uid"`
+	Menu_category string          `json:"menu_category"`
+	Foods         []entities.Food `json:"foods"`
 }
 
 type MenuDeleteResponse struct {
@@ -29,19 +39,17 @@ type MenuDeleteResponse struct {
 	Menu_category string `json:"menu_category"`
 }
 
-type Images struct {
-	Url string `json:"url"`
-}
-
 type Foods struct {
-	Food_uid      string   `json:"food_uid"`
-	Name          string   `json:"name"`
-	Calories      int      `json:"calories"`
-	Energy        int      `json:"energy" form:"energy"`
-	Carbohidrate  int      `json:"carbohidrate"`
-	Protein       int      `json:"protein"`
-	Food_category string   `json:"food_categories"`
-	Images        []Images `json:"images"`
+	Food_uid      string `json:"food_uid"`
+	Name          string `json:"name"`
+	Calories      int    `json:"calories"`
+	Energy        int    `json:"energy" form:"energy"`
+	Carbohidrate  int    `json:"carbohidrate"`
+	Protein       int    `json:"protein"`
+	Unit          string `json:"unit"`
+	Unit_value    int    `json:"unit_value"`
+	Food_category string `json:"food_categories"`
+	Images        string `json:"images"`
 }
 
 type Detail_menu struct {
@@ -49,8 +57,8 @@ type Detail_menu struct {
 	Food_uid string `json:"food_uid"`
 }
 
-type MenuGetResponse struct {
-	Menu_uid      string        `json:"menu_uid"`
-	Menu_category string        `json:"menu_category"`
-	Foods         []Detail_menu `json:"foods"`
+type MenuGetAllResponse struct {
+	Menu_uid      string          `json:"menu_uid"`
+	Menu_category string          `json:"menu_category"`
+	Foods         []entities.Food `json:"foods"`
 }

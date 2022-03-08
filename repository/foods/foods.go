@@ -45,7 +45,7 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 		sql = fmt.Sprintf("%s WHERE calories < %d", sql, input)
 	}
 
-	if err := fr.database.Preload(("Image")).Raw(sql).Scan(&foods).Error; err != nil {
+	if err := fr.database.Raw(sql).Scan(&foods).Error; err != nil {
 		return foods, err
 	}
 

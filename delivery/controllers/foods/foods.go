@@ -41,6 +41,8 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			Energy:        newFoods.Energy,
 			Carbohidrate:  newFoods.Carbohidrate,
 			Protein:       newFoods.Protein,
+			Unit:          newFoods.Unit,
+			Unit_value:    newFoods.Unit_value,
 			Food_category: newFoods.Food_category,
 		})
 
@@ -55,6 +57,8 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		response.Energy = res.Energy
 		response.Carbohidrate = res.Carbohidrate
 		response.Protein = res.Protein
+		response.Unit = res.Unit
+		response.Unit_value = res.Unit_value
 		response.Food_category = res.Food_category
 		response.Image = res.Food_category
 
@@ -83,6 +87,8 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 			resObj.Energy = res[i].Energy
 			resObj.Carbohidrate = res[i].Carbohidrate
 			resObj.Protein = res[i].Protein
+			resObj.Unit = res[i].Unit
+			resObj.Unit_value = res[i].Unit_value
 			resObj.Food_category = res[i].Food_category
 
 			resObj.Image = res[i].Image
@@ -118,6 +124,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			Energy:        updateFoods.Energy,
 			Carbohidrate:  updateFoods.Carbohidrate,
 			Protein:       updateFoods.Protein,
+			Unit:          updateFoods.Unit,
+			Unit_value:    updateFoods.Unit_value,
 			Food_category: updateFoods.Food_category,
 		})
 
@@ -132,6 +140,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		response.Energy = res.Energy
 		response.Carbohidrate = res.Carbohidrate
 		response.Protein = res.Protein
+		response.Unit = res.Unit
+		response.Unit_value = res.Unit_value
 		response.Food_category = res.Food_category
 		response.Image = res.Image
 
@@ -176,6 +186,8 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 				Energy:        result.Energy,
 				Carbohidrate:  result.Carbohidrate,
 				Protein:       result.Protein,
+				Unit:          result.Unit,
+				Unit_value:    result.Unit_value,
 				Food_category: result.Food_category,
 				Image:         result.Image,
 			})
