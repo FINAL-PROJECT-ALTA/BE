@@ -157,7 +157,10 @@ func (fc *FoodsController) Delete() echo.HandlerFunc {
 
 func (fc *FoodsController) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := fc.repo.GetAll()
+
+		category := c.QueryParam("category")
+
+		res, err := fc.repo.GetAll(category)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}

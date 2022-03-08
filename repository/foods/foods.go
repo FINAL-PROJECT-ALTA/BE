@@ -37,10 +37,10 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 	foods := []entities.Food{}
 	sql := "SELECT * FROM foods"
 
-	if category == "name" {
+	if category == "foods" && input != "" {
 		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%'", sql, input)
 	}
-	if category == "calories" {
+	if category == "calories" && input != "" {
 		input, _ := strconv.Atoi(input)
 		sql = fmt.Sprintf("%s WHERE calories < %d", sql, input)
 	}
@@ -85,11 +85,20 @@ func (fr *FoodRepository) Delete(food_uid string) error {
 	return nil
 }
 
-func (fr *FoodRepository) GetAll() ([]entities.Food, error) {
+func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	foods := []entities.Food{}
-	fr.database.Find(&foods)
-	if len(foods) < 1 {
-		return nil, errors.New("nil value")
+
+	if category != "" {
+		fr.database.Where("category=?", category).Find(&foods)
+		if len(foods) < 1 {
+			return nil, errors.New("nil value")
+		}
+	} else {
+		fr.database.Find(&foods)
+		if len(foods) < 1 {
+			return nil, errors.New("nil value")
+		}
 	}
+
 	return foods, nil
 }
