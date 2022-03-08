@@ -9,12 +9,14 @@ import (
 	_authController "HealthFit/delivery/controllers/auth"
 	_foodsController "HealthFit/delivery/controllers/foods"
 	_goalController "HealthFit/delivery/controllers/goal"
+	_menuController "HealthFit/delivery/controllers/menu"
 	_userController "HealthFit/delivery/controllers/user"
 
 	_adminRepo "HealthFit/repository/admin"
 	_authRepo "HealthFit/repository/auth"
 	_foodsRepo "HealthFit/repository/foods"
 	_goalRepo "HealthFit/repository/goal"
+	_menuRepo "HealthFit/repository/menu"
 	_userRepo "HealthFit/repository/user"
 
 	"fmt"
@@ -46,6 +48,7 @@ func main() {
 	userRepo := _userRepo.New(db)
 	goalRepo := _goalRepo.New(db)
 	foodsRepo := _foodsRepo.New(db)
+	menuRepo := _menuRepo.New(db)
 
 	//CONTROLLER
 	authController := _authController.New(authRepo)
@@ -53,6 +56,7 @@ func main() {
 	userController := _userController.New(userRepo)
 	goalController := _goalController.New(goalRepo)
 	foodsController := _foodsController.New(foodsRepo)
+	menuController := _menuController.New(menuRepo)
 
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
@@ -63,6 +67,7 @@ func main() {
 		goalController,
 		foodsController,
 		adminController,
+		menuController,
 	)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
