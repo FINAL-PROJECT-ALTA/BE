@@ -59,7 +59,7 @@ type Image struct {
 type FoodsCreateRequestFormat struct {
 	Admin         string
 	Food_uid      string
-	Name          string `json:"name" validate:"required,min=3,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Name          string `json:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Calories      int    `json:"calories"`
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
@@ -72,7 +72,7 @@ type FoodsCreateRequestFormat struct {
 type FoodsUpdateRequestFormat struct {
 	Admin_uid     string
 	Food_uid      string
-	Name          string `json:"name"`
+	Name          string `json:"name" validate:"omitempty,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Calories      int    `json:"calories"`
 	Energy        int    `json:"energy" form:"energy"`
 	Carbohidrate  int    `json:"carbohidrate"`
