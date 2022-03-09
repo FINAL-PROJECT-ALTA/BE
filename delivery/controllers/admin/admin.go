@@ -41,6 +41,7 @@ func (ac *AdminController) Register() echo.HandlerFunc {
 		response.Name = res.Name
 		response.Email = res.Email
 		response.Gender = res.Gender
+		response.Roles = res.Roles
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create admin", response))
 
