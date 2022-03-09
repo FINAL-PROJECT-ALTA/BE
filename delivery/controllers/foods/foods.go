@@ -104,7 +104,7 @@ func (fc *FoodsController) Search() echo.HandlerFunc {
 func (fc *FoodsController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractRoles(c) // jangan lupa ganti extract token admin
+		isAdmin := middlewares.ExtractRoles(c)
 		if !isAdmin {
 			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
 		}
