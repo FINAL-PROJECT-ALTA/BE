@@ -3,6 +3,8 @@ package goal
 import (
 	"HealthFit/entities"
 
+	"github.com/lithammer/shortuuid"
+
 	"gorm.io/gorm"
 )
 
@@ -18,6 +20,8 @@ func New(db *gorm.DB) *GoalRepository {
 
 func (ur *GoalRepository) Create(u entities.Goal) (entities.Goal, error) {
 
+	uid := shortuuid.New()
+	u.Goal_uid = uid
 	if err := ur.database.Create(&u).Error; err != nil {
 		return u, err
 	}
