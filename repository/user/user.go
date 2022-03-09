@@ -3,6 +3,7 @@ package user
 import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
+	"errors"
 
 	"github.com/lithammer/shortuuid"
 	"gorm.io/gorm"
@@ -23,9 +24,10 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 	u.Password, _ = middlewares.HashPassword(u.Password)
 	uid := shortuuid.New()
 	u.User_uid = uid
+	u.Roles = false
 
 	if err := ur.database.Create(&u).Error; err != nil {
-		return u, err
+		return u, errors.New("email already exist")
 	}
 
 	return u, nil
@@ -36,7 +38,7 @@ func (ur *UserRepository) GetById(user_uid string) (entities.User, error) {
 
 	result := ur.database.Preload("Goal").Preload("History").Where("user_uid = ?", user_uid).First(&arrUser)
 	if err := result.Error; err != nil {
-		return arrUser, err
+		return arrUser, errors.New("record not found")
 	}
 
 	return arrUser, nil

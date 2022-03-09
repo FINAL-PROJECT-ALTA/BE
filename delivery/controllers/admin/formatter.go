@@ -7,6 +7,7 @@ type AdminResponse struct {
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Gender    string `json:"gender"`
+	Roles     bool   `json:"roles"`
 }
 
 type AdminGetByIdResponse struct {
@@ -14,6 +15,7 @@ type AdminGetByIdResponse struct {
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Gender    string `json:"gender"`
+	Roles     bool   `json:"roles"`
 }
 
 //=========================================================
@@ -23,7 +25,7 @@ type CreateAdminRequestFormat struct {
 	Name      string `json:"name" form:"name" validate:"required,min=3,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Admin_uid string
 	Email     string `json:"email" form:"email" validate:"required,email"`
-	Password  string `json:"password" form:"password" validate:"required,min=3,max=20"`
+	Password  string `json:"password" form:"password" validate:"required,min=3,max=15"`
 	Gender    string `json:"gender" form:"gender"`
 }
 

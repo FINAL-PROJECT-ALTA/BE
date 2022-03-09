@@ -3,6 +3,7 @@ package admin
 import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
+	"errors"
 
 	"github.com/lithammer/shortuuid"
 	"gorm.io/gorm"
@@ -23,9 +24,10 @@ func (ar *AdminRepository) Register(a entities.User) (entities.User, error) {
 	a.Password, _ = middlewares.HashPassword(a.Password)
 	uid := shortuuid.New()
 	a.User_uid = uid
+	a.Roles = true
 
 	if err := ar.database.Create(&a).Error; err != nil {
-		return a, err
+		return a, errors.New("email already exist")
 	}
 
 	return a, nil
