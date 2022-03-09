@@ -47,6 +47,12 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 
+		var total int
+		for _, result := range res.Detail_menu {
+			total += result.Food.Calories
+		}
+		response.Total_calories = total
+
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create menu", response))
 
 	}
