@@ -73,18 +73,23 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 		response := []MenuGetAllResponse{}
 		for i, result := range res {
 			var foods []entities.Food
+			var total int
+
 			for _, resultfood := range res[i].Detail_menu {
 				foods = append(foods, resultfood.Food)
+				total += resultfood.Food.Calories
+
 			}
 			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
+				Menu_uid:       result.Menu_uid,
+				Menu_category:  result.Menu_category,
+				Total_calories: total,
+				Foods:          foods,
 			})
 		}
 		fmt.Println(res)
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu Category", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu ", response))
 	}
 }
 
