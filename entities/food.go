@@ -1,9 +1,13 @@
 package entities
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Food struct {
-	gorm.Model
+	ID            uint   `gorm:"primarykey" json:"-"`
 	Food_uid      string `gorm:"index;type:varchar(22)"`
 	Name          string `gorm:"type:varchar(100)"`
 	Calories      int    `gorm:"type:int(100)"`
@@ -14,4 +18,8 @@ type Food struct {
 	Unit_value    int    `gorm:"type:int(100)"`
 	Food_category string `gorm:"type:enum('fruit','drink','junk food','food','snack','None');default:'None'"`
 	Image         string `gorm:"type:varchar(100)"`
+
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }

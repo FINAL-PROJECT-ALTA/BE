@@ -121,7 +121,7 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		res, err := mc.repo.Update(menu_uid, entities.Menu{
+		res, err := mc.repo.Update(menu_uid, newMenu.Foods, entities.Menu{
 			Menu_category: newMenu.Menu_category,
 		})
 
