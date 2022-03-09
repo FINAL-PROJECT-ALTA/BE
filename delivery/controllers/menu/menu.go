@@ -47,10 +47,15 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 
+		var foods []entities.Food
 		var total int
+
 		for _, result := range res.Detail_menu {
+			foods = append(foods, result.Food)
 			total += result.Food.Calories
+
 		}
+		response.Foods = foods
 		response.Total_calories = total
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create menu", response))
@@ -139,10 +144,15 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 		var foods []entities.Food
+		var total int
+
 		for _, result := range res.Detail_menu {
 			foods = append(foods, result.Food)
+			total += result.Food.Calories
+
 		}
 		response.Foods = foods
+		response.Total_calories = total
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update menu", response))
 
