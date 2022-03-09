@@ -30,10 +30,10 @@ func (ac *AdminController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Register(entities.User{Name: admin.Name, Email: admin.Email, Password: admin.Password, Gender: admin.Gender, Roles: true})
+		res, err_repo := ac.repo.Register(entities.User{Name: admin.Name, Email: admin.Email, Password: admin.Password, Gender: admin.Gender, Roles: true})
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		if err_repo != nil {
+			return c.JSON(http.StatusConflict, common.InternalServerError(http.StatusConflict, err_repo.Error(), nil))
 		}
 
 		response := AdminResponse{}
