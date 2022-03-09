@@ -23,6 +23,7 @@ func (ar *AdminRepository) Register(a entities.User) (entities.User, error) {
 	a.Password, _ = middlewares.HashPassword(a.Password)
 	uid := shortuuid.New()
 	a.User_uid = uid
+	a.Roles = true
 
 	if err := ar.database.Create(&a).Error; err != nil {
 		return a, err
