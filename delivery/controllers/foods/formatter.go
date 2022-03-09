@@ -52,10 +52,6 @@ type FoodsGetAllResponse struct {
 	Image         string `json:"image"`
 }
 
-type Image struct {
-	Url string `json:"url"`
-}
-
 type FoodsCreateRequestFormat struct {
 	Admin         string
 	Food_uid      string
