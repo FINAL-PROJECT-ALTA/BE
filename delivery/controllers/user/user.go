@@ -31,10 +31,10 @@ func (ac *UserController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Register(entities.User{Name: user.Name, Email: user.Email, Password: user.Password, Gender: user.Gender})
+		res, err_repo := ac.repo.Register(entities.User{Name: user.Name, Email: user.Email, Password: user.Password, Gender: user.Gender})
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		if err_repo != nil {
+			return c.JSON(http.StatusConflict, common.InternalServerError(http.StatusConflict, err_repo.Error(), nil))
 		}
 
 		response := UserCreateResponse{}
