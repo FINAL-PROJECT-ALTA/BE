@@ -38,7 +38,7 @@ func (ur *UserRepository) GetById(user_uid string) (entities.User, error) {
 
 	result := ur.database.Preload("Goal").Preload("History").Where("user_uid = ?", user_uid).First(&arrUser)
 	if err := result.Error; err != nil {
-		return arrUser, err
+		return arrUser, errors.New("record not found")
 	}
 
 	return arrUser, nil

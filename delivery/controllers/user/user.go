@@ -42,6 +42,7 @@ func (ac *UserController) Register() echo.HandlerFunc {
 		response.Name = res.Name
 		response.Email = res.Email
 		response.Gender = res.Gender
+		response.Roles = res.Roles
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success Create User", response))
 
@@ -54,7 +55,7 @@ func (ac *UserController) GetById() echo.HandlerFunc {
 		res, err := ac.repo.GetById(user_uid)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			return c.JSON(http.StatusNotFound, common.InternalServerError(http.StatusNotFound, err.Error(), nil))
 		}
 
 		response := UserCompleksResponse{}
@@ -63,6 +64,7 @@ func (ac *UserController) GetById() echo.HandlerFunc {
 		response.Name = res.Name
 		response.Email = res.Email
 		response.Gender = res.Gender
+		response.Roles = res.Roles
 
 		responseGoal := []UserGoal{}
 		for i := 0; i < len(res.Goal); i++ {
@@ -99,9 +101,9 @@ func (ac *UserController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Update(user_uid, entities.User{Name: newUser.Name, Email: newUser.Email, Password: newUser.Password, Gender: newUser.Gender})
+		res, err_repo := ac.repo.Update(user_uid, entities.User{Name: newUser.Name, Email: newUser.Email, Password: newUser.Password, Gender: newUser.Gender})
 
-		if err != nil {
+		if err_repo != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
@@ -110,6 +112,7 @@ func (ac *UserController) Update() echo.HandlerFunc {
 		response.Name = res.Name
 		response.Email = res.Email
 		response.Gender = res.Gender
+		response.Roles = res.Roles
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Update User", response))
 	}

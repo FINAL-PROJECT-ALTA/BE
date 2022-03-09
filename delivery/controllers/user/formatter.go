@@ -40,6 +40,7 @@ type UserCompleksResponse struct {
 	Name     string                `json:"name"`
 	Email    string                `json:"email"`
 	Gender   string                `json:"gender" form:"gender"`
+	Roles    bool                  `json:"roles" form:"roles"`
 	Goal     []UserGoal            `json:"goal"`
 	History  []UserHistoryResponse `json:"history"`
 }
