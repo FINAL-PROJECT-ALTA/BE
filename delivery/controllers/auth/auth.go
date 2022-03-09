@@ -24,9 +24,9 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 		Userlogin := LoginReqFormat{}
 
 		c.Bind(&Userlogin)
-		err := c.Validate(&Userlogin)
+		err_validate := c.Validate(&Userlogin)
 
-		if err != nil {
+		if err_validate != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
@@ -46,6 +46,7 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 			User_uid: checkedUser.User_uid,
 			Name:     checkedUser.Name,
 			Email:    checkedUser.Email,
+			Roles:    checkedUser.Roles,
 			Token:    token,
 		}
 
@@ -63,9 +64,9 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		Userlogin := LoginReqFormat{}
 
 		c.Bind(&Userlogin)
-		err := c.Validate(&Userlogin)
+		err_validate := c.Validate(&Userlogin)
 
-		if err != nil {
+		if err_validate != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
@@ -85,6 +86,7 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 			User_uid: checkedUser.User_uid,
 			Name:     checkedUser.Name,
 			Email:    checkedUser.Email,
+			Roles:    checkedUser.Roles,
 			Token:    token,
 		}
 
