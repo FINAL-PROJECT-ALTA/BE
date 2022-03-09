@@ -10,14 +10,12 @@ type MenuCreateRequestFormat struct {
 	Menu_category string          `json:"menu_category"`
 	Foods         []entities.Food `json:"foods"`
 }
-type foods struct {
-	Foods_uid string `json:"food_uid"`
-}
 
 type MenuUpdateRequestFormat struct {
 	Menu_uid      string
 	User_uid      string
-	Menu_category string `json:"menu_category"`
+	Menu_category string          `json:"menu_category"`
+	Foods         []entities.Food `json:"foods"`
 }
 
 // ========= Menu Response =========== //
