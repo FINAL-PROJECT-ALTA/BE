@@ -42,6 +42,11 @@ func (mr *MenuRepository) Create(foods []entities.Food, newMenu entities.Menu) (
 	if err != nil {
 		return newMenu, err
 	}
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).First(&newMenu)
+
+	if err := res.Error; err != nil {
+		return entities.Menu{}, err
+	}
 
 	return newMenu, nil
 }
