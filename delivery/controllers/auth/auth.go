@@ -24,22 +24,29 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 		Userlogin := LoginReqFormat{}
 
 		c.Bind(&Userlogin)
-		err := c.Validate(&Userlogin)
+		err_validate := c.Validate(&Userlogin)
 
-		if err != nil {
+		if err_validate != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		checkedUser, err := ac.repo.Login(Userlogin.Email, Userlogin.Password)
+		checkedUser, err_repo := ac.repo.Login(Userlogin.Email, Userlogin.Password)
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(nil, "error in call database", nil))
+		if err_repo != nil {
+			var statusCode int
+			if err_repo.Error() == "email not found" {
+				statusCode = http.StatusUnauthorized
+			} else if err_repo.Error() == "incorrect password" {
+				statusCode = http.StatusUnauthorized
+			}
+			return c.JSON(statusCode, common.InternalServerError(statusCode, err_repo.Error(), nil))
 		}
 		token, err := middlewares.GenerateToken(checkedUser)
 		response := UserLoginResponse{
 			User_uid: checkedUser.User_uid,
 			Name:     checkedUser.Name,
 			Email:    checkedUser.Email,
+			Roles:    checkedUser.Roles,
 			Token:    token,
 		}
 
@@ -57,22 +64,29 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		Userlogin := LoginReqFormat{}
 
 		c.Bind(&Userlogin)
-		err := c.Validate(&Userlogin)
+		err_validate := c.Validate(&Userlogin)
 
-		if err != nil {
+		if err_validate != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		checkedUser, err := ac.repo.Login(Userlogin.Email, Userlogin.Password)
+		checkedUser, err_repo := ac.repo.Login(Userlogin.Email, Userlogin.Password)
 
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(nil, "error in call database", nil))
+		if err_repo != nil {
+			var statusCode int
+			if err_repo.Error() == "email not found" {
+				statusCode = http.StatusUnauthorized
+			} else if err_repo.Error() == "incorrect password" {
+				statusCode = http.StatusUnauthorized
+			}
+			return c.JSON(statusCode, common.InternalServerError(statusCode, err_repo.Error(), nil))
 		}
 		token, err := middlewares.GenerateToken(checkedUser)
 		response := UserLoginResponse{
 			User_uid: checkedUser.User_uid,
 			Name:     checkedUser.Name,
 			Email:    checkedUser.Email,
+			Roles:    checkedUser.Roles,
 			Token:    token,
 		}
 
