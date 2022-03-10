@@ -5,18 +5,23 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	"HealthFit/repository/user"
+	utils "HealthFit/utils/aws_S3"
 	"net/http"
 
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type UserController struct {
 	repo user.User
+	conn *session.Session
 }
 
-func New(repository user.User) *UserController {
+func New(repository user.User, S3 *session.Session) *UserController {
 	return &UserController{
 		repo: repository,
+		conn: S3,
 	}
 }
 
@@ -31,6 +36,15 @@ func (ac *UserController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
+		file, err1 := c.FormFile("file")
+		if err1 != nil {
+			log.Info(err1)
+		}
+		if err1 == nil {
+			link := utils.Upload(ac.conn, *file)
+			user.Image = link
+		}
+
 		res, err_repo := ac.repo.Register(entities.User{Name: user.Name, Email: user.Email, Password: user.Password, Gender: user.Gender})
 
 		if err_repo != nil {
@@ -43,6 +57,7 @@ func (ac *UserController) Register() echo.HandlerFunc {
 		response.Email = res.Email
 		response.Gender = res.Gender
 		response.Roles = res.Roles
+		response.Image = res.Image
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success Create User", response))
 

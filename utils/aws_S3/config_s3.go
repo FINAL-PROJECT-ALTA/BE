@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"mime/multipart"
 	"net/http"
-	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/globalsign/mgo/bson"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/labstack/gommon/log"
+	"github.com/lithammer/shortuuid"
 )
 
 func InitS3(key, secret, region string) *session.Session {
@@ -32,25 +31,78 @@ func InitS3(key, secret, region string) *session.Session {
 	return connect
 }
 
-func Upload(sess *session.Session, file multipart.File, fileHeader *multipart.FileHeader) string {
+func Upload(sess *session.Session, fileHeader multipart.FileHeader) string {
+
+	var uid = shortuuid.New()
+
+	var manager = s3manager.NewUploader(sess)
+	var src, err = fileHeader.Open()
+	if err != nil {
+		log.Info(err)
+	}
+	defer src.Close()
 
 	size := fileHeader.Size
 	buffer := make([]byte, size)
-	file.Read(buffer)
+	src.Read(buffer)
 
-	fileTemp := "" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
+	var res, err1 = manager.Upload(
+		&s3manager.UploadInput{
+			Bucket:       aws.String("airbnb-app"),
+			Key:          aws.String(uid),
+			ACL:          aws.String("public-read-write"),
+			Body:         bytes.NewReader(buffer),
+			ContentType:  aws.String(http.DetectContentType(buffer)),
+			StorageClass: aws.String("STANDARD"),
+		},
+	)
 
-	_, err := s3.New(sess).PutObject(&s3.PutObjectInput{
-		Bucket:      aws.String("airbnb-app"),
-		ACL:         aws.String("public-read-write"),
-		ContentType: aws.String(http.DetectContentType(buffer)),
-		Key:         aws.String(fileTemp),
-		Body:        bytes.NewReader(buffer),
-	})
-
-	if err != nil {
-		log.Error("Upload error : ", err)
+	if err1 != nil {
+		log.Info(res)
+		log.Error(err1)
 	}
 
-	return fileTemp
+	var url = "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/" + uid
+
+	return url
 }
+
+// func Update(ses *session.Session, name string, fileHeader multipart.FileHeader) string {
+
+// 	var src, err0 = fileHeader.Open()
+// 	if err0 != nil {
+// 		log.Info(err0)
+// 	}
+// 	defer src.Close()
+
+// 	size := fileHeader.Size
+// 	buffer := make([]byte, size)
+// 	src.Read(buffer)
+
+// 	var svc = s3.New(ses)
+
+// 	var input = &s3.PutObjectInput{
+// 		Bucket:       aws.String("airbnb-app"),
+// 		Key:          aws.String(name),
+// 		ACL:          aws.String("public-read-write"),
+// 		Body:         bytes.NewReader(buffer),
+// 		ContentType:  aws.String(http.DetectContentType(buffer)),
+// 		StorageClass: aws.String("STANDARD"),
+// 	}
+
+// 	var res, err = svc.PutObject(input)
+
+// 	if err != nil {
+// 		log.Info(res)
+// 		if errA, ok := err.(awserr.Error); ok {
+// 			switch errA.Code() {
+// 			default:
+// 				log.Info(errA.Error())
+// 			}
+// 		} else {
+// 			log.Info(err.Error())
+// 		}
+// 	}
+
+// 	return ""
+// }

@@ -8,6 +8,7 @@ type UserCreateResponse struct {
 	Email    string `json:"email"`
 	Gender   string `json:"gender" form:"gender"`
 	Roles    bool   `json:"roles" form:"roles"`
+	Image    string `json:"image" form:"image"`
 }
 type UserUpdateResponse struct {
 	User_uid string `json:"user_uid"`
@@ -15,6 +16,7 @@ type UserUpdateResponse struct {
 	Email    string `json:"email"`
 	Gender   string `json:"gender" form:"gender"`
 	Roles    bool   `json:"roles" form:"roles"`
+	Image    string `json:"image" form:"image"`
 }
 type UserGetByIdResponse struct {
 	User_uid string `json:"user_uid"`
@@ -22,6 +24,7 @@ type UserGetByIdResponse struct {
 	Email    string `json:"email"`
 	Gender   string `json:"gender" form:"gender"`
 	Roles    bool   `json:"roles" form:"roles"`
+	Image    string `json:"image" form:"image"`
 }
 
 type UserGoal struct {
@@ -48,6 +51,7 @@ type UserCompleksResponse struct {
 	Roles    bool                  `json:"roles" form:"roles"`
 	Goal     []UserGoal            `json:"goal"`
 	History  []UserHistoryResponse `json:"history"`
+	Image    string                `json:"image" form:"image"`
 }
 
 //=========================================================
@@ -59,6 +63,7 @@ type CreateUserRequestFormat struct {
 	Email    string `json:"email" form:"email" validate:"required,email"`
 	Password string `json:"password" form:"password" validate:"required,min=3,max=15"`
 	Gender   string `json:"gender" form:"gender" validate:"required"`
+	Image    string `json:"image" form:"image"`
 }
 
 // =================== Update User Request =======================
@@ -67,4 +72,5 @@ type UpdateUserRequestFormat struct {
 	Email    string `json:"email" form:"email" validate:"omitempty,email"`
 	Password string `json:"password" form:"password" validate:"omitempty,required,min=3,max=15"`
 	Gender   string `json:"gender" form:"gender"`
+	Image    string `json:"image" form:"image" validate:"required"`
 }
