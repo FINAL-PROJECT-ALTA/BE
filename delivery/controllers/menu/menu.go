@@ -5,7 +5,6 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	"HealthFit/repository/menu"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -25,14 +24,22 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		user := middlewares.ExtractTokenUserUid(c)
+		isAdmin := middlewares.ExtractRoles(c)
 
 		newMenu := MenuCreateRequestFormat{}
 		newMenu.User_uid = user
 
+		if isAdmin {
+			newMenu.Created_by = "admin"
+
+		} else {
+			newMenu.Created_by = "user"
+		}
+
 		c.Bind(&newMenu)
 		errB := c.Validate(&newMenu)
 		if errB != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
 		}
 
 		res, err := mc.repo.Create(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
@@ -87,7 +94,6 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 				Foods:          foods,
 			})
 		}
-		fmt.Println(res)
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu ", response))
 	}
@@ -117,6 +123,61 @@ func (mc *MenuController) GetMenuByMenuCategory() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Category", response))
+	}
+}
+
+func (mc *MenuController) GetMenuRecom() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		menuCreatedBy := c.Param("created_by")
+
+		res, err := mc.repo.GetMenuRecom(menuCreatedBy)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+	}
+}
+
+func (mc *MenuController) GetUserMenu() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user_uid := middlewares.ExtractTokenUserUid(c)
+		menuCreatedBy := c.Param("created_by")
+
+		res, err := mc.repo.GetMenuUser(menuCreatedBy, user_uid)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu For User", response))
 	}
 }
 
