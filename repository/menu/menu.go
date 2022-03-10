@@ -99,19 +99,23 @@ func (mr *MenuRepository) GetMenuUser(createdby string, user_uid string) ([]enti
 func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateMenu entities.Menu) (entities.Menu, error) {
 	//code baru masih belum work
 	var menu entities.Menu
-	mr.database.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).First(&menu)
-
-	var detail entities.Detail_menu
-	if errA := mr.database.Model(entities.Detail_menu{}).Where("menu_uid = ?", menu_uid).Delete(&detail).Error; errA != nil {
-		return entities.Menu{}, errA
-	}
-
-	mr.database.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Delete(&menu)
-
-	uid := shortuuid.New()
-	updateMenu.Menu_uid = uid
-
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).First(&menu).Error; err != nil {
+			return err
+		}
+
+		var detail entities.Detail_menu
+		if err := tx.Model(entities.Detail_menu{}).Where("menu_uid = ?", menu_uid).Delete(&detail).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Delete(&menu).Error; err != nil {
+			return err
+		}
+
+		uid := shortuuid.New()
+		updateMenu.Menu_uid = uid
 
 		if err := tx.Preload("Detail_menu").Preload("Detail_menu.Food").Create(&updateMenu).Error; err != nil {
 			return err
@@ -132,7 +136,7 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 		return updateMenu, err
 	}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).First(&updateMenu)
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", updateMenu.Menu_uid).First(&updateMenu)
 
 	if err := res.Error; err != nil {
 		return entities.Menu{}, err
