@@ -101,16 +101,16 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
 		var menu entities.Menu
 
-		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).First(&menu).Error; err != nil {
+		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Find(&menu).Error; err != nil {
 			return err
 		}
 
-		var detail entities.Detail_menu
-		if err := tx.Model(entities.Detail_menu{}).Where("menu_uid = ?", menu_uid).Delete(&detail).Error; err != nil {
+		// var detail entities.Detail_menu
+		if err := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Detail_menu{}).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Delete(&menu).Error; err != nil {
+		if err := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Menu{}).Error; err != nil {
 			return err
 		}
 
@@ -147,14 +147,16 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 
 func (mr *MenuRepository) Delete(menu_uid string) error {
 
+	menuss := menu_uid
+
 	var menu entities.Menu
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Where("menu_uid = ?", menu_uid).Delete(&entities.Detail_menu{}).Error; err != nil {
+		if err := tx.Debug().Where("menu_uid = ?", menuss).Delete(&entities.Detail_menu{}).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Where("menu_uid =?", menu_uid).Delete(&menu).Error; err != nil {
+		if err := tx.Debug().Where("menu_uid =?", menuss).Delete(&menu).Error; err != nil {
 			return err
 		}
 		return nil
