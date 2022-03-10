@@ -32,7 +32,16 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Create(entities.Goal{User_uid: user_uid, Height: goal.Height, Weight: goal.Weight, Age: goal.Age, Range_time: goal.Range_time, Target: goal.Target})
+		res, err := ac.repo.Create(entities.Goal{
+			User_uid:      user_uid,
+			Height:        goal.Height,
+			Weight:        goal.Weight,
+			Age:           goal.Age,
+			Daily_active:  goal.Daily_active,
+			Weight_target: goal.Weight_target,
+			Range_time:    goal.Range_time,
+			Target:        goal.Target,
+		})
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -42,6 +51,8 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 		response.Goal_uid = res.Goal_uid
 		response.Weight = res.Weight
 		response.Age = res.Age
+		response.Daily_active = res.Daily_active
+		response.Weight_target = res.Weight_target
 		response.Range_time = res.Range_time
 		response.Target = res.Target
 
@@ -60,10 +71,11 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 		}
 
 		response := GetByIdGoalResponse{}
-
 		response.Goal_uid = res.Goal_uid
 		response.Weight = res.Weight
 		response.Age = res.Age
+		response.Daily_active = res.Daily_active
+		response.Weight_target = res.Weight_target
 		response.Range_time = res.Range_time
 		response.Target = res.Target
 
@@ -90,8 +102,11 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 		}
 
 		response := GoalResponse{}
+		response.Goal_uid = res.Goal_uid
 		response.Weight = res.Weight
 		response.Age = res.Age
+		response.Daily_active = res.Daily_active
+		response.Weight_target = res.Weight_target
 		response.Range_time = res.Range_time
 		response.Target = res.Target
 
