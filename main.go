@@ -19,13 +19,12 @@ import (
 	_menuRepo "HealthFit/repository/menu"
 	_userRepo "HealthFit/repository/user"
 
+	awsS3 "HealthFit/utils/aws_S3"
 	"fmt"
 	"log"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
-	"github.com/midtrans/midtrans-go"
-	"github.com/midtrans/midtrans-go/coreapi"
 )
 
 type CustomValidator struct {
@@ -38,9 +37,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func main() {
 	config := config.GetConfig()
 	db := utils.InitDB(config)
-	// awsConn := awss3.InitS3(config.S3_KEY, config.S3_SECRET, config.S3_REGION)
-	midtransConfig := coreapi.Client{}
-	midtransConfig.New(config.Midtrans, midtrans.Sandbox)
+	awsConn := awsS3.InitS3(config.S3_KEY, config.S3_SECRET, config.S3_REGION)
 
 	//REPOSITORY-DATABASE
 	authRepo := _authRepo.New(db)
@@ -53,7 +50,7 @@ func main() {
 	//CONTROLLER
 	authController := _authController.New(authRepo)
 	adminController := _adminController.New(adminRepo)
-	userController := _userController.New(userRepo)
+	userController := _userController.New(userRepo, awsConn)
 	goalController := _goalController.New(goalRepo)
 	foodsController := _foodsController.New(foodsRepo)
 	menuController := _menuController.New(menuRepo)
