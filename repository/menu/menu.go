@@ -96,7 +96,7 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 			Menu_uid: updateMenu.Menu_uid,
 			Food_uid: foods[i].Food_uid,
 		}
-		if err := mr.database.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
+		if err := mr.database.Model(entities.Detail_menu{}).Save(&detail).Error; err != nil {
 			return updateMenu, err
 		}
 	}
