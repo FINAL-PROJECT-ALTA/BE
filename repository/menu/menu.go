@@ -144,13 +144,23 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 func (mr *MenuRepository) Delete(menu_uid string) error {
 
 	var menu entities.Menu
+	err := mr.database.Transaction(func(tx *gorm.DB) error {
 
-	if err := mr.database.Where("menu_uid =?", menu_uid).First(&menu).Error; err != nil {
+		if err := tx.Where("menu_uid = ?", menu_uid).Delete(&entities.Detail_menu{}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Where("menu_uid =?", menu_uid).Delete(&menu).Error; err != nil {
+			return err
+		}
+		return nil
+
+	})
+
+	if err != nil {
 		return err
 	}
-	if err := mr.database.Delete(&menu, menu_uid).Error; err != nil {
-		return err
-	}
+
 	return nil
 
 }
