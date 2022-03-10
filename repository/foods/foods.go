@@ -74,11 +74,7 @@ func (fr *FoodRepository) Delete(food_uid string) error {
 
 	var foods entities.Food
 
-	if err := fr.database.Where("food_uid =?", food_uid).First(&foods).Error; err != nil {
-		return err
-	}
-
-	if err := fr.database.Delete(&foods, food_uid).Error; err != nil {
+	if err := fr.database.Model(&foods).Where("food_uid = ?", food_uid).Delete(&foods).Error; err != nil {
 		return err
 	}
 
