@@ -188,6 +188,7 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		if !isAdmin {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
+		user_uid := middlewares.ExtractTokenUserUid(c)
 
 		menu_uid := c.Param("menu_uid")
 		newMenu := MenuUpdateRequestFormat{}
@@ -199,6 +200,7 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		}
 
 		res, err := mc.repo.Update(menu_uid, newMenu.Foods, entities.Menu{
+			User_uid:      user_uid,
 			Menu_category: newMenu.Menu_category,
 		})
 
