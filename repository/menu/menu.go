@@ -98,8 +98,8 @@ func (mr *MenuRepository) GetMenuUser(createdby string, user_uid string) ([]enti
 
 func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateMenu entities.Menu) (entities.Menu, error) {
 	//code baru masih belum work
-	var menu entities.Menu
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
+		var menu entities.Menu
 
 		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).First(&menu).Error; err != nil {
 			return err
@@ -117,7 +117,7 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 		uid := shortuuid.New()
 		updateMenu.Menu_uid = uid
 
-		if err := tx.Preload("Detail_menu").Preload("Detail_menu.Food").Create(&updateMenu).Error; err != nil {
+		if err := tx.Create(&updateMenu).Error; err != nil {
 			return err
 		}
 		for i := 0; i < len(foods); i++ {
