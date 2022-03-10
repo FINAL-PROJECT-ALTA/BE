@@ -8,7 +8,6 @@ info:
   version: '1.0'
 servers:
   # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
   - url: https://aaryadewangga.cloud.okteto.net/{entity}
     variables:
       entity:
@@ -1058,7 +1057,7 @@ paths:
                 code: 200
                 message: success to delete menus
                 data:
-  /menus/categories:  
+  /menus/{categories}:  
     get:
       summary: Get Menu By Menu Category
       tags:
@@ -1171,92 +1170,7 @@ paths:
                       name: Es Teh
                       calories: 221
                       category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)     
-  /menus/calories:  
-    get:
-      summary: Get Menu By Total Calories
-      tags:
-        - Menus
-      requestBody:
-        required: true
-        description: Create / Add Menus Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                menu_categories:
-                  type: string
-                  enum:
-                    - breakfast
-                    - lunch
-                    - dinner
-                total_calories:
-                  type: integer
-              example:
-                total_calories: 1500
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      menu_uid:
-                        type: string
-                      menu_category:
-                        type: string
-                        enum:
-                          - breakfast
-                          - lunch
-                          - dinner
-                      total_calories:
-                        type: integer
-                      foods :
-                        type: object
-                example:
-                  code: 201
-                  message: sukses menambahkan menu baru
-                  data:
-                  - id : 2
-                    menu_uid: kshefkaefk
-                    menu_category: breakfast
-                    total_calories: 1500
-                    foods: 
-                    - id : 10
-                      food_uid: kshefkaefk
-                      name: Soto Ayam
-                      calories: 453
-                      category: foods
-                      image: soto_images.jpg (image using form-data for uplaod)
-                    - id : 18
-                      food_uid: kjnlvanlfwf
-                      name: Nasi Campur
-                      calories: 392
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-                    - id : 21
-                      food_uid: ehbfkablfnan
-                      name: Es Campur
-                      calories: 196
-                      category: drink
-                      image: es-campur_images.jpg (image using form-data for uplaod)
-                    - id : 26
-                      food_uid: ehblfnlebukvbe
-                      name: Es Teh
-                      calories: 221
-                      category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)
+                      image: es-teh_images.jpg (image using form-data for uplaod)       
   /menus/detail:
     post:
       summary: Create Menus Details
