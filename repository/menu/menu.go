@@ -52,25 +52,34 @@ func (mr *MenuRepository) Create(foods []entities.Food, newMenu entities.Menu) (
 	return newMenu, nil
 }
 
-func (mr *MenuRepository) GetAllMenu() ([]entities.Menu, error) {
+func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entities.Menu, error) {
 	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Find(&menus)
+	if category != "" && createdBy == "" {
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category = ?", category).Find(&menus)
+		if err := res.Error; err != nil {
+			return menus, err
+		}
+	} else if createdBy != "" && category == "" {
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("created_by = ?", createdBy).Find(&menus)
 
-	if err := res.Error; err != nil {
-		return menus, err
+		if err := res.Error; err != nil {
+			return menus, err
+		}
+	} else if createdBy != "" && category != "" {
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("created_by = ? AND menu_category = ?", createdBy, category).Find(&menus)
+
+		if err := res.Error; err != nil {
+			return menus, err
+		}
+	} else {
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Find(&menus)
+
+		if err := res.Error; err != nil {
+			return menus, err
+		}
 	}
-	return menus, nil
-}
 
-func (mr *MenuRepository) GetMenuByCategory(category string) ([]entities.Menu, error) {
-	menus := []entities.Menu{}
-
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category = ?", category).Find(&menus)
-
-	if err := res.Error; err != nil {
-		return menus, err
-	}
 	return menus, nil
 }
 
@@ -78,17 +87,6 @@ func (mr *MenuRepository) GetMenuRecom(createdby string) ([]entities.Menu, error
 	menus := []entities.Menu{}
 
 	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", createdby).Find(&menus)
-
-	if err := res.Error; err != nil {
-		return menus, err
-	}
-	return menus, nil
-}
-
-func (mr *MenuRepository) GetMenuUser(createdby string, user_uid string) ([]entities.Menu, error) {
-	menus := []entities.Menu{}
-
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ? AND User_uid", createdby, user_uid).Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, err

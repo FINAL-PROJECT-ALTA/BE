@@ -72,7 +72,11 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 
 func (mc *MenuController) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := mc.repo.GetAllMenu()
+		category := c.QueryParam("category")
+		createdBy := c.QueryParam("createdBy")
+
+		res, err := mc.repo.GetAllMenu(category, createdBy)
+
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
@@ -96,33 +100,6 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get All Menu ", response))
-	}
-}
-
-func (mc *MenuController) GetMenuByMenuCategory() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		menuCategory := c.Param("menu_category")
-
-		res, err := mc.repo.GetMenuByCategory(menuCategory)
-
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
-
-		response := []MenuGetAllResponse{}
-		for i, result := range res {
-			var foods []entities.Food
-			for _, resultfood := range res[i].Detail_menu {
-				foods = append(foods, resultfood.Food)
-			}
-			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-			})
-		}
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Category", response))
 	}
 }
 
@@ -150,34 +127,6 @@ func (mc *MenuController) GetMenuRecom() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
-	}
-}
-
-func (mc *MenuController) GetUserMenu() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		user_uid := middlewares.ExtractTokenUserUid(c)
-		menuCreatedBy := c.Param("created_by")
-
-		res, err := mc.repo.GetMenuUser(menuCreatedBy, user_uid)
-
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
-
-		response := []MenuGetAllResponse{}
-		for i, result := range res {
-			var foods []entities.Food
-			for _, resultfood := range res[i].Detail_menu {
-				foods = append(foods, resultfood.Food)
-			}
-			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-			})
-		}
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu For User", response))
 	}
 }
 
