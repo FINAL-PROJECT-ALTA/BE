@@ -76,6 +76,7 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		var user_history entities.User_history
 		user_history.Menu_uid = newMenu.Menu_uid
 		user_history.User_uid = newMenu.User_uid
+		user_history.Goal_uid = goal.Goal_uid
 
 		if err := tx.Model(entities.User_history{}).Create(&user_history).Error; err != nil {
 			return err
