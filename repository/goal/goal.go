@@ -2,6 +2,8 @@ package goal
 
 import (
 	"HealthFit/entities"
+	"math"
+	"time"
 
 	"github.com/lithammer/shortuuid"
 
@@ -36,7 +38,18 @@ func (ur *GoalRepository) GetById(goal_uid string) (entities.Goal, error) {
 	if err := result.Error; err != nil {
 		return goal, err
 	}
+	time := time.Now()
+	different := goal.CreatedAt.Sub(time)
 
+	days := math.Abs(float64(int(different.Hours() / 24)))
+	diff := goal.Range_time - int(days)
+	if diff <= 0 && goal.Status == "active" {
+		goal.Status = "not active"
+		if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
+			return goal, err
+		}
+
+	}
 	return goal, nil
 }
 
