@@ -63,9 +63,7 @@ func RegisterPath(e *echo.Echo,
 	//ROUTE MENU
 	e.POST("/menus", mc.Create(), middlewares.JwtMiddleware())
 	e.GET("/menus", mc.GetAll())
-	e.GET("/menu/:menu_category", mc.GetMenuByMenuCategory())
-	e.GET("/menu/recommendation/:created_by", mc.GetMenuRecom())
-	e.GET("/menu/:created_by", mc.GetUserMenu(), middlewares.JwtMiddleware())
+	e.GET("/menus/recommendation/:created_by", mc.GetMenuRecom())
 	e.PUT("/menus/:menu_uid", mc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/menus/:menu_uid", mc.Delete(), middlewares.JwtMiddleware())
 
