@@ -45,6 +45,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 			Weight_target: goal.Weight_target,
 			Range_time:    goal.Range_time,
 			Target:        goal.Target,
+			Status:        "active",
 		})
 
 		if errRepo != nil {

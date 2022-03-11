@@ -22,19 +22,17 @@ func New(db *gorm.DB) *GoalRepository {
 }
 
 func (ur *GoalRepository) Create(u entities.Goal) (entities.Goal, error) {
+	var goal entities.Goal
+	result := ur.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", u.User_uid, "active").First(&goal)
+	if res := result.RowsAffected; res == 1 {
+		return entities.Goal{}, errors.New("vailed to create goal")
+	}
 
 	uid := shortuuid.New()
 	u.Goal_uid = uid
 	if err := ur.database.Create(&u).Error; err != nil {
 		return u, err
 	}
-	var goals entities.Goal
-
-	result := ur.database.Where("goal_uid = ? AND status =?", u.Goal_uid, "active").Find(&goals)
-	if res := result.RowsAffected; res > 1 {
-		return entities.Goal{}, errors.New("vailed to create goal")
-	}
-
 	return u, nil
 }
 
@@ -83,5 +81,30 @@ func (ur *GoalRepository) Delete(goal_uid string) error {
 		return err
 	}
 	return nil
+
+}
+
+func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
+
+	var goal entities.Goal
+
+	if err := ur.database.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal).Error; err != nil {
+		return false, err
+	}
+
+	time := time.Now()
+	different := goal.CreatedAt.Sub(time)
+
+	days := math.Abs(float64(int(different.Hours() / 24)))
+	diff := goal.Range_time - int(days)
+	if diff <= 0 && goal.Status == "active" {
+		goal.Status = "not active"
+		if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
+			return false, err
+		}
+
+	}
+
+	return true, nil
 
 }
