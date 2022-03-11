@@ -21,19 +21,19 @@ func New(db *gorm.DB) *GoalRepository {
 	}
 }
 
-func (ur *GoalRepository) Create(u entities.Goal) (entities.Goal, error) {
+func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 	var goal entities.Goal
-	result := ur.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", u.User_uid, "active").First(&goal)
+	result := ur.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", g.User_uid, "active").First(&goal)
 	if res := result.RowsAffected; res == 1 {
 		return entities.Goal{}, errors.New("vailed to create goal")
 	}
 
 	uid := shortuuid.New()
-	u.Goal_uid = uid
-	if err := ur.database.Create(&u).Error; err != nil {
-		return u, err
+	g.Goal_uid = uid
+	if err := ur.database.Create(&g).Error; err != nil {
+		return g, err
 	}
-	return u, nil
+	return g, nil
 }
 
 func (ur *GoalRepository) GetById(goal_uid string) (entities.Goal, error) {
