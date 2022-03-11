@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type UserController struct {
@@ -72,9 +73,15 @@ func (ac *UserController) GetById() echo.HandlerFunc {
 			user_goal.Height = res.Goal[i].Height
 			user_goal.Weight = res.Goal[i].Weight
 			user_goal.Age = res.Goal[i].Age
+			user_goal.Daily_active = res.Goal[i].Daily_active
+			user_goal.Weight_target = res.Goal[i].Weight_target
 			user_goal.Range_time = res.Goal[i].Range_time
 			responseGoal = append(responseGoal, user_goal)
 		}
+		log.Info(responseGoal)
+		response.Goal = responseGoal
+		log.Info(response.Goal)
+
 		responseHistory := []UserHistoryResponse{}
 		for i := 0; i < len(res.Goal); i++ {
 			user_history := UserHistoryResponse{}
@@ -83,8 +90,10 @@ func (ac *UserController) GetById() echo.HandlerFunc {
 
 			responseHistory = append(responseHistory, user_history)
 		}
-		response.Goal = responseGoal
+
 		response.History = responseHistory
+
+		log.Info(response)
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
 	}

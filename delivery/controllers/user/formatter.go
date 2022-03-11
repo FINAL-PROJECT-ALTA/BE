@@ -25,11 +25,16 @@ type UserGetByIdResponse struct {
 }
 
 type UserGoal struct {
-	Height     int `json:"height"`
-	Weight     int `json:"weight"`
-	Age        int `json:"age"`
-	Range_time int `json:"range"`
+	Goal_uid      string `json:"goal_uid"`
+	Height        int    `json:"height"`
+	Weight        int    `json:"weight"`
+	Age           int    `json:"age"`
+	Daily_active  string `json:"daily_active"`
+	Weight_target int    `json:"weight_target"`
+	Range_time    int    `json:"range_time"`
+	Target        string `json:"target"`
 }
+
 type UserHistoryResponse struct {
 	User_uid string `json:"user_uid"`
 	Menu_uid string `json:"menu_uid"`
