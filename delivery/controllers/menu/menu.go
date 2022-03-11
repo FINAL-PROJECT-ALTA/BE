@@ -32,7 +32,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 		if isAdmin {
 			newMenu.Created_by = "admin"
 
-		} else {
+		} else if !isAdmin {
 			newMenu.Created_by = "user"
 		}
 
@@ -43,7 +43,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 		}
 
 		res, err := mc.repo.Create(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
-			Menu_category: newMenu.Menu_category,
+			Menu_category: newMenu.Menu_category, Created_by: newMenu.Created_by,
 		})
 
 		if err != nil {
