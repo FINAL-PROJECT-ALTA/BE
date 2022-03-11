@@ -2,6 +2,7 @@ package goal
 
 import (
 	"HealthFit/entities"
+	"errors"
 	"math"
 	"time"
 
@@ -26,6 +27,12 @@ func (ur *GoalRepository) Create(u entities.Goal) (entities.Goal, error) {
 	u.Goal_uid = uid
 	if err := ur.database.Create(&u).Error; err != nil {
 		return u, err
+	}
+	var goals entities.Goal
+
+	result := ur.database.Where("goal_uid = ? AND status =?", u.Goal_uid, "active").Find(&goals)
+	if res := result.RowsAffected; res > 1 {
+		return entities.Goal{}, errors.New("vailed to create goal")
 	}
 
 	return u, nil
