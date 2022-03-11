@@ -69,4 +69,8 @@ func RegisterPath(e *echo.Echo,
 	e.PUT("/menus/:menu_uid", mc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/menus/:menu_uid", mc.Delete(), middlewares.JwtMiddleware())
 
+	//ROUTE USER HISTORY
+	e.GET("/userhistories", uh.GetAll(), middlewares.JwtMiddleware())
+	e.GET("/userhistories/:user_history_uid", uh.GetByUid(), middlewares.JwtMiddleware())
+
 }
