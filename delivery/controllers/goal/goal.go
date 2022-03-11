@@ -22,17 +22,21 @@ func New(repository goal.Goal) *GoalController {
 
 func (ac *GoalController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user_uid := middlewares.ExtractTokenUserUid(c)
 		goal := CreateGoalRequest{}
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+		}
+		user_uid := middlewares.ExtractTokenUserUid(c)
 
 		c.Bind(&goal)
 		err := c.Validate(&goal)
 
-		if err != nil || goal.Height == 0 || goal.Weight == 0 || goal.Age == 0 || goal.Daily_active == "" || goal.Weight_target == 0 || goal.Target == "" {
+		if err != nil {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Create(entities.Goal{
+		res, errRepo := ac.repo.Create(entities.Goal{
 			User_uid:      user_uid,
 			Height:        goal.Height,
 			Weight:        goal.Weight,
@@ -43,7 +47,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 			Target:        goal.Target,
 		})
 
-		if err != nil {
+		if errRepo != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
