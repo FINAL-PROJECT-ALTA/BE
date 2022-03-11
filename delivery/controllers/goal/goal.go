@@ -24,7 +24,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		goal := CreateGoalRequest{}
 		isAdmin := middlewares.ExtractRoles(c)
-		if !isAdmin {
+		if isAdmin {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 		user_uid := middlewares.ExtractTokenUserUid(c)
