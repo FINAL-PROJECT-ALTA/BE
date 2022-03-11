@@ -146,7 +146,7 @@ func (mr *MenuRepository) GetMenuRecommend(user_uid string) ([]entities.Menu, er
 	if err := resUser.Error; err != nil {
 		return []entities.Menu{}, err
 	}
-	needed := math.Floor(float64(goal.Weight_target * 7700 / goal.Range_time))
+	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
 	var bmr int
 	var daily_active float32
 	switch goal.Daily_active {

@@ -116,7 +116,100 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 	}
 }
 
-func (mc *MenuController) GetMenuRecommend() echo.HandlerFunc {
+func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		}
+		user := middlewares.ExtractTokenUserUid(c)
+
+		res, err := mc.repo.GetMenuRecommend(user)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+	}
+}
+func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		}
+		user := middlewares.ExtractTokenUserUid(c)
+
+		res, err := mc.repo.GetMenuRecommend(user)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+	}
+}
+func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		}
+		user := middlewares.ExtractTokenUserUid(c)
+
+		res, err := mc.repo.GetMenuRecommend(user)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		response := []MenuGetAllResponse{}
+		for i, result := range res {
+			var foods []entities.Food
+			for _, resultfood := range res[i].Detail_menu {
+				foods = append(foods, resultfood.Food)
+			}
+			response = append(response, MenuGetAllResponse{
+				Menu_uid:      result.Menu_uid,
+				Menu_category: result.Menu_category,
+				Foods:         foods,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+	}
+}
+func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		isAdmin := middlewares.ExtractRoles(c)
