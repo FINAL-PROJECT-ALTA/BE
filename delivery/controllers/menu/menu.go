@@ -103,11 +103,10 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 	}
 }
 
-func (mc *MenuController) GetMenuRecom() echo.HandlerFunc {
+func (mc *MenuController) GetMenuRecommend() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		menuCreatedBy := c.Param("created_by")
 
-		res, err := mc.repo.GetMenuRecom(menuCreatedBy)
+		res, err := mc.repo.GetMenuRecommend()
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
