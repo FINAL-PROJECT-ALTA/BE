@@ -46,7 +46,6 @@ func initConfig() *AppConfig {
 	defaultConfig.S3_KEY = getEnv("S3_KEY", "AKIAVOMUO3KKNSP4RXWR")
 	defaultConfig.S3_SECRET = getEnv("S3_SECRET", "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")
 	defaultConfig.S3_REGION = getEnv("S3_REGION", "ap-southeast-1")
-	defaultConfig.Midtrans = getEnv("MIDTRANS_SERVER_KEY", "SB-Mid-server-6xAOB7aeOdPQL9EEbmV9hnqE")
 	defaultConfig.LOC = getEnv("LOC", "Asia%2FJakarta")
 
 	fmt.Println(defaultConfig)
