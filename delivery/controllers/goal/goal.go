@@ -28,7 +28,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 		c.Bind(&goal)
 		err := c.Validate(&goal)
 
-		if err != nil {
+		if err != nil || goal.Height == 0 || goal.Weight == 0 || goal.Age == 0 || goal.Daily_active == "" || goal.Weight_target == 0 || goal.Target == "" {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
@@ -49,6 +49,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 
 		response := GoalResponse{}
 		response.Goal_uid = res.Goal_uid
+		response.Height = res.Height
 		response.Weight = res.Weight
 		response.Age = res.Age
 		response.Daily_active = res.Daily_active
@@ -72,6 +73,7 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 
 		response := GetByIdGoalResponse{}
 		response.Goal_uid = res.Goal_uid
+		response.Height = res.Height
 		response.Weight = res.Weight
 		response.Age = res.Age
 		response.Daily_active = res.Daily_active
@@ -103,6 +105,7 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 
 		response := GoalResponse{}
 		response.Goal_uid = res.Goal_uid
+		response.Height = res.Height
 		response.Weight = res.Weight
 		response.Age = res.Age
 		response.Daily_active = res.Daily_active
