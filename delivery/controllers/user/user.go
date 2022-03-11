@@ -36,16 +36,20 @@ func (ac *UserController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		file, err1 := c.FormFile("file")
-		if err1 != nil {
-			log.Info(err1)
-		}
-		if err1 == nil {
-			link := utils.Upload(ac.conn, *file)
-			user.Image = link
+		file, errO := c.FormFile("image")
+		if errO != nil {
+			log.Info(errO)
 		}
 
-		res, err_repo := ac.repo.Register(entities.User{Name: user.Name, Email: user.Email, Password: user.Password, Gender: user.Gender})
+		link := utils.Upload(ac.conn, *file)
+
+		res, err_repo := ac.repo.Register(entities.User{
+			Name:     user.Name,
+			Email:    user.Email,
+			Password: user.Password,
+			Gender:   user.Gender,
+			Image:    link,
+		})
 
 		if err_repo != nil {
 			return c.JSON(http.StatusConflict, common.InternalServerError(http.StatusConflict, err_repo.Error(), nil))

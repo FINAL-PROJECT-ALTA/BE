@@ -27,7 +27,7 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 	u.Roles = false
 
 	if err := ur.database.Create(&u).Error; err != nil {
-		return u, errors.New("email already exist")
+		return u, errors.New("invalid input")
 	}
 
 	return u, nil
