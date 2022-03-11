@@ -31,13 +31,16 @@ func RegisterPath(e *echo.Echo,
 		Format: "method=${method}, uri=${uri}, status=${status}",
 	}))
 
-	//ROUTE REGISTER - LOGIN USERS
-	e.POST("users/register", uc.Register())
-	e.POST("users/login", aa.Login())
-
 	//ROUTE ADMIN
 	e.POST("/admin/register", ac.Register())
 	e.POST("/admin/login", aa.AdminLogin())
+	e.GET("/admin", uc.GetById(), middlewares.JwtMiddleware())
+	e.PUT("/admin", uc.Update(), middlewares.JwtMiddleware())
+	e.DELETE("/admin", uc.Delete(), middlewares.JwtMiddleware())
+
+	//ROUTE REGISTER - LOGIN USERS
+	e.POST("users/register", uc.Register())
+	e.POST("users/login", aa.Login())
 
 	//ROUTE USERS
 	e.GET("/users", uc.GetById(), middlewares.JwtMiddleware())
