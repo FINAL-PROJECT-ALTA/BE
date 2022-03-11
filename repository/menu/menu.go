@@ -83,10 +83,10 @@ func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entit
 	return menus, nil
 }
 
-func (mr *MenuRepository) GetMenuRecom(createdby string) ([]entities.Menu, error) {
+func (mr *MenuRepository) GetMenuRecommend() ([]entities.Menu, error) {
 	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", createdby).Find(&menus)
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", "createdby").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, err
