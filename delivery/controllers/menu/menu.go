@@ -119,7 +119,13 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 func (mc *MenuController) GetMenuRecommend() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		res, err := mc.repo.GetMenuRecommend()
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied", nil))
+		}
+		user := middlewares.ExtractTokenUserUid(c)
+
+		res, err := mc.repo.GetMenuRecommend(user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
