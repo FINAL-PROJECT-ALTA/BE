@@ -9,8 +9,8 @@ type Goal struct {
 	Height        int
 	Weight        int
 	Age           int
-	Daily_active  string `gorm:"type:enum('not active','little active','quite active','quite active','active','very active')"`
+	Daily_active  string `gorm:"type:enum('not active','little active','quite active','active','very active')"`
 	Weight_target int
 	Range_time    int
-	Target        string `gorm:"type:enum('gain weight','lose Weight','none');default:'none'"`
+	Target        string `gorm:"type:enum('gain weight','lose weight')"`
 }
