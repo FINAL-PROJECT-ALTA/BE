@@ -131,7 +131,211 @@ func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entit
 	return menus, nil
 }
 
-func (mr *MenuRepository) GetMenuRecommend(user_uid string) ([]entities.Menu, error) {
+func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (error, int, int, int, int) {
+
+	var goal entities.Goal
+	var user entities.User
+
+	resGoal := mr.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+
+	if err := resGoal.Error; err != nil {
+		return err, 0, 0, 0, 0
+	}
+	resUser := mr.database.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+
+	if err := resUser.Error; err != nil {
+		return err, 0, 0, 0, 0
+	}
+	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+	var bmr int
+	var daily_active float32
+	switch goal.Daily_active {
+	case "not active":
+		daily_active = 1.2
+	case "little active":
+		daily_active = 1.37
+	case "quite active":
+		daily_active = 1.5
+	case "active":
+		daily_active = 1.72
+	case "very active":
+		daily_active = 1.9
+	}
+	if user.Gender == "Male" {
+		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+	}
+	if user.Gender == "Famale" {
+		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+	}
+	bmrDay := bmr - int(needed)
+
+	breakfast := bmrDay * 25 / 100
+	lunch := bmrDay * 35 / 100
+	dinner := bmrDay * 30 / 100
+	overtime := bmrDay * 10 / 100
+
+	return nil, breakfast, lunch, dinner, overtime
+}
+func (mr *MenuRepository) GetRecommendBreakfast(user_uid string) ([]entities.Menu, error) {
+
+	var goal entities.Goal
+	var user entities.User
+
+	resGoal := mr.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+
+	if err := resGoal.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	resUser := mr.database.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+
+	if err := resUser.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+	var bmr int
+	var daily_active float32
+	switch goal.Daily_active {
+	case "not active":
+		daily_active = 1.2
+	case "little active":
+		daily_active = 1.37
+	case "quite active":
+		daily_active = 1.5
+	case "active":
+		daily_active = 1.72
+	case "very active":
+		daily_active = 1.9
+	}
+	if user.Gender == "Male" {
+		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+	}
+	if user.Gender == "Famale" {
+		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+	}
+	bmrDay := bmr - int(needed)
+
+	breakfast := bmrDay * 25 / 100
+	lunch := bmrDay * 35 / 100
+	dinner := bmrDay * 30 / 100
+	free := bmrDay * 10 / 100
+	fmt.Println(breakfast, lunch, dinner, free)
+
+	menus := []entities.Menu{}
+
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", "createdby").Find(&menus)
+
+	if err := res.Error; err != nil {
+		return menus, err
+	}
+	return menus, nil
+}
+func (mr *MenuRepository) GetRecommendLunch(user_uid string) ([]entities.Menu, error) {
+
+	var goal entities.Goal
+	var user entities.User
+
+	resGoal := mr.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+
+	if err := resGoal.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	resUser := mr.database.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+
+	if err := resUser.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+	var bmr int
+	var daily_active float32
+	switch goal.Daily_active {
+	case "not active":
+		daily_active = 1.2
+	case "little active":
+		daily_active = 1.37
+	case "quite active":
+		daily_active = 1.5
+	case "active":
+		daily_active = 1.72
+	case "very active":
+		daily_active = 1.9
+	}
+	if user.Gender == "Male" {
+		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+	}
+	if user.Gender == "Famale" {
+		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+	}
+	bmrDay := bmr - int(needed)
+
+	breakfast := bmrDay * 25 / 100
+	lunch := bmrDay * 35 / 100
+	dinner := bmrDay * 30 / 100
+	free := bmrDay * 10 / 100
+	fmt.Println(breakfast, lunch, dinner, free)
+
+	menus := []entities.Menu{}
+
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", "createdby").Find(&menus)
+
+	if err := res.Error; err != nil {
+		return menus, err
+	}
+	return menus, nil
+}
+func (mr *MenuRepository) GetRecommendDinner(user_uid string) ([]entities.Menu, error) {
+
+	var goal entities.Goal
+	var user entities.User
+
+	resGoal := mr.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+
+	if err := resGoal.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	resUser := mr.database.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+
+	if err := resUser.Error; err != nil {
+		return []entities.Menu{}, err
+	}
+	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+	var bmr int
+	var daily_active float32
+	switch goal.Daily_active {
+	case "not active":
+		daily_active = 1.2
+	case "little active":
+		daily_active = 1.37
+	case "quite active":
+		daily_active = 1.5
+	case "active":
+		daily_active = 1.72
+	case "very active":
+		daily_active = 1.9
+	}
+	if user.Gender == "Male" {
+		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+	}
+	if user.Gender == "Famale" {
+		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+	}
+	bmrDay := bmr - int(needed)
+
+	breakfast := bmrDay * 25 / 100
+	lunch := bmrDay * 35 / 100
+	dinner := bmrDay * 30 / 100
+	free := bmrDay * 10 / 100
+	fmt.Println(breakfast, lunch, dinner, free)
+
+	menus := []entities.Menu{}
+
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("Created_by = ?", "createdby").Find(&menus)
+
+	if err := res.Error; err != nil {
+		return menus, err
+	}
+	return menus, nil
+}
+func (mr *MenuRepository) GetRecommendOverTime(user_uid string) ([]entities.Menu, error) {
 
 	var goal entities.Goal
 	var user entities.User
