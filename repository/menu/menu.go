@@ -18,7 +18,7 @@ func New(db *gorm.DB) *MenuRepository {
 	}
 }
 
-func (mr *MenuRepository) Create(foods []entities.Food, newMenu entities.Menu) (entities.Menu, error) {
+func (mr *MenuRepository) CreateMenuAdmin(foods []entities.Food, newMenu entities.Menu) (entities.Menu, error) {
 
 	uid := shortuuid.New()
 	newMenu.Menu_uid = uid
@@ -36,6 +36,51 @@ func (mr *MenuRepository) Create(foods []entities.Food, newMenu entities.Menu) (
 				return err
 			}
 		}
+		return nil
+	})
+
+	if err != nil {
+		return newMenu, err
+	}
+
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).First(&newMenu)
+
+	if err := res.Error; err != nil {
+		return entities.Menu{}, err
+	}
+
+	return newMenu, nil
+}
+func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities.Menu) (entities.Menu, error) {
+
+	uid := shortuuid.New()
+	newMenu.Menu_uid = uid
+	err := mr.database.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Create(&newMenu).Error; err != nil {
+			return err
+		}
+		for i := 0; i < len(foods); i++ {
+			detail := entities.Detail_menu{
+				Menu_uid: newMenu.Menu_uid,
+				Food_uid: foods[i].Food_uid,
+			}
+			if err := tx.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
+				return err
+			}
+		}
+		var goal entities.Goal
+		if err := tx.Model(entities.Goal{}).Where("user_uid=? AND status =?", newMenu.User_uid, "active").Find(&goal).Error; err != nil {
+			return err
+		}
+		var user_history entities.User_history
+		user_history.Menu_uid = newMenu.Menu_uid
+		user_history.User_uid = newMenu.User_uid
+
+		if err := tx.Model(entities.User_history{}).Create(&user_history).Error; err != nil {
+			return err
+		}
+
 		return nil
 	})
 

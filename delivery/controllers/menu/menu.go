@@ -28,26 +28,39 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 
 		newMenu := MenuCreateRequestFormat{}
 		newMenu.User_uid = user
-
+		var res entities.Menu
 		if isAdmin {
 			newMenu.Created_by = "admin"
+			c.Bind(&newMenu)
+			errB := c.Validate(&newMenu)
+			if errB != nil {
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
+			}
+
+			resRepo, err := mc.repo.CreateMenuAdmin(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
+				Menu_category: newMenu.Menu_category, Created_by: newMenu.Created_by,
+			})
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			}
+			res = resRepo
 
 		} else if !isAdmin {
 			newMenu.Created_by = "user"
-		}
+			c.Bind(&newMenu)
+			errB := c.Validate(&newMenu)
+			if errB != nil {
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
+			}
 
-		c.Bind(&newMenu)
-		errB := c.Validate(&newMenu)
-		if errB != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
-		}
+			resRepo, err := mc.repo.CreateMenuAdmin(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
+				Menu_category: newMenu.Menu_category, Created_by: newMenu.Created_by,
+			})
 
-		res, err := mc.repo.Create(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
-			Menu_category: newMenu.Menu_category, Created_by: newMenu.Created_by,
-		})
-
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			}
+			res = resRepo
 		}
 
 		response := MenuCreateResponse{}
