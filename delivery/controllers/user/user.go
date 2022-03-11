@@ -40,8 +40,11 @@ func (ac *UserController) Register() echo.HandlerFunc {
 		if errO != nil {
 			log.Info(errO)
 		}
-
-		link := utils.Upload(ac.conn, *file)
+		src, _ := file.Open()
+		link, errU := utils.Upload(ac.conn, src, *file)
+		if errU != nil {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
+		}
 
 		res, err_repo := ac.repo.Register(entities.User{
 			Name:     user.Name,
