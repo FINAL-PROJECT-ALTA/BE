@@ -108,3 +108,19 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 	return true, nil
 
 }
+func (ur *GoalRepository) CencelGoal(user_uid string) error {
+
+	var goal entities.Goal
+
+	if err := ur.database.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal).Error; err != nil {
+		return errors.New("failed to cencel goal")
+	}
+
+	goal.Status = "cencel"
+	if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
+		return errors.New("failed to cencel goal")
+	}
+
+	return nil
+
+}
