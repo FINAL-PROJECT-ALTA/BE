@@ -98,3 +98,19 @@ func UpdateUpload(sess *session.Session, filename string, file multipart.File, f
 
 	return "success to update image"
 }
+
+func DeleteImage(sess *session.Session, filename string) string {
+	var svc = s3.New(sess)
+
+	var req = &s3.DeleteObjectInput{
+		Bucket: aws.String("airbnb-app"),
+		Key:    aws.String(filename),
+	}
+
+	var res, err = svc.DeleteObject(req)
+	if err != nil {
+		log.Info(res)
+	}
+
+	return "succes to delete image"
+}
