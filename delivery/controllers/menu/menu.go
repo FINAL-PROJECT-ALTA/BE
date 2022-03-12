@@ -53,7 +53,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
 			}
 
-			resRepo, err := mc.repo.CreateMenuAdmin(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
+			resRepo, err := mc.repo.CreateMenuUser(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
 				Menu_category: newMenu.Menu_category, Created_by: newMenu.Created_by,
 			})
 

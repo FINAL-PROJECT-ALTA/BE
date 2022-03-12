@@ -14,5 +14,5 @@ type User struct {
 	Roles    bool   `gorm:"type:bool" json:"roles"`
 	Image    string
 	Goal     []Goal         `gorm:"foreignKey:User_uid;references:User_uid"`
-	History  []User_history `gorm:"foreignKey:User_uid;references:User_uid"`
+	History  []User_history `gorm:"-"`
 }

@@ -56,6 +56,8 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 
 	uid := shortuuid.New()
 	newMenu.Menu_uid = uid
+	var total_calories int
+
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
 
 		if err := tx.Create(&newMenu).Error; err != nil {
@@ -69,9 +71,16 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 			if err := tx.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
 				return err
 			}
+
+			var food entities.Food
+			if err := tx.Debug().Model(entities.Food{}).Where("food_uid=?", foods[i].Food_uid).First(&food).Error; err != nil {
+				return err
+			}
+			total_calories += food.Calories
+
 		}
 		var goal entities.Goal
-		if err := tx.Model(entities.Goal{}).Where("user_uid=? AND status =?", newMenu.User_uid, "active").Find(&goal).Error; err != nil {
+		if err := tx.Debug().Model(entities.Goal{}).Where("user_uid=? AND status =?", newMenu.User_uid, "active").First(&goal).Error; err != nil {
 			return err
 		}
 		var user_history entities.User_history
@@ -79,7 +88,7 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		user_history.User_uid = newMenu.User_uid
 		user_history.Goal_uid = goal.Goal_uid
 
-		if err := tx.Model(entities.User_history{}).Create(&user_history).Error; err != nil {
+		if err := tx.Debug().Model(entities.User_history{}).Create(&user_history).Error; err != nil {
 			return err
 		}
 
@@ -90,11 +99,13 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		return newMenu, err
 	}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).First(&newMenu)
+	res := mr.database.Debug().Model(newMenu).Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories})
 
 	if err := res.Error; err != nil {
 		return entities.Menu{}, err
 	}
+
+	return newMenu, nil
 
 	return newMenu, nil
 }
