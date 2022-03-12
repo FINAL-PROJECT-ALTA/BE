@@ -15,4 +15,5 @@ type User struct {
 	Image    string
 	Goal     []Goal         `gorm:"foreignKey:User_uid;references:User_uid"`
 	History  []User_history `gorm:"foreignKey:User_uid;references:User_uid"`
+
 }
