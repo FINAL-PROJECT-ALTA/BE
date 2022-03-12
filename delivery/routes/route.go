@@ -75,5 +75,6 @@ func RegisterPath(e *echo.Echo,
 	//ROUTE USER HISTORY
 	e.GET("/userhistories", uh.GetAll(), middlewares.JwtMiddleware())
 	e.GET("/userhistories/:user_history_uid", uh.GetByUid(), middlewares.JwtMiddleware())
+	e.POST("/userhistories", uh.Insert(), middlewares.JwtMiddleware())
 
 }

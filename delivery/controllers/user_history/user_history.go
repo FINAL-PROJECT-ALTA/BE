@@ -22,6 +22,13 @@ func New(repository userhistory.UserHistory) *UserHistoryController {
 
 func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 		userHistory := CreateUserHistoryRequestFormat{}
 		userHistory.User_uid = user
@@ -34,18 +41,18 @@ func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 		}
 
 		res, errH := uh.repo.Insert(entities.User_history{
+			User_uid: userHistory.User_uid,
 			Menu_uid: userHistory.Menu_uid,
 			Goal_uid: userHistory.Goal_uid,
 		})
 
+		if errH != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "Internal Server Error", nil))
+		}
 		response := CreateUserHistoryResponse{}
 		response.User_history_uid = res.User_history_uid
 		response.Goal_uid = res.Goal_uid
 		response.Menu_uid = res.Menu_uid
-
-		if errH != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "Internal Server Error", nil))
-		}
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success Create User", response))
 
@@ -54,6 +61,13 @@ func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 
 func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 
 		res, err := uh.repo.GetAll(user)
@@ -64,7 +78,6 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 		response := []GetAllUserHistoryResponse{}
 		for i := 0; i < len(res); i++ {
 			response[i].User_history_uid = res[i].User_history_uid
-			response[i].User_uid = res[i].User_uid
 			response[i].Goal_uid = res[i].Goal_uid
 			response[i].CreatedAt = res[i].CreatedAt
 		}
@@ -75,6 +88,13 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 
 func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 		userHistory_uid := c.Param("user_history_uid")
 
@@ -85,7 +105,6 @@ func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 
 		response := GetUserHistoryResponse{}
 		response.User_history_uid = res.User_history_uid
-		response.User_uid = res.User_uid
 		response.Goal_uid = res.Goal_uid
 
 		responseMenu := []Menu{}
