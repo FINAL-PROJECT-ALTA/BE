@@ -50,26 +50,21 @@ func (uh *UserHistoryRepository) GetById(user_history_uid string) (entities.User
 	return user_history, nil
 }
 
-func (uh *UserHistoryRepository) Update(user_history_uid string, updateHistory entities.User_history) (entities.User_history, error) {
+func (uh *UserHistoryRepository) Update(user_uid, user_history_uid string, updateHistory entities.User_history) (entities.User_history, error) {
 	userHistory := entities.User_history{}
 
-	uh.database.Where("user_history_uid = ?", user_history_uid).First(&userHistory)
-
-	if err := uh.database.Model(&userHistory).Updates(&updateHistory).Error; err != nil {
+	if err := uh.database.Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).First(&userHistory).Updates(&updateHistory).Error; err != nil {
 		return updateHistory, err
 	}
 
 	return updateHistory, nil
 }
 
-func (uh *UserHistoryRepository) Delete(user_history_uid string) error {
+func (uh *UserHistoryRepository) Delete(user_uid, user_history_uid string) error {
 	userHistory := entities.User_history{}
 
-	uh.database.Where("user_history_uid = ?", user_history_uid).First(&userHistory)
-
-	if err := uh.database.Delete(&userHistory).Error; err != nil {
+	if err := uh.database.Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).First(&userHistory).Delete(&userHistory).Error; err != nil {
 		return err
 	}
-
 	return nil
 }
