@@ -32,15 +32,16 @@ type Menu struct {
 }
 
 type GetAllUserHistoryResponse struct {
-	User_history_uid string    `json:"user_history_uid"`
-	Goal_uid         string    `json:"goal_uid"`
-	CreatedAt        time.Time `json:"created_at"`
+	User_history_uid string          `json:"user_history_uid"`
+	Goal_uid         string          `json:"goal_uid"`
+	CreatedAt        time.Time       `json:"created_at"`
+	Menu             []entities.Menu `json:"menu"`
 }
 
 type GetUserHistoryResponse struct {
-	User_history_uid string `json:"user_history_uid"`
-	Goal_uid         string `json:"goal_uid"`
-	Menu             []Menu `json:"menu"`
+	User_history_uid string          `json:"user_history_uid"`
+	Goal_uid         string          `json:"goal_uid"`
+	Menu             []entities.Menu `json:"menu"`
 }
 
 type UpdateUserHistoryResponse struct {
