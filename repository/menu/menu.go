@@ -107,7 +107,6 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 
 	return newMenu, nil
 
-	return newMenu, nil
 }
 
 func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entities.Menu, error) {
