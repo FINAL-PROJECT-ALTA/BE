@@ -189,14 +189,14 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 	case "very active":
 		daily_active = 1.9
 	}
-	if user.Gender == "Male" {
+	if user.Gender == "Pria" {
 		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
-		fmt.Println("male", bmr)
+		fmt.Println("pria", bmr)
 
 	}
-	if user.Gender == "Famale" {
+	if user.Gender == "Wanita" {
 		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
-		fmt.Println("famale", bmr)
+		fmt.Println("wanita", bmr)
 
 	}
 	bmrDay := bmr - int(needed)
