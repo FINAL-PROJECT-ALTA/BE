@@ -8,5 +8,5 @@ type User_history struct {
 	User_uid         string `gorm:"index;type:varchar(22)"`
 	Goal_uid         string `gorm:"index;type:varchar(22)"`
 	Menu_uid         string `gorm:"index;type:varchar(22)"`
-	Menu             []Menu `gorm:"-"`
+	Menu             []Menu `gorm:"foreignKey:Menu_uid;references:Menu_uid"`
 }

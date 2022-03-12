@@ -77,9 +77,12 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 
 		response := []GetAllUserHistoryResponse{}
 		for i := 0; i < len(res); i++ {
-			response[i].User_history_uid = res[i].User_history_uid
-			response[i].Goal_uid = res[i].Goal_uid
-			response[i].CreatedAt = res[i].CreatedAt
+			var resHis GetAllUserHistoryResponse
+			resHis.User_history_uid = res[i].User_history_uid
+			resHis.Goal_uid = res[i].Goal_uid
+			resHis.CreatedAt = res[i].CreatedAt
+			resHis.Menu = res[i].Menu
+			response = append(response, resHis)
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
@@ -106,16 +109,7 @@ func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 		response := GetUserHistoryResponse{}
 		response.User_history_uid = res.User_history_uid
 		response.Goal_uid = res.Goal_uid
-
-		responseMenu := []Menu{}
-		for i := 0; i < len(res.Menu); i++ {
-			menu := Menu{}
-			menu.Menu_uid = res.Menu[i].Menu_uid
-			menu.Menu_category = res.Menu[i].Menu_category
-			menu.Detail_menu = res.Menu[i].Detail_menu
-			responseMenu = append(responseMenu, menu)
-		}
-		response.Menu = responseMenu
+		response.Menu = res.Menu
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
 	}
