@@ -23,7 +23,7 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 	uid := shortuuid.New()
 	newHistory.User_history_uid = uid
 
-	if err := uh.database.Create(&newHistory).Error; err != nil {
+	if err := uh.database.Preload("Menu").Create(&newHistory).Error; err != nil {
 		return newHistory, err
 	}
 	return newHistory, nil
@@ -32,7 +32,7 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 func (uh *UserHistoryRepository) GetAll(user_uid string) ([]entities.User_history, error) {
 	userHistory := []entities.User_history{}
 
-	if err := uh.database.Where("user_uid", user_uid).Find(&userHistory).Error; err != nil {
+	if err := uh.database.Preload("Menu").Where("user_uid", user_uid).Find(&userHistory).Error; err != nil {
 		return userHistory, err
 	}
 
@@ -42,7 +42,7 @@ func (uh *UserHistoryRepository) GetAll(user_uid string) ([]entities.User_histor
 func (uh *UserHistoryRepository) GetById(user_uid, user_history_uid string) (entities.User_history, error) {
 	user_history := entities.User_history{}
 
-	result := uh.database.Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).First(&user_history)
+	result := uh.database.Preload("Menu").Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).First(&user_history)
 	if err := result.Error; err != nil {
 		return user_history, errors.New("record not found")
 	}
