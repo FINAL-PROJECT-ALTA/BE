@@ -36,9 +36,9 @@ func Upload(sess *session.Session, fileHeader multipart.FileHeader) string {
 	var uid = shortuuid.New()
 
 	var manager = s3manager.NewUploader(sess)
-	var src, err = fileHeader.Open()
-	if err != nil {
-		log.Info(err)
+	var src, errO = fileHeader.Open()
+	if errO != nil {
+		log.Info(errO)
 	}
 	defer src.Close()
 
@@ -46,7 +46,7 @@ func Upload(sess *session.Session, fileHeader multipart.FileHeader) string {
 	buffer := make([]byte, size)
 	src.Read(buffer)
 
-	var res, err1 = manager.Upload(
+	var res, err = manager.Upload(
 		&s3manager.UploadInput{
 			Bucket:       aws.String("airbnb-app"),
 			Key:          aws.String(uid),
@@ -57,9 +57,9 @@ func Upload(sess *session.Session, fileHeader multipart.FileHeader) string {
 		},
 	)
 
-	if err1 != nil {
+	if err != nil {
 		log.Info(res)
-		log.Error(err1)
+		log.Error(err)
 	}
 
 	var url = "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/" + uid
