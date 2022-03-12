@@ -36,7 +36,7 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 func (ur *UserRepository) GetById(user_uid string) (entities.User, error) {
 	arrUser := entities.User{}
 
-	result := ur.database.Preload("Goal").Preload("History").Where("user_uid = ?", user_uid).First(&arrUser)
+	result := ur.database.Preload("Goal").Preload("History").Where("user_uid = ?", user_uid).Find(&arrUser)
 	if err := result.Error; err != nil {
 		return arrUser, errors.New("record not found")
 	}
