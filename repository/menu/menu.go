@@ -56,9 +56,9 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 
 	uid := shortuuid.New()
 	newMenu.Menu_uid = uid
-	var total_calories int
 
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
+		var total_calories int
 
 		if err := tx.Create(&newMenu).Error; err != nil {
 			return err
@@ -92,6 +92,9 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 			return err
 		}
 
+		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories}).Error; err != nil {
+			return err
+		}
 		return nil
 	})
 
@@ -99,7 +102,7 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		return newMenu, err
 	}
 
-	res := mr.database.Debug().Model(newMenu).Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories})
+	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Find(&newMenu)
 
 	if err := res.Error; err != nil {
 		return entities.Menu{}, err
