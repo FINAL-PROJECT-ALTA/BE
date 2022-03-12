@@ -22,6 +22,13 @@ func New(repository userhistory.UserHistory) *UserHistoryController {
 
 func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 		userHistory := CreateUserHistoryRequestFormat{}
 		userHistory.User_uid = user
@@ -54,6 +61,13 @@ func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 
 func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 
 		res, err := uh.repo.GetAll(user)
@@ -74,6 +88,13 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 
 func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+		if isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+
+		}
+
 		user := middlewares.ExtractTokenUserUid(c)
 		userHistory_uid := c.Param("user_history_uid")
 
