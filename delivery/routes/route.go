@@ -7,6 +7,7 @@ import (
 	"HealthFit/delivery/controllers/goal"
 	"HealthFit/delivery/controllers/menu"
 	"HealthFit/delivery/controllers/user"
+	userhistory "HealthFit/delivery/controllers/user_history"
 	"HealthFit/delivery/middlewares"
 
 	"github.com/labstack/echo/v4"
@@ -20,6 +21,7 @@ func RegisterPath(e *echo.Echo,
 	fc *foods.FoodsController,
 	ac *admin.AdminController,
 	mc *menu.MenuController,
+	uh *userhistory.UserHistoryController,
 ) {
 
 	//CORS
@@ -66,5 +68,9 @@ func RegisterPath(e *echo.Echo,
 	e.GET("/menus/recommend", mc.GetMenuRecommend())
 	e.PUT("/menus/:menu_uid", mc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/menus/:menu_uid", mc.Delete(), middlewares.JwtMiddleware())
+
+	//ROUTE USER HISTORY
+	e.GET("/userhistories", uh.GetAll(), middlewares.JwtMiddleware())
+	e.GET("/userhistories/:user_history_uid", uh.GetByUid(), middlewares.JwtMiddleware())
 
 }
