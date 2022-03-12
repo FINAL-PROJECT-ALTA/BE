@@ -7,4 +7,5 @@ type User_history struct {
 	User_history_uid string
 	User_uid         string
 	Menu_uid         string
+	Goal_uid         string
 }
