@@ -66,6 +66,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 		response := MenuCreateResponse{}
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
+		response.Created_by = res.Created_by
 
 		var foods []entities.Food
 		var total int
@@ -109,6 +110,7 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 				Menu_category:  result.Menu_category,
 				Total_calories: total,
 				Foods:          foods,
+				Created_by:     result.Created_by,
 			})
 		}
 
@@ -141,6 +143,7 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 				Menu_uid:      result.Menu_uid,
 				Menu_category: result.Menu_category,
 				Foods:         foods,
+				Created_by:    result.Created_by,
 			})
 		}
 
@@ -172,6 +175,7 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 				Menu_uid:      result.Menu_uid,
 				Menu_category: result.Menu_category,
 				Foods:         foods,
+				Created_by:    result.Created_by,
 			})
 		}
 
@@ -203,6 +207,7 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 				Menu_uid:      result.Menu_uid,
 				Menu_category: result.Menu_category,
 				Foods:         foods,
+				Created_by:    result.Created_by,
 			})
 		}
 
@@ -234,6 +239,7 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 				Menu_uid:      result.Menu_uid,
 				Menu_category: result.Menu_category,
 				Foods:         foods,
+				Created_by:    result.Created_by,
 			})
 		}
 
@@ -271,6 +277,8 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		response := MenuUpdateResponse{}
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
+		response.Created_by = res.Created_by
+
 		var foods []entities.Food
 		var total int
 

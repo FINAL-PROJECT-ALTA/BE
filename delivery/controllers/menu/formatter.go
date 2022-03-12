@@ -22,16 +22,18 @@ type MenuUpdateRequestFormat struct {
 // ========= Menu Response =========== //
 
 type MenuCreateResponse struct {
-	Menu_uid       string          `json:"menu_uid"`
-	Menu_category  string          `json:"menu_category"`
-	Total_calories int             `json:"total_calories"`
+	Menu_uid       string `json:"menu_uid"`
+	Menu_category  string `json:"menu_category"`
+	Total_calories int    `json:"total_calories"`
+	Created_by     string
 	Foods          []entities.Food `json:"foods"`
 }
 
 type MenuUpdateResponse struct {
-	Menu_uid       string          `json:"menu_uid"`
-	Menu_category  string          `json:"menu_category"`
-	Total_calories int             `json:"total_calories"`
+	Menu_uid       string `json:"menu_uid"`
+	Menu_category  string `json:"menu_category"`
+	Total_calories int    `json:"total_calories"`
+	Created_by     string
 	Foods          []entities.Food `json:"foods"`
 }
 
