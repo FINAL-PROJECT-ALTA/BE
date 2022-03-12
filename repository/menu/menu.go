@@ -2,6 +2,7 @@ package menu
 
 import (
 	"HealthFit/entities"
+	"fmt"
 	"math"
 
 	"github.com/lithammer/shortuuid"
@@ -160,12 +161,12 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 	var goal entities.Goal
 	var user entities.User
 
-	resGoal := mr.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+	resGoal := mr.database.Debug().Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
 
 	if err := resGoal.Error; err != nil {
 		return 0, 0, 0, 0, err
 	}
-	resUser := mr.database.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+	resUser := mr.database.Debug().Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
 
 	if err := resUser.Error; err != nil {
 		return 0, 0, 0, 0, err
@@ -197,6 +198,7 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 	lunch := bmrDay * 35 / 100
 	dinner := bmrDay * 30 / 100
 	overtime := bmrDay * 10 / 100
+	fmt.Println(breakfast, lunch, dinner, overtime)
 
 	return breakfast, lunch, dinner, overtime, nil
 }
@@ -209,7 +211,7 @@ func (mr *MenuRepository) GetRecommendBreakfast(user_uid string) ([]entities.Men
 
 	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories <= ?", "breakfast", "admin", breakfast).Order("count desc").Find(&menus)
+	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories <= ?", "breakfast", "admin", breakfast).Order("count desc").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, err
