@@ -13,6 +13,6 @@ type User struct {
 	Gender   string `gorm:"type:enum('Male','Female','None');default:'None'"`
 	Roles    bool   `gorm:"type:bool" json:"roles"`
 	Image    string
-	Goal     []Goal         `gorm:"foreignKey:User_uid;references:User_uid"`
+	Goal     []Goal         `gorm:"-"`
 	History  []User_history `gorm:"-"`
 }
