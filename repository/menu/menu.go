@@ -172,8 +172,6 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 		return 0, 0, 0, 0, err
 	}
 	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
-	fmt.Println("perkalian weight target dan range target", float64(goal.Weight_target*7700/goal.Range_time), goal)
-	fmt.Println("needed", needed)
 
 	var bmr int
 	var daily_active float32
@@ -189,18 +187,15 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 	case "very active":
 		daily_active = 1.9
 	}
-	if user.Gender == "Pria" {
+	if user.Gender == "male" {
 		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
-		fmt.Println("pria", bmr)
 
 	}
-	if user.Gender == "Wanita" {
+	if user.Gender == "female" {
 		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
-		fmt.Println("wanita", bmr)
 
 	}
 	bmrDay := bmr - int(needed)
-	fmt.Println("Bmr-int nedded", bmrDay, int(needed))
 
 	breakfast := bmrDay * 25 / 100
 	lunch := bmrDay * 35 / 100
