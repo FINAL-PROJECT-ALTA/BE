@@ -19,7 +19,7 @@ type UpdateUserHistoryRequestFormat struct {
 
 type CreateUserHistoryResponse struct {
 	User_history_uid string `json:"user_history_uid"`
-	User_uid         string
+	User_uid         string `json:"-"`
 	Goal_uid         string `json:"goal_uid"`
 	Menu_uid         string `json:"menu_uid"`
 }
