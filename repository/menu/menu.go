@@ -108,17 +108,16 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories}).Error; err != nil {
 			return err
 		}
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Find(&newMenu)
+
+		if err := res.Error; err != nil {
+			return err
+		}
 		return nil
 	})
 
 	if err != nil {
 		return newMenu, err
-	}
-
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Find(&newMenu)
-
-	if err := res.Error; err != nil {
-		return entities.Menu{}, err
 	}
 
 	return newMenu, nil
@@ -161,47 +160,59 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 	var goal entities.Goal
 	var user entities.User
 
-	resGoal := mr.database.Debug().Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+	var breakfast int
+	var lunch int
+	var dinner int
+	var overtime int
 
-	if err := resGoal.Error; err != nil {
-		return 0, 0, 0, 0, err
+	err := mr.database.Transaction(func(tx *gorm.DB) error {
+
+		resGoal := tx.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
+
+		if err := resGoal.Error; err != nil {
+			return err
+		}
+		resUser := tx.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+
+		if err := resUser.Error; err != nil {
+			return err
+		}
+		needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+
+		var bmr int
+		var daily_active float32
+		switch goal.Daily_active {
+		case "not active":
+			daily_active = 1.2
+		case "little active":
+			daily_active = 1.37
+		case "quite active":
+			daily_active = 1.5
+		case "active":
+			daily_active = 1.72
+		case "very active":
+			daily_active = 1.9
+		}
+		if user.Gender == "male" {
+			bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+
+		}
+		if user.Gender == "female" {
+			bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+
+		}
+		bmrDay := bmr - int(needed)
+
+		breakfast = bmrDay * 25 / 100
+		lunch = bmrDay * 35 / 100
+		dinner = bmrDay * 30 / 100
+		overtime = bmrDay * 10 / 100
+		fmt.Println(breakfast, lunch, dinner, overtime)
+		return nil
+	})
+	if err != nil {
+		return 0, 0, 0, 0, nil
 	}
-	resUser := mr.database.Debug().Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
-
-	if err := resUser.Error; err != nil {
-		return 0, 0, 0, 0, err
-	}
-	needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
-
-	var bmr int
-	var daily_active float32
-	switch goal.Daily_active {
-	case "not active":
-		daily_active = 1.2
-	case "little active":
-		daily_active = 1.37
-	case "quite active":
-		daily_active = 1.5
-	case "active":
-		daily_active = 1.72
-	case "very active":
-		daily_active = 1.9
-	}
-	if user.Gender == "male" {
-		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
-
-	}
-	if user.Gender == "female" {
-		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
-
-	}
-	bmrDay := bmr - int(needed)
-
-	breakfast := bmrDay * 25 / 100
-	lunch := bmrDay * 35 / 100
-	dinner := bmrDay * 30 / 100
-	overtime := bmrDay * 10 / 100
-	fmt.Println(breakfast, lunch, dinner, overtime)
 
 	return breakfast, lunch, dinner, overtime, nil
 }
