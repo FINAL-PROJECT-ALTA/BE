@@ -208,7 +208,7 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 		bmrDay := bmr - int(needed)
 
 		posible := bmr * 50 / 100
-		if int(bmrDay) > posible {
+		if int(bmrDay) < posible {
 			return errors.New("impossible")
 		}
 
