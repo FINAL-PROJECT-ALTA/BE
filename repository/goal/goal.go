@@ -29,8 +29,8 @@ func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 		return entities.Goal{}, errors.New("vailed to create goal")
 	}
 
-	if _, _, err := ur.CheckRecommendGoal(g); err != nil {
-		return entities.Goal{}, err
+	if bmr, cutCaloriesDay, err := ur.CheckRecommendGoal(g); err != nil {
+		return entities.Goal{Weight: bmr, Height: cutCaloriesDay}, err
 	}
 
 	uid := shortuuid.New()
