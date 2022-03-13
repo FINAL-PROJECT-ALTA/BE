@@ -284,6 +284,8 @@ func (mr *MenuRepository) GetRecommendOverTime(user_uid string) ([]entities.Menu
 func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateMenu entities.Menu) (entities.Menu, error) {
 	//code baru masih belum work
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
+		var total_calories int
+
 		var menu entities.Menu
 
 		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Find(&menu).Error; err != nil {
@@ -313,7 +315,17 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 			if err := tx.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
 				return err
 			}
+			var food entities.Food
+			if err := tx.Debug().Model(entities.Food{}).Where("food_uid=?", foods[i].Food_uid).First(&food).Error; err != nil {
+				return err
+			}
+			total_calories += food.Calories
 		}
+
+		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories}).Error; err != nil {
+			return err
+		}
+
 		return nil
 	})
 
