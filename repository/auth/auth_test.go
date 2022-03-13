@@ -2,8 +2,9 @@ package auth
 
 import (
 	"HealthFit/configs"
-	// "HealthFit/delivery/middlewares"
+	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
+	gr "HealthFit/repository/goal"
 	"HealthFit/repository/user"
 	utils "HealthFit/utils/mysql"
 	"testing"
@@ -15,10 +16,10 @@ func TestLogin(t *testing.T) {
 	config := configs.GetConfig()
 	db := utils.InitDB(config)
 	repo := New(db)
-	db.Migrator().DropTable(&entities.User{})
-	db.AutoMigrate(&entities.User{})
 
-	t.Run("success run login", func(t *testing.T) {
+	t.Run("invalid email", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
 
 		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
 		res, err := user.New(db).Register(mockUser)
@@ -26,26 +27,92 @@ func TestLogin(t *testing.T) {
 			t.Fail()
 		}
 
-		// check := middlewares.CheckPasswordHash(mockUser.Password, res.Password)
+		mockLogin := entities.User{Email: "dordd", Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
 
-		mockLogin := entities.User{Email: res.Email, Password: res.Password}
-		resL, errL := repo.Login(mockLogin.Email, mockLogin.Password)
-
-		assert.Nil(t, errL)
-		assert.Equal(t, res.Email, resL.Email)
+		assert.NotNil(t, errL)
 	})
 
-	// t.Run("email not found", func(t *testing.T) {
-	// 	mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
-	// 	if _, err := user.New(db).Register(mockUser); err != nil {
-	// 		t.Fail()
-	// 	}
+	t.Run("incorrect password", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
 
-	// 	mockLogin := entities.User{Email: mockUser.Email, Password: mockUser.Password}
-	// 	res, err := repo.Login(mockLogin.Email, mockLogin.Password)
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
 
-	// 	assert.Nil(t, err)
-	// 	assert.Equal(t, "test", res.Email)
-	// })
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
 
+		assert.NotNil(t, errL)
+	})
+
+	t.Run("roles error", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		resPass := middlewares.CheckPasswordHash("test", res.Password)
+		if resPass == false {
+			t.Fail()
+		}
+
+		var pass string = "$2a$14$LArsepWalaQWifUH7x7uyecACDMg6w8a6k/LmgGg5BQy79/VAwREq"
+
+		mockLogin := entities.User{Email: res.Email, Password: pass}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
+
+		assert.NotNil(t, errL)
+	})
+
+	t.Run("success", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.Goal{})
+		db.AutoMigrate(&entities.User{}, &entities.Goal{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		pas, _ := middlewares.HashPassword(res.Password)
+
+		resPass := middlewares.CheckPasswordHash(mockUser.Password, pas)
+		if resPass == false {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      res.User_uid,
+			Height:        150,
+			Weight:        55,
+			Age:           24,
+			Daily_active:  "not active",
+			Weight_target: 50,
+			Range_time:    14,
+			Target:        "lose weight",
+		}
+
+		resG, errG := gr.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, errRef := repo.RefreshGoalAuth(resG.User_uid)
+		if errRef != nil {
+			t.Fail()
+		}
+
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
+
+		assert.NotNil(t, errL)
+	})
 }

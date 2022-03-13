@@ -33,6 +33,7 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 	if !match {
 		return user, errors.New("incorrect password")
 	}
+
 	if !user.Roles {
 		_, err := ad.RefreshGoalAuth(user.User_uid)
 		if err != nil {
