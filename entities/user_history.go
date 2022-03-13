@@ -1,12 +1,20 @@
 package entities
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User_history struct {
-	gorm.Model
-	User_history_uid string
-	User_uid         string `gorm:"index;type:varchar(22)"`
-	Goal_uid         string `gorm:"index;type:varchar(22)"`
-	Menu_uid         string `gorm:"index;type:varchar(22)"`
-	Menu             []Menu `gorm:"foreignKey:Menu_uid;references:Menu_uid"`
+	ID uint `gorm:"primarykey" json:"-"`
+
+	User_history_uid string         `json:"user_history_uid"`
+	User_uid         string         `gorm:"index;type:varchar(22)" json:"user_uid"`
+	Goal_uid         string         `gorm:"index;type:varchar(22)" json:"goal_uid"`
+	Menu_uid         string         `gorm:"index;type:varchar(22)" json:"menu_uid"`
+	Menu             []Menu         `gorm:"foreignKey:Menu_uid;references:Menu_uid" json:"menu"`
+	CreatedAt        time.Time      `json:"cretedAt"`
+	UpdatedAt        time.Time      `json:"-"`
+	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
 }
