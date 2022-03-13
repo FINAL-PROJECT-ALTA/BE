@@ -51,7 +51,7 @@ func SuccessMenu(code interface{}, msg interface{}, row interface{}, limitcalori
 		Code:          code,
 		Message:       msg,
 		TotalResult:   row,
-		LimitCalories: row,
+		LimitCalories: limitcalories,
 		Data:          data,
 	}
 }
