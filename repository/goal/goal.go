@@ -29,6 +29,10 @@ func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 		return entities.Goal{}, errors.New("vailed to create goal")
 	}
 
+	if _, _, err := ur.CheckRecommendGoal(g); err != nil {
+		return entities.Goal{}, err
+	}
+
 	uid := shortuuid.New()
 	g.Goal_uid = uid
 	if err := ur.database.Create(&g).Error; err != nil {
@@ -138,30 +142,21 @@ func (ur *GoalRepository) CencelGoal(user_uid string) error {
 
 }
 
-func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, int, int, error) {
+func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, error) {
 
 	var user entities.User
-
-	var breakfast int
-	var lunch int
-	var dinner int
-	var overtime int
+	var bmr int
+	var cutCaloriesDay int
 
 	err := ur.database.Transaction(func(tx *gorm.DB) error {
 
-		resGoal := tx.Model(entities.Goal{}).Where("user_uid = ? AND status =?", user_uid, "active").First(&goal)
-
-		if err := resGoal.Error; err != nil {
-			return err
-		}
-		resUser := tx.Model(entities.User{}).Where("user_uid = ?", user_uid).First(&user)
+		resUser := tx.Model(entities.User{}).Where("user_uid = ?", goal.User_uid).First(&user)
 
 		if err := resUser.Error; err != nil {
 			return err
 		}
-		needed := math.Round(float64(goal.Weight_target * 7700 / goal.Range_time))
+		cutCaloriesDay = int(math.Round(float64(goal.Weight_target * 7700 / goal.Range_time)))
 
-		var bmr int
 		var daily_active float32
 		switch goal.Daily_active {
 		case "not active":
@@ -183,23 +178,19 @@ func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, int,
 			bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
 
 		}
-		bmrDay := bmr - int(needed)
+		bmrDay := bmr - cutCaloriesDay
 
 		posible := bmr * 50 / 100
 		if int(bmrDay) < posible {
 			return errors.New("impossible")
 		}
 
-		breakfast = bmrDay * 25 / 100
-		lunch = bmrDay * 35 / 100
-		dinner = bmrDay * 30 / 100
-		overtime = bmrDay * 10 / 100
-		fmt.Println(breakfast, lunch, dinner, overtime)
+		fmt.Println(bmr, cutCaloriesDay)
 		return nil
 	})
 	if err != nil {
-		return 0, 0, 0, 0, err
+		return bmr, cutCaloriesDay, err
 	}
 
-	return breakfast, lunch, dinner, overtime, nil
+	return bmr, cutCaloriesDay, nil
 }
