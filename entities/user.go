@@ -10,9 +10,9 @@ type User struct {
 	Name     string `gorm:"type:varchar(100)"`
 	Email    string `gorm:"unique"`
 	Password string
-	Gender   string `gorm:"type:enum('male','female','none');default:'none'"`
-	Roles    bool   `gorm:"type:bool" json:"roles"`
-	Image    string
+	Gender   string         `gorm:"type:enum('male','female','none');default:'none'"`
+	Roles    bool           `gorm:"type:bool" json:"roles"`
+	Image    string         `gorm:"default:'https://airbnb-app.s3.ap-southeast-1.amazonaws.com/kZz8bVoZ5CigV9ShiECEtg'"`
 	Goal     []Goal         `gorm:"foreignKey:User_uid;references:User_uid"`
 	History  []User_history `gorm:"foreignKey:User_uid;references:User_uid"`
 }
