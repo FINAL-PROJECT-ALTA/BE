@@ -92,18 +92,16 @@ func (mc *MenuController) GetAll() echo.HandlerFunc {
 		response := []MenuGetAllResponse{}
 		for i, result := range res {
 			var foods []entities.Food
-			var total int
 
 			for _, resultfood := range res[i].Detail_menu {
 				foods = append(foods, resultfood.Food)
-				total += resultfood.Food.Calories
 
 			}
 			response = append(response, MenuGetAllResponse{
 				Menu_uid:       result.Menu_uid,
 				Menu_category:  result.Menu_category,
-				Total_calories: total,
 				Foods:          foods,
+				Total_calories: result.Total_calories,
 				Created_by:     result.Created_by,
 			})
 		}
@@ -134,10 +132,11 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 				foods = append(foods, resultfood.Food)
 			}
 			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-				Created_by:    result.Created_by,
+				Menu_uid:       result.Menu_uid,
+				Menu_category:  result.Menu_category,
+				Total_calories: result.Total_calories,
+				Created_by:     result.Created_by,
+				Foods:          foods,
 			})
 		}
 
@@ -166,10 +165,11 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 				foods = append(foods, resultfood.Food)
 			}
 			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-				Created_by:    result.Created_by,
+				Menu_uid:       result.Menu_uid,
+				Menu_category:  result.Menu_category,
+				Foods:          foods,
+				Total_calories: result.Total_calories,
+				Created_by:     result.Created_by,
 			})
 		}
 
@@ -198,10 +198,11 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 				foods = append(foods, resultfood.Food)
 			}
 			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-				Created_by:    result.Created_by,
+				Menu_uid:       result.Menu_uid,
+				Menu_category:  result.Menu_category,
+				Created_by:     result.Created_by,
+				Total_calories: result.Total_calories,
+				Foods:          foods,
 			})
 		}
 
@@ -230,10 +231,11 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 				foods = append(foods, resultfood.Food)
 			}
 			response = append(response, MenuGetAllResponse{
-				Menu_uid:      result.Menu_uid,
-				Menu_category: result.Menu_category,
-				Foods:         foods,
-				Created_by:    result.Created_by,
+				Menu_uid:       result.Menu_uid,
+				Menu_category:  result.Menu_category,
+				Created_by:     result.Created_by,
+				Total_calories: result.Total_calories,
+				Foods:          foods,
 			})
 		}
 
@@ -272,17 +274,15 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		response.Menu_uid = res.Menu_uid
 		response.Menu_category = res.Menu_category
 		response.Created_by = res.Created_by
+		response.Total_calories = res.Total_calories
 
 		var foods []entities.Food
-		var total int
 
 		for _, result := range res.Detail_menu {
 			foods = append(foods, result.Food)
-			total += result.Food.Calories
 
 		}
 		response.Foods = foods
-		response.Total_calories = total
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update menu", response))
 
