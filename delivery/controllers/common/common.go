@@ -7,6 +7,13 @@ type Response struct {
 	Message interface{} `json:"message"`
 	Data    interface{} `json:"data"`
 }
+type ResponseMenu struct {
+	Code          interface{} `json:"code"`
+	Message       interface{} `json:"message"`
+	TotalResult   interface{} `json:"totalresult"`
+	LimitCalories interface{} `json:"limitcalories"`
+	Data          interface{} `json:"data"`
+}
 
 func Success(code interface{}, msg interface{}, data interface{}) Response {
 	if code == nil {
@@ -24,7 +31,30 @@ func Success(code interface{}, msg interface{}, data interface{}) Response {
 		Data:    data,
 	}
 }
-
+func SuccessMenu(code interface{}, msg interface{}, row interface{}, limitcalories interface{}, data interface{}) ResponseMenu {
+	if code == nil {
+		code = http.StatusOK
+	}
+	if msg == nil {
+		msg = "success"
+	}
+	if data == nil {
+		data = nil
+	}
+	if row == nil {
+		data = nil
+	}
+	if limitcalories == nil {
+		data = nil
+	}
+	return ResponseMenu{
+		Code:          code,
+		Message:       msg,
+		TotalResult:   row,
+		LimitCalories: row,
+		Data:          data,
+	}
+}
 func Update(code interface{}, msg interface{}) Response {
 	if code == nil {
 		code = http.StatusOK
