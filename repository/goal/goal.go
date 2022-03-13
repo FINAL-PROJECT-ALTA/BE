@@ -112,10 +112,9 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 	different := goal.CreatedAt.Sub(time)
 
 	days := math.Abs(float64(int(different.Hours() / 24)))
-	diff := goal.Range_time - int(days)
-	if diff <= 0 && goal.Status == "active" {
-		goal.Status = "not active"
-		if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
+	if int(days) > goal.Range_time {
+		status := "not active"
+		if err := ur.database.Model(&entities.Goal{}).Where("goal_uid = ?", goal.Goal_uid).Update("status", status).Error; err != nil {
 			return false, err
 		}
 
@@ -125,6 +124,22 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 
 }
 func (ur *GoalRepository) CencelGoal(user_uid string) error {
+
+	var goal entities.Goal
+
+	if err := ur.database.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal).Error; err != nil {
+		return errors.New("failed to cencel goal")
+	}
+
+	goal.Status = "cencel"
+	if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
+		return errors.New("failed to cencel goal")
+	}
+
+	return nil
+
+}
+func (ur *GoalRepository) CheckGoal(user_uid string) error {
 
 	var goal entities.Goal
 
