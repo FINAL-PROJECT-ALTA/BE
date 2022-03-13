@@ -119,7 +119,7 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 		}
 		user := middlewares.ExtractTokenUserUid(c)
 
-		res, err := mc.repo.GetRecommendBreakfast(user)
+		res, row, limit, err := mc.repo.GetRecommendBreakfast(user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -140,7 +140,7 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 			})
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+		return c.JSON(http.StatusOK, common.SuccessMenu(http.StatusOK, "Success Get Menu Recommended", row, limit, response))
 	}
 }
 func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
@@ -152,7 +152,7 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 		}
 		user := middlewares.ExtractTokenUserUid(c)
 
-		res, err := mc.repo.GetRecommendLunch(user)
+		res, row, limit, err := mc.repo.GetRecommendLunch(user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -173,7 +173,7 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 			})
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+		return c.JSON(http.StatusOK, common.SuccessMenu(http.StatusOK, "Success Get Menu Recommended", row, limit, response))
 	}
 }
 func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
@@ -185,7 +185,7 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 		}
 		user := middlewares.ExtractTokenUserUid(c)
 
-		res, err := mc.repo.GetRecommendDinner(user)
+		res, row, limit, err := mc.repo.GetRecommendDinner(user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -206,7 +206,7 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 			})
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+		return c.JSON(http.StatusOK, common.SuccessMenu(http.StatusOK, "Success Get Menu Recommended", row, limit, response))
 	}
 }
 func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
@@ -218,7 +218,7 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 		}
 		user := middlewares.ExtractTokenUserUid(c)
 
-		res, err := mc.repo.GetRecommendOverTime(user)
+		res, row, limit, err := mc.repo.GetRecommendOverTime(user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -239,7 +239,7 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 			})
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success Get Menu Recommended", response))
+		return c.JSON(http.StatusOK, common.SuccessMenu(http.StatusOK, "Success Get Menu Recommended", row, limit, response))
 	}
 }
 
