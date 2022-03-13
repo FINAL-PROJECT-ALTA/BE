@@ -52,20 +52,33 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := GoalResponse{}
-		response.Goal_uid = res.Goal_uid
-		response.Height = res.Height
-		response.Weight = res.Weight
-		response.Age = res.Age
-		response.Daily_active = res.Daily_active
-		response.Weight_target = res.Weight_target
-		response.Range_time = res.Range_time
-		response.Target = res.Target
-
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create goal", response))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create goal", res))
 
 	}
 }
+
+func (ac *GoalController) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+
+		}
+
+		user_uid := middlewares.ExtractTokenUserUid(c)
+
+		res, err := ac.repo.GetAll(user_uid)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get all goal", res))
+	}
+}
+
 func (ac *GoalController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		goal_uid := c.Param("goal_uid")
