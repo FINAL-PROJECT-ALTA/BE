@@ -3,7 +3,6 @@ package goal
 import (
 	"HealthFit/entities"
 	"errors"
-	"fmt"
 	"math"
 	"time"
 
@@ -148,48 +147,39 @@ func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, erro
 	var bmr int
 	var cutCaloriesDay int
 
-	err := ur.database.Transaction(func(tx *gorm.DB) error {
+	resUser := ur.database.Model(entities.User{}).Where("user_uid = ?", goal.User_uid).First(&user)
 
-		resUser := tx.Model(entities.User{}).Where("user_uid = ?", goal.User_uid).First(&user)
+	if err := resUser.Error; err != nil {
+		return 0, 0, err
+	}
+	cutCaloriesDay = int(math.Round(float64(goal.Weight_target * 7700 / goal.Range_time)))
 
-		if err := resUser.Error; err != nil {
-			return err
-		}
-		cutCaloriesDay = int(math.Round(float64(goal.Weight_target * 7700 / goal.Range_time)))
+	var daily_active float32
+	switch goal.Daily_active {
+	case "not active":
+		daily_active = 1.2
+	case "little active":
+		daily_active = 1.37
+	case "quite active":
+		daily_active = 1.5
+	case "active":
+		daily_active = 1.72
+	case "very active":
+		daily_active = 1.9
+	}
+	if user.Gender == "male" {
+		bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
 
-		var daily_active float32
-		switch goal.Daily_active {
-		case "not active":
-			daily_active = 1.2
-		case "little active":
-			daily_active = 1.37
-		case "quite active":
-			daily_active = 1.5
-		case "active":
-			daily_active = 1.72
-		case "very active":
-			daily_active = 1.9
-		}
-		if user.Gender == "male" {
-			bmr = int(daily_active) * (66 + (14 * goal.Weight) + (5 * goal.Height) - (7 * goal.Age))
+	}
+	if user.Gender == "female" {
+		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
 
-		}
-		if user.Gender == "female" {
-			bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
+	}
+	bmrDay := bmr - cutCaloriesDay
 
-		}
-		bmrDay := bmr - cutCaloriesDay
-
-		posible := bmr * 50 / 100
-		if int(bmrDay) < posible {
-			return errors.New("impossible")
-		}
-
-		fmt.Println(bmr, cutCaloriesDay)
-		return nil
-	})
-	if err != nil {
-		return bmr, cutCaloriesDay, err
+	posible := bmr * 50 / 100
+	if int(bmrDay) < posible {
+		return bmr, cutCaloriesDay, errors.New("impossible")
 	}
 
 	return bmr, cutCaloriesDay, nil
