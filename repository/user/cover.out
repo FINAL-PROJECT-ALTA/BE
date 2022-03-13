@@ -1,0 +1,14 @@
+mode: set
+HealthFit/repository/user/user.go:16.39,20.2 1 1
+HealthFit/repository/user/user.go:22.76,29.53 5 1
+HealthFit/repository/user/user.go:33.2,33.15 1 1
+HealthFit/repository/user/user.go:29.53,31.3 1 1
+HealthFit/repository/user/user.go:36.75,40.37 3 1
+HealthFit/repository/user/user.go:44.2,44.21 1 1
+HealthFit/repository/user/user.go:40.37,42.3 1 0
+HealthFit/repository/user/user.go:47.97,52.73 3 1
+HealthFit/repository/user/user.go:56.2,56.18 1 1
+HealthFit/repository/user/user.go:52.73,54.3 1 1
+HealthFit/repository/user/user.go:59.57,63.86 2 1
+HealthFit/repository/user/user.go:66.2,67.12 2 1
+HealthFit/repository/user/user.go:63.86,65.3 1 1
