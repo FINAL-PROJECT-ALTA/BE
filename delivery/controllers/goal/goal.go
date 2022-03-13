@@ -89,17 +89,7 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := GetByIdGoalResponse{}
-		response.Goal_uid = res.Goal_uid
-		response.Height = res.Height
-		response.Weight = res.Weight
-		response.Age = res.Age
-		response.Daily_active = res.Daily_active
-		response.Weight_target = res.Weight_target
-		response.Range_time = res.Range_time
-		response.Target = res.Target
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", res))
 	}
 }
 
@@ -121,17 +111,7 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := GoalResponse{}
-		response.Goal_uid = res.Goal_uid
-		response.Height = res.Height
-		response.Weight = res.Weight
-		response.Age = res.Age
-		response.Daily_active = res.Daily_active
-		response.Weight_target = res.Weight_target
-		response.Range_time = res.Range_time
-		response.Target = res.Target
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update goal", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update goal", res))
 	}
 }
 
