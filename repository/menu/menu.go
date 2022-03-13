@@ -96,10 +96,13 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		if err := tx.Debug().Model(entities.Goal{}).Where("user_uid=? AND status =?", newMenu.User_uid, "active").First(&goal).Error; err != nil {
 			return err
 		}
+
 		var user_history entities.User_history
 		user_history.Menu_uid = newMenu.Menu_uid
 		user_history.User_uid = newMenu.User_uid
 		user_history.Goal_uid = goal.Goal_uid
+		uid := shortuuid.New()
+		user_history.User_history_uid = uid
 
 		if err := tx.Debug().Model(entities.User_history{}).Create(&user_history).Error; err != nil {
 			return err

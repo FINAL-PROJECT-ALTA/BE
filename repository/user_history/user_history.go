@@ -26,15 +26,15 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 		uid := shortuuid.New()
 		newHistory.User_history_uid = uid
 
-		if err := tx.Create(&newHistory).Error; err != nil {
+		if err := tx.Model(entities.User_history{}).Create(&newHistory).Error; err != nil {
 			return err
 		}
 		var menu entities.Menu
-		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).First(&menu).Error; err != nil {
+		if err := tx.Model(&entities.Menu{}).Where("menu_uid =?", menuUid).Find(&menu).Error; err != nil {
 			return err
 		}
 		countNew := menu.Count + 1
-		if err := tx.Model(&entities.Menu{}).Where("menu_uid =?", menuUid).Update("count", countNew).Error; err != nil {
+		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).Updates(entities.Menu{Count: countNew}).Error; err != nil {
 			return err
 		}
 
