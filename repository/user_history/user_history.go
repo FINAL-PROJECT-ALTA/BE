@@ -20,12 +20,31 @@ func New(db *gorm.DB) *UserHistoryRepository {
 
 func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entities.User_history, error) {
 
-	uid := shortuuid.New()
-	newHistory.User_history_uid = uid
+	err := uh.database.Transaction(func(tx *gorm.DB) error {
+		menuUid := newHistory.Menu_uid
 
-	if err := uh.database.Preload("Menu").Create(&newHistory).Error; err != nil {
-		return newHistory, err
+		uid := shortuuid.New()
+		newHistory.User_history_uid = uid
+
+		if err := tx.Preload("Menu").Create(&newHistory).Error; err != nil {
+			return err
+		}
+		var menu entities.Menu
+		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).First(&menu).Error; err != nil {
+			return err
+		}
+		countNew := menu.Count + 1
+		if err := tx.Model(&entities.Menu{}).Update("count", countNew).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return entities.User_history{}, err
 	}
+
 	return newHistory, nil
 }
 
