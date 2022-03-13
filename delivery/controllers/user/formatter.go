@@ -72,5 +72,5 @@ type UpdateUserRequestFormat struct {
 	Email    string `json:"email" form:"email" validate:"omitempty,email"`
 	Password string `json:"password" form:"password" validate:"omitempty,required,min=3,max=15"`
 	Gender   string `json:"gender" form:"gender"`
-	Image    string `json:"image" form:"image" validate:"omitempty"`
+	Image    string `json:"image" form:"image"`
 }
