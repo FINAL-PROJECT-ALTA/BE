@@ -37,21 +37,28 @@ func (ac *UserController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		// file, errO := c.FormFile("image")
-		// if errO != nil {
-		// 	log.Info(errO)
-		// }
-		// src, _ := file.Open()
-		// link, errU := utils.Upload(ac.conn, src, *file)
-		// if errU != nil {
-		// 	return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
-		// }
+		file, errO := c.FormFile("image")
+		if errO != nil {
+			log.Info(errO)
+		}
+
+		if file != nil {
+			src, _ := file.Open()
+			link, errU := utils.Upload(ac.conn, src, *file)
+			if errU != nil {
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
+			}
+			user.Image = link
+		} else if file == nil {
+			user.Image = ""
+		}
 
 		res, err_repo := ac.repo.Register(entities.User{
 			Name:     user.Name,
 			Email:    user.Email,
 			Password: user.Password,
 			Gender:   user.Gender,
+			Image:    user.Image,
 		})
 
 		if err_repo != nil {
@@ -70,6 +77,7 @@ func (ac *UserController) Register() echo.HandlerFunc {
 
 	}
 }
+
 func (ac *UserController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user_uid := middlewares.ExtractTokenUserUid(c)
@@ -113,7 +121,7 @@ func (ac *UserController) Update() echo.HandlerFunc {
 				if resUp != "success to update image" {
 					return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
 				}
-			} else {
+			} else if resGet.Image == "" {
 				var image, errUp = utils.Upload(ac.conn, src, *file)
 				if errUp != nil {
 					return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
@@ -127,6 +135,7 @@ func (ac *UserController) Update() echo.HandlerFunc {
 			Email:    newUser.Email,
 			Password: newUser.Password,
 			Gender:   newUser.Gender,
+			Image:    newUser.Image,
 		})
 
 		if err_repo != nil {
@@ -160,6 +169,8 @@ func (ac *UserController) Delete() echo.HandlerFunc {
 			if res := utils.DeleteImage(ac.conn, fileName); res != "succes to delete image" {
 				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+res, nil))
 			}
+		} else if resGet.Image == "" {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "you dont have an image to delete", nil))
 		}
 
 		err := ac.repo.Delete(user_uid)
