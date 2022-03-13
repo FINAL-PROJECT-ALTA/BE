@@ -2,6 +2,7 @@ package menu
 
 import (
 	"HealthFit/entities"
+	"errors"
 	"fmt"
 	"math"
 
@@ -205,6 +206,11 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 
 		}
 		bmrDay := bmr - int(needed)
+
+		posible := bmr * 50 / 100
+		if int(bmrDay) > posible {
+			return errors.New("impossible")
+		}
 
 		breakfast = bmrDay * 25 / 100
 		lunch = bmrDay * 35 / 100

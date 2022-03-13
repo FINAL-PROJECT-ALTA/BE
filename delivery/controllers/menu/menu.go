@@ -122,7 +122,11 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 		res, row, limit, err := mc.repo.GetRecommendBreakfast(user)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			var errRes string = "There is some error on server"
+			if err.Error() == "impossible" {
+				errRes = err.Error()
+			}
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -155,7 +159,11 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 		res, row, limit, err := mc.repo.GetRecommendLunch(user)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			var errRes string = "There is some error on server"
+			if err.Error() == "impossible" {
+				errRes = err.Error()
+			}
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -188,7 +196,11 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 		res, row, limit, err := mc.repo.GetRecommendDinner(user)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			var errRes string = "There is some error on server"
+			if err.Error() == "impossible" {
+				errRes = err.Error()
+			}
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -221,7 +233,11 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 		res, row, limit, err := mc.repo.GetRecommendOverTime(user)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			var errRes string = "There is some error on server"
+			if err.Error() == "impossible" {
+				errRes = err.Error()
+			}
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
