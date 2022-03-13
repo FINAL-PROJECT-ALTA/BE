@@ -26,7 +26,7 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 		uid := shortuuid.New()
 		newHistory.User_history_uid = uid
 
-		if err := tx.Preload("Menu").Create(&newHistory).Error; err != nil {
+		if err := tx.Create(&newHistory).Error; err != nil {
 			return err
 		}
 		var menu entities.Menu
