@@ -220,7 +220,7 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, 
 		return nil
 	})
 	if err != nil {
-		return 0, 0, 0, 0, nil
+		return 0, 0, 0, 0, err
 	}
 
 	return breakfast, lunch, dinner, overtime, nil
