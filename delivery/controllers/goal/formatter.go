@@ -44,3 +44,7 @@ type GetByIdGoalResponse struct {
 	Range_time    int    `json:"range_time"`
 	Target        string `json:"target"`
 }
+type CreateResponseErrorGoal struct {
+	Bmr                    int `json:"bmr"`
+	Cut_calories_every_day int `json:"cut_calories_every_day"`
+}
