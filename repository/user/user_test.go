@@ -7,6 +7,7 @@ import (
 	utils "HealthFit/utils/mysql"
 	"testing"
 
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
@@ -15,11 +16,15 @@ func TestCreate(t *testing.T) {
 	config := configs.GetConfig()
 	db := utils.InitDB(config)
 	repo := New(db)
-	db.Migrator().DropTable(&entities.User{})
-	db.AutoMigrate(&entities.User{})
 
 	t.Run("fail run Create", func(t *testing.T) {
-		mocUserP := entities.User{Name: "anonim1", Email: "anonim@1", Password: "anonim1"}
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
+		mocUserP := entities.User{
+			Name:     "anonim1",
+			Email:    "anonim@1",
+			Password: "anonim1",
+		}
 		if _, err := repo.Register(mocUserP); err != nil {
 			t.Fatal()
 		}
@@ -29,6 +34,8 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("success run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
 		mocUser := entities.User{Name: "anonim123", Email: "anonim@123", Password: "anonim123"}
 		res, err := repo.Register(mocUser)
 
@@ -51,28 +58,43 @@ func TestGetById(t *testing.T) {
 	db.AutoMigrate(&entities.User{})
 
 	t.Run("success run GetById", func(t *testing.T) {
-		mocUser := entities.User{Name: "anonim123", Email: "anonim@1", Password: "anonim1"}
-
-		if _, err := repo.Register(mocUser); err != nil {
-			t.Fatal()
+		mocUser := entities.User{
+			Name:     "anonim123",
+			Email:    "anonim@1",
+			Password: "anonim1",
+			Gender:   "male",
 		}
 
-		res, err := repo.GetById("1")
-		assert.Nil(t, err)
-		assert.Equal(t, 1, int(res.ID))
+		res, err := repo.Register(mocUser)
+		if err != nil {
+			t.Fatal()
+		}
+		uid := res.User_uid
+
+		_, errA := repo.GetById(uid)
+		assert.Nil(t, errA)
 
 	})
 
 	t.Run("fail run GetById", func(t *testing.T) {
-		mocUser := entities.User{Name: "anonim123", Email: "anonim@2", Password: "anonim12"}
-
-		if _, err := repo.Register(mocUser); err != nil {
-			t.Fatal()
+		mocUser := entities.User{
+			Name:     "test",
+			Email:    "test",
+			Password: "test",
+			Gender:   "male",
 		}
 
-		res, err := repo.GetById("10")
-		assert.NotNil(t, err)
-		assert.NotEqual(t, 1, int(res.ID))
+		res, err := repo.Register(mocUser)
+		if err != nil {
+			t.Fatal()
+		}
+		log.Info(res)
+
+		resA, _ := repo.GetById("eaf")
+
+		log.Info(resA)
+		assert.NotEqual(t, "hefb", res.User_uid)
+
 	})
 }
 
@@ -85,13 +107,15 @@ func TestUpdateById(t *testing.T) {
 
 	t.Run("success run UpdateById", func(t *testing.T) {
 		mocUser := entities.User{Name: "anonim123", Email: "anonim@123", Password: "anonim123"}
-		_, err := repo.Register(mocUser)
+		res, err := repo.Register(mocUser)
 		if err != nil {
 			t.Fatal()
 		}
+		uid := res.User_uid
+
 		mockUser := entities.User{Name: "anonim321", Email: "anonim@321", Password: "anonim321"}
-		res, err := repo.Update("1", mockUser)
-		assert.Nil(t, err)
+		res, errA := repo.Update(uid, mockUser)
+		assert.Nil(t, errA)
 		assert.Equal(t, "anonim321", res.Name)
 		assert.Equal(t, "anonim@321", res.Email)
 		assert.Equal(t, "anonim321", res.Password)
@@ -113,12 +137,13 @@ func TestDeleteById(t *testing.T) {
 
 	t.Run("success run DeleteById", func(t *testing.T) {
 		mocUser := entities.User{Name: "anonim123", Email: "anonim@123", Password: "anonim123"}
-		_, err := repo.Register(mocUser)
+		res, err := repo.Register(mocUser)
 		if err != nil {
 			t.Fatal()
 		}
+		uid := res.User_uid
 
-		errA := repo.Delete("1")
+		errA := repo.Delete(uid)
 		assert.Nil(t, errA)
 	})
 
