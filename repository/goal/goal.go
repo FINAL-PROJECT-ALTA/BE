@@ -36,6 +36,18 @@ func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 	return g, nil
 }
 
+func (ur *GoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
+	goals := []entities.Goal{}
+
+	res := ur.database.Where("user_uid", user_uid).Find(&goals)
+
+	if err := res.Error; err != nil {
+		return []entities.Goal{}, err
+	}
+
+	return goals, nil
+}
+
 func (ur *GoalRepository) GetById(goal_uid string) (entities.Goal, error) {
 	goal := entities.Goal{}
 

@@ -51,6 +51,7 @@ func RegisterPath(e *echo.Echo,
 
 	//ROUTE GOALS
 	e.POST("/users/goals", gc.Create(), middlewares.JwtMiddleware())
+	e.GET("/users/goals", gc.GetAll(), middlewares.JwtMiddleware())
 	e.GET("/users/goals/:goal_uid", gc.GetById(), middlewares.JwtMiddleware())
 	e.PUT("/users/goals/:goal_uid", gc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/users/goals/:goal_uid", gc.Delete(), middlewares.JwtMiddleware())
