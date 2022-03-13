@@ -85,7 +85,7 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 			response = append(response, resHis)
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user histories", response))
 	}
 }
 
