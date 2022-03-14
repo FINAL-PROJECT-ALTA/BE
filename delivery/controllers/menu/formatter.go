@@ -65,5 +65,6 @@ type MenuGetAllResponse struct {
 	Menu_category  string          `json:"menu_category"`
 	Total_calories int             `json:"total_calories"`
 	Created_by     string          `json:"created_by"`
+	Count          int             `json:"count"`
 	Foods          []entities.Food `json:"foods"`
 }
