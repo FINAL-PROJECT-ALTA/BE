@@ -230,7 +230,7 @@ func TestLogin(t *testing.T) {
 		db.AutoMigrate(&entities.User{})
 		db.AutoMigrate(&entities.Goal{})
 
-		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test", Gender: "male", Roles: true}
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "tests", Gender: "male", Roles: true}
 		res, err := ar.New(db).Register(mockUser)
 		if err != nil {
 			t.Fail()
