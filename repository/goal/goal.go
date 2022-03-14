@@ -123,20 +123,20 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 	return true, nil
 
 }
-func (ur *GoalRepository) CencelGoal(user_uid string) error {
+func (ur *GoalRepository) CencelGoal(user_uid string) (entities.Goal, error) {
 
 	var goal entities.Goal
 
 	if err := ur.database.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal).Error; err != nil {
-		return errors.New("failed to cencel goal")
+		return entities.Goal{}, errors.New("failed to cencel goal")
 	}
 
 	goal.Status = "cencel"
 	if err := ur.database.Model(entities.Goal{}).Where("goal_uid =?", goal.Goal_uid).Updates(&goal).Error; err != nil {
-		return errors.New("failed to cencel goal")
+		return entities.Goal{}, errors.New("failed to cencel goal")
 	}
 
-	return nil
+	return goal, nil
 
 }
 func (ur *GoalRepository) CheckGoal(user_uid string) error {
@@ -188,7 +188,6 @@ func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, erro
 	}
 	if user.Gender == "female" {
 		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
-
 	}
 	bmrDay := bmr - cutCaloriesDay
 
