@@ -7,18 +7,19 @@ import (
 )
 
 type AppConfig struct {
-	Port      int
-	Driver    string
-	Name      string
-	Address   string
-	DB_Port   int
-	Username  string
-	Password  string
-	S3_KEY    string
-	S3_SECRET string
-	S3_REGION string
-	Midtrans  string
-	LOC       string
+	Port             int
+	Driver           string
+	Name             string
+	Address          string
+	DB_Port          int
+	Username         string
+	Password         string
+	S3_KEY           string
+	S3_SECRET        string
+	S3_REGION        string
+	Google_Client_ID string
+	Google_Secret_ID string
+	LOC              string
 }
 
 var lock = &sync.Mutex{}
@@ -46,6 +47,8 @@ func initConfig() *AppConfig {
 	defaultConfig.S3_KEY = getEnv("S3_KEY", "AKIAVOMUO3KKNSP4RXWR")
 	defaultConfig.S3_SECRET = getEnv("S3_SECRET", "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")
 	defaultConfig.S3_REGION = getEnv("S3_REGION", "ap-southeast-1")
+	defaultConfig.Google_Client_ID = getEnv("Google_Client_ID", "1068902224108-9fcd28t7nkdefh1hvud9fmos011e4isu.apps.googleusercontent.com")
+	defaultConfig.Google_Secret_ID = getEnv("Google_Secret_ID", "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")
 	defaultConfig.LOC = getEnv("LOC", "Asia%2FJakarta")
 
 	fmt.Println(defaultConfig)
