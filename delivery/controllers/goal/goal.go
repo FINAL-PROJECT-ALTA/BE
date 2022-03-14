@@ -132,3 +132,17 @@ func (ac *GoalController) Delete() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success delete goal", nil))
 	}
 }
+
+func (ac *GoalController) CencelGoal() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user_uid := middlewares.ExtractTokenUserUid(c)
+
+		_, err := ac.repo.CencelGoal(user_uid)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success cencel goal", nil))
+	}
+}
