@@ -37,7 +37,7 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 	if !user.Roles {
 		message, err := ad.RefreshGoalAuth(user.User_uid)
 		if err != nil && message == "not have goal active" {
-			return entities.User{}, errors.New("have problem with checked")
+			return user, nil
 		}
 		if message == "updated" && err == nil {
 			user.Goal_exspired = true
