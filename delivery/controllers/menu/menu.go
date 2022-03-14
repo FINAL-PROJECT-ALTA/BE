@@ -141,6 +141,7 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 				Total_calories: result.Total_calories,
 				Created_by:     result.Created_by,
 				Foods:          foods,
+				Count:          result.Count,
 			})
 		}
 
@@ -178,6 +179,7 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 				Foods:          foods,
 				Total_calories: result.Total_calories,
 				Created_by:     result.Created_by,
+				Count:          result.Count,
 			})
 		}
 
@@ -215,6 +217,7 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 				Created_by:     result.Created_by,
 				Total_calories: result.Total_calories,
 				Foods:          foods,
+				Count:          result.Count,
 			})
 		}
 
@@ -252,6 +255,7 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 				Created_by:     result.Created_by,
 				Total_calories: result.Total_calories,
 				Foods:          foods,
+				Count:          result.Count,
 			})
 		}
 
