@@ -265,7 +265,9 @@ func (mr *MenuRepository) GetRecommendLunch(user_uid string) ([]entities.Menu, i
 
 	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories <= ?", "lunch", "admin", lunch).Order("count desc").Find(&menus)
+	start := lunch * 50 / 100
+
+	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories BETWEEN ? AND ?", "breakfast", "admin", start, breakfast).Order("count desc").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, 0, 0, err
