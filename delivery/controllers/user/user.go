@@ -157,22 +157,6 @@ func (ac *UserController) Update() echo.HandlerFunc {
 func (ac *UserController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user_uid := middlewares.ExtractTokenUserUid(c)
-
-		resGet, errGet := ac.repo.GetById(user_uid)
-		if errGet != nil {
-			log.Info(resGet)
-		}
-
-		if resGet.Image != "" {
-			var fileName = resGet.Image
-			fileName = strings.Replace(fileName, "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/", "", -1)
-			if res := utils.DeleteImage(ac.conn, fileName); res != "succes to delete image" {
-				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+res, nil))
-			}
-		} else if resGet.Image == "" {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "you dont have an image to delete", nil))
-		}
-
 		err := ac.repo.Delete(user_uid)
 
 		if err != nil {
