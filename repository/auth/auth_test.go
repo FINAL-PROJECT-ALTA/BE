@@ -115,4 +115,27 @@ func TestLogin(t *testing.T) {
 
 		assert.NotNil(t, errL)
 	})
+
+	//new
+	t.Run("roles user not have goal", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test", Roles: false}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		resPass := middlewares.CheckPasswordHash("test", res.Password)
+		if resPass == false {
+			t.Fail()
+		}
+
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		resLogin, errL := repo.Login(mockLogin.Email, mockUser.Password)
+
+		assert.Nil(t, errL)
+		assert.Equal(t, false, resLogin.Goal_active)
+	})
 }
