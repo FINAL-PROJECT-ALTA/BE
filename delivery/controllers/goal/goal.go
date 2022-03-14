@@ -158,7 +158,35 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update goal", res))
+		var responseGoal interface{}
+		if res.Target == "gain weight" {
+			var response GoalResponseGainWeight
+			response.Goal_uid = res.Goal_uid
+			response.Height = res.Height
+			response.Weight = res.Weight
+			response.Age = res.Age
+			response.Daily_active = res.Daily_active
+			response.Lose_Weight = res.Weight_target
+			response.Range_time = res.Range_time
+			response.Target = res.Target
+
+			responseGoal = response
+
+		} else if res.Target == "lose weight" {
+			var response GoalResponseLoseWeight
+			response.Goal_uid = res.Goal_uid
+			response.Height = res.Height
+			response.Weight = res.Weight
+			response.Age = res.Age
+			response.Daily_active = res.Daily_active
+			response.Gain_Weight = res.Weight_target
+			response.Range_time = res.Range_time
+			response.Target = res.Target
+			responseGoal = response
+
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update goal", responseGoal))
 	}
 }
 
