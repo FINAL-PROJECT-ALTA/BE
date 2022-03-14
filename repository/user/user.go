@@ -58,12 +58,9 @@ func (ur *UserRepository) Update(user_uid string, newUser entities.User) (entiti
 
 func (ur *UserRepository) Delete(user_uid string) error {
 
-	var user entities.User
-
-	if err := ur.database.Where("user_uid =?", user_uid).First(&user).Error; err != nil {
+	if err := ur.database.Where("user_uid = ?", user_uid).Delete(&entities.User{}).Error; err != nil {
 		return err
 	}
-	ur.database.Delete(&user, user_uid)
 	return nil
 
 }
