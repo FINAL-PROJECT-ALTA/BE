@@ -222,4 +222,5 @@ func TestLogin(t *testing.T) {
 		assert.Equal(t, false, resLogin.Goal_active)
 		assert.Equal(t, true, resLogin.Goal_exspired)
 	})
+	//
 }
