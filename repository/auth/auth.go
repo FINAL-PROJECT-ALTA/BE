@@ -35,25 +35,33 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 	}
 
 	if !user.Roles {
-		_, err := ad.RefreshGoalAuth(user.User_uid)
+		message, err := ad.RefreshGoalAuth(user.User_uid)
 		if err != nil {
-			return entities.User{}, err
+			return entities.User{}, errors.New("have problem with checked")
+		}
+		if message == "updated" && err == nil {
+			user.Goal_exspired = true
+			return user, nil
+		}
+		if message == "have goal active and nothing to update" {
+			user.Goal_active = true
+			return user, nil
 		}
 		return user, nil
 	}
 
 	return user, nil
 }
-func (ad *AuthDb) RefreshGoalAuth(user_uid string) (bool, error) {
+func (ad *AuthDb) RefreshGoalAuth(user_uid string) (interface{}, error) {
 
 	var goal entities.Goal
 	res := ad.db.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal)
 
 	if res.Error != nil {
-		return false, res.Error
+		return "failed get goal active", res.Error
 	}
 	if res.RowsAffected == 0 {
-		return false, nil
+		return "not have goal active", nil
 	}
 
 	time := time.Now()
@@ -63,11 +71,12 @@ func (ad *AuthDb) RefreshGoalAuth(user_uid string) (bool, error) {
 	if int(days) > goal.Range_time {
 		status := "not active"
 		if err := ad.db.Model(&entities.Goal{}).Where("goal_uid = ?", goal.Goal_uid).Update("status", status).Error; err != nil {
-			return false, err
+			return "failed updated", err
 		}
+		return "updated", nil
 
 	}
 
-	return true, nil
+	return "have goal active and nothing to update", nil
 
 }
