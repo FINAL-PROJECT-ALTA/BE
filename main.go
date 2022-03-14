@@ -40,6 +40,7 @@ func main() {
 	config := config.GetConfig()
 	db := utils.InitDB(config)
 	awsConn := awsS3.InitS3(config.S3_KEY, config.S3_SECRET, config.S3_REGION)
+	// autGoogle := setGoogle.GoogleConfig(config.Username, config.Google_Client_ID, config.Google_Secret_ID)
 
 	//REPOSITORY-DATABASE
 	authRepo := _authRepo.New(db)
