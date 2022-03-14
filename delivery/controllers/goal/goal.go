@@ -100,6 +100,15 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
+		if res.Target == "gain weight" {
+			var response GoalResponseGainWeight
+			response.Goal_uid = res.Goal_uid
+			response.Height = res.Height
+			response.Weight = res.Weight
+			response.Age = res.Age
+			response.Daily_active = res.Daily_active
+			response.Lose_Weight = res.Weight_target
+		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", res))
 	}

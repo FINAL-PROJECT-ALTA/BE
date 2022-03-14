@@ -33,6 +33,26 @@ type GoalResponse struct {
 	Range_time    int    `json:"range_time"`
 	Target        string `json:"target"`
 }
+type GoalResponseLoseWeight struct {
+	Goal_uid     string `json:"goal_uid"`
+	Height       int    `json:"height"`
+	Weight       int    `json:"weight"`
+	Age          int    `json:"age"`
+	Daily_active string `json:"daily_active"`
+	Gain_Weight  int    `json:"gain_weight"`
+	Range_time   int    `json:"range_time"`
+	Target       string `json:"target"`
+}
+type GoalResponseGainWeight struct {
+	Goal_uid     string `json:"goal_uid"`
+	Height       int    `json:"height"`
+	Weight       int    `json:"weight"`
+	Age          int    `json:"age"`
+	Daily_active string `json:"daily_active"`
+	Lose_Weight  int    `json:"lose_weight"`
+	Range_time   int    `json:"range_time"`
+	Target       string `json:"target"`
+}
 
 type GetByIdGoalResponse struct {
 	Goal_uid      string `json:"goal_uid"`
