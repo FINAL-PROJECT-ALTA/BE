@@ -12,11 +12,13 @@ type LoginRespFormat struct {
 }
 
 type UserLoginResponse struct {
-	User_uid string `json:"user_uid"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Roles    bool   `json:"roles"`
-	Token    string `json:"token"`
+	User_uid      string `json:"user_uid"`
+	Name          string `json:"name"`
+	Email         string `json:"email"`
+	Roles         bool   `json:"roles"`
+	Token         string `json:"token"`
+	Goal_active   bool   `json:"goal_active"`
+	Goal_exspired bool   `json:"goal_exspired"`
 }
 type AdminLoginResponse struct {
 	Admin_uid string `json:"admin_uid"`
