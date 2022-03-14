@@ -85,9 +85,17 @@ func (ac *GoalController) GetAll() echo.HandlerFunc {
 
 func (ac *GoalController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+
+		}
+		user_uid := middlewares.ExtractTokenUserUid(c)
 		goal_uid := c.Param("goal_uid")
 
-		res, err := ac.repo.GetById(goal_uid)
+		res, err := ac.repo.GetById(goal_uid, user_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -99,6 +107,14 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 
 func (ac *GoalController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		isAdmin := middlewares.ExtractRoles(c)
+
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+
+		}
+
 		user_uid := middlewares.ExtractTokenUserUid(c)
 		goal_uid := c.Param("goal_uid")
 		var newGoal = UpdateGoalRequest{}
@@ -121,9 +137,17 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 
 func (ac *GoalController) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		goal_uid := middlewares.ExtractTokenUserUid(c)
+		isAdmin := middlewares.ExtractRoles(c)
 
-		err := ac.repo.Delete(goal_uid)
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+
+		}
+		user_uid := middlewares.ExtractTokenUserUid(c)
+
+		goal_uid := c.Param("goal_uid")
+
+		err := ac.repo.Delete(goal_uid, user_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
@@ -136,6 +160,12 @@ func (ac *GoalController) Delete() echo.HandlerFunc {
 func (ac *GoalController) CencelGoal() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user_uid := middlewares.ExtractTokenUserUid(c)
+
+		isAdmin := middlewares.ExtractRoles(c)
+
+		if isAdmin {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+		}
 
 		_, err := ac.repo.CencelGoal(user_uid)
 

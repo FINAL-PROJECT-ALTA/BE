@@ -52,10 +52,10 @@ func (ur *GoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
 	return goals, nil
 }
 
-func (ur *GoalRepository) GetById(goal_uid string) (entities.Goal, error) {
+func (ur *GoalRepository) GetById(goal_uid string, user_uid string) (entities.Goal, error) {
 	goal := entities.Goal{}
 
-	result := ur.database.Where("goal_uid = ?", goal_uid).First(&goal)
+	result := ur.database.Where("goal_uid = ? AND user_uid=?", goal_uid).First(&goal)
 	if err := result.Error; err != nil {
 		return goal, err
 	}
@@ -86,11 +86,11 @@ func (ur *GoalRepository) Update(goal_uid string, newGoal entities.Goal) (entiti
 	return goal, nil
 }
 
-func (ur *GoalRepository) Delete(goal_uid string) error {
+func (ur *GoalRepository) Delete(goal_uid string, user_uid string) error {
 
 	var goal entities.Goal
 
-	if err := ur.database.Where("goal_uid =?", goal_uid).First(&goal).Error; err != nil {
+	if err := ur.database.Where("goal_uid =? AND user_uid =?", goal_uid, user_uid).First(&goal).Error; err != nil {
 		return err
 	}
 	if err := ur.database.Delete(&goal, goal_uid).Error; err != nil {
