@@ -18,7 +18,7 @@ type Goal struct {
 	Weight_target int    `json:"weight_target"`
 	Range_time    int    `json:"range_time"`
 	Target        string `gorm:"type:enum('gain weight','lose weight')" json:"target"`
-	Status        string `gorm:"type:enum('active', 'not active','cencel')" json:"status"`
+	Status        string `gorm:"type:enum('active','not active','cancel')" json:"status"`
 
 	CreatedAt time.Time      `json:"cretedAt"`
 	UpdatedAt time.Time      `json:"-"`

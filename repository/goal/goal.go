@@ -123,16 +123,16 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 	return true, nil
 
 }
-func (ur *GoalRepository) CencelGoal(user_uid string) (entities.Goal, error) {
+func (ur *GoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
 
 	var goal entities.Goal
 
 	if err := ur.database.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal).Error; err != nil {
-		return entities.Goal{}, errors.New("failed to cencel goal")
+		return entities.Goal{}, errors.New("failed to cancel goal")
 	}
 
-	if err := ur.database.Model(&goal).Where("goal_uid =?", goal.Goal_uid).Update("status", "cencel").Error; err != nil {
-		return entities.Goal{}, errors.New("failed to cencel goal")
+	if err := ur.database.Model(&goal).Where("goal_uid =?", goal.Goal_uid).Update("status", "cancel").Error; err != nil {
+		return entities.Goal{}, errors.New("failed to cancel goal")
 	}
 
 	return goal, nil

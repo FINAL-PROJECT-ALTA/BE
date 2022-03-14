@@ -167,12 +167,12 @@ func (ac *GoalController) CencelGoal() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
 		}
 
-		_, err := ac.repo.CencelGoal(user_uid)
+		_, err := ac.repo.CancelGoal(user_uid)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success cencel goal", nil))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success cancel goal", nil))
 	}
 }
