@@ -7,8 +7,8 @@ import (
 
 type CreateUserHistoryRequestFormat struct {
 	User_uid string
-	Menu_uid string `json:"menu_uid" form:"menu_uid"`
-	Goal_uid string `json:"goal_uid" form:"goal_uid"`
+	Menu_uid string `json:"menu_uid" form:"menu_uid" validate:"required"`
+	Goal_uid string `json:"goal_uid" form:"goal_uid" validate:"required"`
 }
 
 type UpdateUserHistoryRequestFormat struct {
