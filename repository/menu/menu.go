@@ -305,7 +305,9 @@ func (mr *MenuRepository) GetRecommendOverTime(user_uid string) ([]entities.Menu
 
 	menus := []entities.Menu{}
 
-	res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories <= ?", "overtime", "admin", overtime).Order("count desc").Find(&menus)
+	start := overtime * 50 / 100
+
+	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories BETWEEN ? AND ?", "overtime", "admin", start, overtime).Order("count desc").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, 0, 0, err
