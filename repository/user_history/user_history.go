@@ -34,7 +34,7 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 			return err
 		}
 		countNew := menu.Count + 1
-		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).Updates(entities.Menu{Count: countNew}).Error; err != nil {
+		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).Update("count", countNew).Error; err != nil {
 			return err
 		}
 
