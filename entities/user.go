@@ -15,6 +15,6 @@ type User struct {
 	Image         string         `json:"image"`
 	Goal          []Goal         `gorm:"foreignKey:User_uid;references:User_uid" json:"goal"`
 	History       []User_history `gorm:"foreignKey:User_uid;references:User_uid" json:"history"`
-	Goal_active   bool           `gorm:"-"`
-	Goal_exspired bool           `gorm:"-"`
+	Goal_active   bool           `gorm:"-" json:"-"`
+	Goal_exspired bool           `gorm:"-" json:"-"`
 }
