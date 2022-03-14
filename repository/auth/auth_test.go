@@ -4,7 +4,9 @@ import (
 	"HealthFit/configs"
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
+	ar "HealthFit/repository/admin"
 	gr "HealthFit/repository/goal"
+
 	"HealthFit/repository/user"
 	utils "HealthFit/utils/mysql"
 	"testing"
@@ -222,5 +224,24 @@ func TestLogin(t *testing.T) {
 		assert.Equal(t, false, resLogin.Goal_active)
 		assert.Equal(t, true, resLogin.Goal_exspired)
 	})
+	t.Run("roles admin", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Goal{})
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Goal{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "tests", Gender: "male", Roles: true}
+		res, err := ar.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		resLogin, errL := repo.Login(mockLogin.Email, mockUser.Password)
+
+		assert.Nil(t, errL)
+		assert.Equal(t, true, resLogin.Roles)
+	})
+
 	//
 }
