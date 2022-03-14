@@ -84,7 +84,7 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 			return c.JSON(statusCode, common.InternalServerError(statusCode, err_repo.Error(), nil))
 		}
 		token, err := middlewares.GenerateToken(checkedUser)
-		response := UserLoginResponse{
+		response := AdminLoginResponse{
 			User_uid: checkedUser.User_uid,
 			Name:     checkedUser.Name,
 			Email:    checkedUser.Email,
