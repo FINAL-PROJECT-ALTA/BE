@@ -154,14 +154,15 @@ func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, erro
 
 	var user entities.User
 	var bmr int
-	var cutCaloriesDay int
+	var bmrDay int
+	var posible int
 
 	resUser := ur.database.Model(entities.User{}).Where("user_uid = ?", goal.User_uid).First(&user)
 
 	if err := resUser.Error; err != nil {
 		return 0, 0, err
 	}
-	cutCaloriesDay = int(math.Round(float64(goal.Weight_target * 7700 / goal.Range_time)))
+	needed := int(math.Round(float64(goal.Weight_target * 7700 / goal.Range_time)))
 
 	var daily_active float32
 	switch goal.Daily_active {
@@ -183,12 +184,20 @@ func (ur *GoalRepository) CheckRecommendGoal(goal entities.Goal) (int, int, erro
 	if user.Gender == "female" {
 		bmr = int(daily_active) * (655 + (9 * goal.Weight) + (2 * goal.Height) - (5 * goal.Age))
 	}
-	bmrDay := bmr - cutCaloriesDay
-
-	posible := bmr * 50 / 100
-	if int(bmrDay) < posible {
-		return bmr, cutCaloriesDay, errors.New("impossible")
+	if goal.Target == "gain weight" {
+		bmrDay = bmr + needed
+		posible = bmr * 2
+		if int(bmrDay) > posible {
+			return bmr, needed, errors.New("impossible")
+		}
 	}
+	if goal.Target == "lose weight" {
+		bmrDay = bmr - needed
+		posible = bmr * 50 / 100
+		if int(bmrDay) < posible {
+			return bmr, needed, errors.New("impossible")
+		}
 
-	return bmr, cutCaloriesDay, nil
+	}
+	return bmr, needed, nil
 }
