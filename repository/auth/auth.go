@@ -38,16 +38,15 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 		message, err := ad.RefreshGoalAuth(user.User_uid)
 		if err != nil && message == "not have goal active" {
 			return user, nil
-		}
-		if message == "updated" && err == nil {
+		} else if message == "updated" && err == nil {
 			user.Goal_exspired = true
 			return user, nil
-		}
-		if message == "have goal active and nothing to update" {
+		} else if message == "have goal active and nothing to update" {
 			user.Goal_active = true
 			return user, nil
+		} else {
+			return user, nil
 		}
-		return user, nil
 	}
 
 	return user, nil
