@@ -296,7 +296,7 @@ func (mr *MenuRepository) GetRecommendLunch(user_uid string) ([]entities.Menu, i
 }
 func (mr *MenuRepository) GetRecommendDinner(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	target, _, dinner, _, err := mr.GetMenuRecommendGoal(user_uid)
+	target, _, _, dinner, _, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
@@ -325,16 +325,25 @@ func (mr *MenuRepository) GetRecommendDinner(user_uid string) ([]entities.Menu, 
 }
 func (mr *MenuRepository) GetRecommendOverTime(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	_, _, _, overtime, err := mr.GetMenuRecommendGoal(user_uid)
+	target, _, _, _, overtime, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
 
 	menus := []entities.Menu{}
 
-	start := overtime * 50 / 100
+	var start int
+	var end int
+	if target == "gain weight" {
+		start = overtime
+		rangeGain := overtime * 50 / 100
+		end = overtime + rangeGain
+	} else if target == "lose weight" {
+		start = overtime * 50 / 100
+		end = overtime
+	}
 
-	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories BETWEEN ? AND ?", "overtime", "admin", start, overtime).Order("count desc").Find(&menus)
+	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories BETWEEN ? AND ?", "overtime", "admin", start, end).Order("count desc").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, 0, 0, err
