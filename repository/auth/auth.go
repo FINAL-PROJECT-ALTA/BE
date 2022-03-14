@@ -33,6 +33,7 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 	if !match {
 		return user, errors.New("incorrect password")
 	}
+
 	if !user.Roles {
 		_, err := ad.RefreshGoalAuth(user.User_uid)
 		if err != nil {
@@ -70,17 +71,3 @@ func (ad *AuthDb) RefreshGoalAuth(user_uid string) (bool, error) {
 	return true, nil
 
 }
-
-// func (ad *AuthDb) LoginAdmin(email, password string) (entities.Admin, error) {
-// 	admin := entities.Admin{}
-
-// 	ad.db.Model(&admin).Where("email = ?", email).First(&admin)
-
-// 	match := middlewares.CheckPasswordHash(password, admin.Password)
-
-// 	if !match {
-// 		return entities.Admin{}, errors.New("incorrect password")
-// 	}
-
-// 	return admin, nil
-// }

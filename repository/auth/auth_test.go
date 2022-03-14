@@ -1,41 +1,118 @@
 package auth
 
-// import (
-// 	config "HealthFit/configs"
-// 	"HealthFit/entities"
-// 	"HealthFit/repository/user"
-// 	utils "HealthFit/utils/mysql"
-// 	"testing"
+import (
+	"HealthFit/configs"
+	"HealthFit/delivery/middlewares"
+	"HealthFit/entities"
+	gr "HealthFit/repository/goal"
+	"HealthFit/repository/user"
+	utils "HealthFit/utils/mysql"
+	"testing"
 
-// 	"github.com/stretchr/testify/assert"
-// )
+	"github.com/stretchr/testify/assert"
+)
 
-// func TestLogin(t *testing.T) {
-// 	config := config.GetConfig()
-// 	db := utils.InitDB(config)
-// 	repo := New(db)
+func TestLogin(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
 
-// 	t.Run("success run login", func(t *testing.T) {
-// 		db.Migrator().DropTable(&entities.User{})
-// 		db.AutoMigrate(&entities.User{})
+	t.Run("invalid email", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
 
-// 		mockUser := entities.User{Name: "test", Email: "test", Password: "test"}
-// 		if _, err := user.New(db).Register(mockUser); err != nil {
-// 			t.Fail()
-// 		}
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
 
-// 		mockLogin := entities.User{Email: "test", Password: "test"}
-// 		res, err := repo.Login(mockLogin.Email, mockLogin.Password)
+		mockLogin := entities.User{Email: "dordd", Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
 
-// 		assert.Nil(t, err)
-// 		assert.Equal(t, "test", res.Email)
-// 		assert.Equal(t, 1, int(res.ID))
-// 	})
+		assert.NotNil(t, errL)
+	})
 
-// 	t.Run("fail run login", func(t *testing.T) {
-// 		mockLogin := entities.User{Email: "anonim@123", Password: "anonim123"}
-// 		_, err := repo.Login(mockLogin.Email, mockLogin.Password)
-// 		assert.NotNil(t, err)
-// 	})
+	t.Run("incorrect password", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
 
-// }
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
+
+		assert.NotNil(t, errL)
+	})
+
+	t.Run("roles error", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{})
+		db.AutoMigrate(&entities.User{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		resPass := middlewares.CheckPasswordHash("test", res.Password)
+		if resPass == false {
+			t.Fail()
+		}
+
+		var pass string = "$2a$14$LArsepWalaQWifUH7x7uyecACDMg6w8a6k/LmgGg5BQy79/VAwREq"
+
+		mockLogin := entities.User{Email: res.Email, Password: pass}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
+
+		assert.NotNil(t, errL)
+	})
+
+	t.Run("success", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.Goal{})
+		db.AutoMigrate(&entities.User{}, &entities.Goal{})
+
+		mockUser := entities.User{Name: "test", Email: "test@mail.com", Password: "test"}
+		res, err := user.New(db).Register(mockUser)
+		if err != nil {
+			t.Fail()
+		}
+
+		pas, _ := middlewares.HashPassword(res.Password)
+
+		resPass := middlewares.CheckPasswordHash(mockUser.Password, pas)
+		if resPass == false {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      res.User_uid,
+			Height:        150,
+			Weight:        55,
+			Age:           24,
+			Daily_active:  "not active",
+			Weight_target: 50,
+			Range_time:    14,
+			Target:        "lose weight",
+		}
+
+		resG, errG := gr.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, errRef := repo.RefreshGoalAuth(resG.User_uid)
+		if errRef != nil {
+			t.Fail()
+		}
+
+		mockLogin := entities.User{Email: res.Email, Password: res.Password}
+		_, errL := repo.Login(mockLogin.Email, mockLogin.Password)
+
+		assert.NotNil(t, errL)
+	})
+}
