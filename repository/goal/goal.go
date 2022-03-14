@@ -88,12 +88,7 @@ func (ur *GoalRepository) Update(goal_uid string, newGoal entities.Goal) (entiti
 
 func (ur *GoalRepository) Delete(goal_uid string, user_uid string) error {
 
-	var goal entities.Goal
-
-	if err := ur.database.Where("goal_uid =? AND user_uid =?", goal_uid, user_uid).First(&goal).Error; err != nil {
-		return err
-	}
-	if err := ur.database.Delete(&goal, goal_uid).Error; err != nil {
+	if err := ur.database.Where("goal_uid =? AND user_uid =?", goal_uid, user_uid).Delete(&entities.Goal{}).Error; err != nil {
 		return err
 	}
 	return nil
