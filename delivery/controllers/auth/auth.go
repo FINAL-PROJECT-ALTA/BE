@@ -43,11 +43,13 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 		}
 		token, err := middlewares.GenerateToken(checkedUser)
 		response := UserLoginResponse{
-			User_uid: checkedUser.User_uid,
-			Name:     checkedUser.Name,
-			Email:    checkedUser.Email,
-			Roles:    checkedUser.Roles,
-			Token:    token,
+			User_uid:      checkedUser.User_uid,
+			Name:          checkedUser.Name,
+			Email:         checkedUser.Email,
+			Roles:         checkedUser.Roles,
+			Token:         token,
+			Goal_active:   checkedUser.Goal_active,
+			Goal_exspired: checkedUser.Goal_exspired,
 		}
 
 		if err != nil {
@@ -83,13 +85,11 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		}
 		token, err := middlewares.GenerateToken(checkedUser)
 		response := UserLoginResponse{
-			User_uid:      checkedUser.User_uid,
-			Name:          checkedUser.Name,
-			Email:         checkedUser.Email,
-			Roles:         checkedUser.Roles,
-			Goal_active:   checkedUser.Goal_active,
-			Goal_exspired: checkedUser.Goal_exspired,
-			Token:         token,
+			User_uid: checkedUser.User_uid,
+			Name:     checkedUser.Name,
+			Email:    checkedUser.Email,
+			Roles:    checkedUser.Roles,
+			Token:    token,
 		}
 
 		if err != nil {
