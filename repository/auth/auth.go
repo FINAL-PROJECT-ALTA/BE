@@ -36,9 +36,7 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 
 	if !user.Roles {
 		message, err := ad.RefreshGoalAuth(user.User_uid)
-		if err != nil && message == "not have goal active" {
-			return user, nil
-		} else if message == "updated" && err == nil {
+		if message == "updated" && err == nil {
 			user.Goal_exspired = true
 			return user, nil
 		} else if message == "have goal active and nothing to update" {
@@ -59,10 +57,6 @@ func (ad *AuthDb) RefreshGoalAuth(user_uid string) (interface{}, error) {
 	if res.Error != nil {
 		return "failed get goal active", res.Error
 	}
-	if res.RowsAffected == 0 {
-		return "not have goal active", nil
-	}
-
 	time := time.Now()
 	different := goal.CreatedAt.Sub(time)
 
