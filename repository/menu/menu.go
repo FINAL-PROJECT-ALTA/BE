@@ -159,7 +159,7 @@ func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entit
 	return menus, nil
 }
 
-func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (string, int, int, int, int, error) {
+func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (int, int, int, int, error) {
 
 	var goal entities.Goal
 	var user entities.User
@@ -232,21 +232,22 @@ func (mr *MenuRepository) GetMenuRecommendGoal(user_uid string) (string, int, in
 		return nil
 	})
 	if err != nil {
-		return "", 0, 0, 0, 0, err
+		return 0, 0, 0, 0, err
 	}
 
-	return goal.Target, breakfast, lunch, dinner, overtime, nil
+	return breakfast, lunch, dinner, overtime, nil
 }
 func (mr *MenuRepository) GetRecommendBreakfast(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	target, breakfast, _, _, _, err := mr.GetMenuRecommendGoal(user_uid)
+	breakfast, _, _, _, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
 
 	menus := []entities.Menu{}
+	start := breakfast * 50 / 100
 
-	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories <= ?", "breakfast", "admin", breakfast).Order("count desc").Find(&menus)
+	res := mr.database.Debug().Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category=? AND created_by = ? AND total_calories BETWEEN ? AND ?", "breakfast", "admin", start, breakfast).Order("count desc").Find(&menus)
 
 	if err := res.Error; err != nil {
 		return menus, 0, 0, err
@@ -257,7 +258,7 @@ func (mr *MenuRepository) GetRecommendBreakfast(user_uid string) ([]entities.Men
 }
 func (mr *MenuRepository) GetRecommendLunch(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	target, _, lunch, _, _, err := mr.GetMenuRecommendGoal(user_uid)
+	_, lunch, _, _, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
@@ -275,7 +276,7 @@ func (mr *MenuRepository) GetRecommendLunch(user_uid string) ([]entities.Menu, i
 }
 func (mr *MenuRepository) GetRecommendDinner(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	target, _, _, dinner, _, err := mr.GetMenuRecommendGoal(user_uid)
+	_, _, dinner, _, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
@@ -293,7 +294,7 @@ func (mr *MenuRepository) GetRecommendDinner(user_uid string) ([]entities.Menu, 
 }
 func (mr *MenuRepository) GetRecommendOverTime(user_uid string) ([]entities.Menu, int64, int, error) {
 
-	target, _, _, _, overtime, err := mr.GetMenuRecommendGoal(user_uid)
+	_, _, _, overtime, err := mr.GetMenuRecommendGoal(user_uid)
 	if err != nil {
 		return []entities.Menu{}, 0, 0, err
 	}
