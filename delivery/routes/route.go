@@ -3,6 +3,7 @@ package route
 import (
 	"HealthFit/delivery/controllers/admin"
 	"HealthFit/delivery/controllers/auth"
+	authgoogle "HealthFit/delivery/controllers/auth_google"
 	"HealthFit/delivery/controllers/foods"
 	"HealthFit/delivery/controllers/goal"
 	"HealthFit/delivery/controllers/menu"
@@ -22,6 +23,7 @@ func RegisterPath(e *echo.Echo,
 	ac *admin.AdminController,
 	mc *menu.MenuController,
 	uh *userhistory.UserHistoryController,
+	gl *authgoogle.GoogleController,
 ) {
 
 	//CORS
@@ -43,6 +45,9 @@ func RegisterPath(e *echo.Echo,
 	//ROUTE REGISTER - LOGIN USERS
 	e.POST("users/register", uc.Register())
 	e.POST("users/login", aa.Login())
+
+	e.GET("/auth/google/login", gl.LoginGoogle())
+	e.GET("/auth/google/callback", gl.Callback())
 
 	//ROUTE USERS
 	e.GET("/users", uc.GetById(), middlewares.JwtMiddleware())
