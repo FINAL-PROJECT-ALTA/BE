@@ -75,6 +75,10 @@ func (fc *FoodsController) GetById() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
+		if res.Food_uid == "" {
+			return c.JSON(http.StatusNotFound, common.Success(http.StatusNotFound, "Not found", nil))
+
+		}
 
 		response := FoodsCreateResponse{}
 		response.Food_uid = res.Food_uid
