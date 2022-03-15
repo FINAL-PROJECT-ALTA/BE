@@ -41,6 +41,7 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 		if err := fr.database.Where("food_category =?", input).Find(&foods).Error; err != nil {
 			return foods, nil
 		}
+		return foods, nil
 	}
 
 	if category == "foods" && input != "" {
