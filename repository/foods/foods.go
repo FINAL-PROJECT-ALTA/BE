@@ -115,7 +115,8 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, error) {
 	var food entities.Food
-	err := fr.database.Where("food_uid =?", f.Food_uid).First(&food).Error
+	err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", f.Food_uid).Scan(&food)
+	fmt.Println(food)
 
 	if food.Food_uid == f.Food_uid {
 		return entities.Food{}, errors.New("found")
