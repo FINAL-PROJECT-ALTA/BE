@@ -4,6 +4,7 @@ import (
 	"HealthFit/entities"
 	"errors"
 
+	"github.com/labstack/gommon/log"
 	"github.com/lithammer/shortuuid"
 	"gorm.io/gorm"
 )
@@ -27,15 +28,15 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 		newHistory.User_history_uid = uid
 
 		if err := tx.Model(entities.User_history{}).Create(&newHistory).Error; err != nil {
-			return err
+			log.Warn(err)
 		}
 		var menu entities.Menu
 		if err := tx.Model(&entities.Menu{}).Where("menu_uid =?", menuUid).Find(&menu).Error; err != nil {
-			return err
+			log.Warn(err)
 		}
 		countNew := menu.Count + 1
 		if err := tx.Model(entities.Menu{}).Where("menu_uid =?", menuUid).Update("count", countNew).Error; err != nil {
-			return err
+			log.Warn(err)
 		}
 
 		return nil
