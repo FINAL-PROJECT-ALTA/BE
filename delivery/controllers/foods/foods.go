@@ -233,6 +233,7 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		s := c.QueryParam("s")
+		count := 0
 
 		req := FoodsCreateRequestFormatEdamam{}
 		response, err := edamam.FoodThirdParty(s)
@@ -251,10 +252,12 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			if err != nil {
 				continue
 			}
+			count++
+			// time.Sleep(time.Second * 4)
 
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success add foods from", nil))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success add foods from", count))
 
 	}
 }
