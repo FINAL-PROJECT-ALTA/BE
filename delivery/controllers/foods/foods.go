@@ -44,6 +44,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			Unit:          newFoods.Unit,
 			Unit_value:    newFoods.Unit_value,
 			Food_category: newFoods.Food_category,
+			Image:         "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png",
 		})
 
 		if err != nil {
@@ -60,7 +61,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 		response.Unit = res.Unit
 		response.Unit_value = res.Unit_value
 		response.Food_category = res.Food_category
-		response.Image = res.Food_category
+		response.Image = res.Image
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create foods", response))
 
