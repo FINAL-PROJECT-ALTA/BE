@@ -5,8 +5,7 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
-	"io/ioutil"
-	"log"
+	edamam "HealthFit/utils/edamam"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -234,19 +233,27 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		apiGet, err := http.Get("https://api.edamam.com/api/food-database/v2/parser?app_id=be2d6a07&app_key=28fd93ac7f43534e5a28ed8843adbfa7&ingr=a&nutrition-type=cooking")
+		req := FoodsCreateRequestFormatEdamam{}
+		response, err := edamam.FoodThirdParty()
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Access Denied", nil))
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on thirdparty", nil))
+		}
+		for i := 0; i < len(response.Hints); i++ {
+			req.Name = response.Hints[i].Food.Label
+			req.Food_uid = response.Hints[i].Food.FoodId
+			req.Unit = response.Hints[i].Measures[1].Label
+			req.Unit_value = response.Hints[i].Measures[1].Weight
+			req.Food_category = response.Hints[i].Food.CategoryLabel
+			req.Image = response.Hints[i].Food.Image
+
 		}
 
-		responseData, err := ioutil.ReadAll(apiGet.Body)
+		res, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image})
 		if err != nil {
-			log.Fatal(err)
+			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		new := string(responseData)
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "", new))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "", res))
 
 	}
 }

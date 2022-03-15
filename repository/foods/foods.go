@@ -111,3 +111,14 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 	return foods, nil
 }
+
+func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, error) {
+
+	uid := shortuuid.New()
+	f.Food_uid = uid
+	if err := fr.database.Create(&f).Error; err != nil {
+		return f, err
+	}
+
+	return f, nil
+}
