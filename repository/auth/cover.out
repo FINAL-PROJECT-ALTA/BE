@@ -1,0 +1,20 @@
+mode: set
+HealthFit/repository/auth/auth.go:18.31,22.2 1 1
+HealthFit/repository/auth/auth.go:24.72,27.88 2 1
+HealthFit/repository/auth/auth.go:31.2,33.12 2 1
+HealthFit/repository/auth/auth.go:37.2,37.17 1 1
+HealthFit/repository/auth/auth.go:50.2,50.18 1 1
+HealthFit/repository/auth/auth.go:27.88,29.3 1 1
+HealthFit/repository/auth/auth.go:33.12,35.3 1 1
+HealthFit/repository/auth/auth.go:37.17,39.41 2 1
+HealthFit/repository/auth/auth.go:39.41,42.4 2 1
+HealthFit/repository/auth/auth.go:42.9,42.65 1 1
+HealthFit/repository/auth/auth.go:42.65,45.4 2 1
+HealthFit/repository/auth/auth.go:45.9,47.4 1 1
+HealthFit/repository/auth/auth.go:52.73,57.22 3 1
+HealthFit/repository/auth/auth.go:60.2,64.33 4 1
+HealthFit/repository/auth/auth.go:73.2,73.54 1 1
+HealthFit/repository/auth/auth.go:57.22,59.3 1 1
+HealthFit/repository/auth/auth.go:64.33,66.123 2 1
+HealthFit/repository/auth/auth.go:69.3,69.24 1 1
+HealthFit/repository/auth/auth.go:66.123,68.4 1 0
