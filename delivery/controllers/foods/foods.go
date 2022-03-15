@@ -66,23 +66,10 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 
 	}
 }
-func (fc *FoodsController) GetAll() echo.HandlerFunc {
+func (fc *FoodsController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		isAdmin := middlewares.ExtractRoles(c)
-		if !isAdmin {
-			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
-		}
-
 		food_uid := c.Param("food_uid")
-		var updateFoods = FoodsUpdateRequestFormat{}
-		c.Bind(&updateFoods)
-
-		errB := c.Validate(&updateFoods)
-		if errB != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
-		}
-
 		res, err := fc.repo.GetById(food_uid)
 
 		if err != nil {
@@ -101,7 +88,7 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 		response.Food_category = res.Food_category
 		response.Image = res.Image
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update foods", response))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success get food by food_uid", response))
 	}
 
 }
