@@ -25,9 +25,9 @@ type DetailFood struct {
 }
 
 type DetailMeasures struct {
-	Uri    string `json:"uri"`
-	Label  string `json:"label"`
-	Weight int    `json:"weight"`
+	Uri    string  `json:"uri"`
+	Label  string  `json:"label"`
+	Weight float64 `json:"weight"`
 }
 
 type Data struct {

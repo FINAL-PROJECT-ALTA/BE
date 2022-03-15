@@ -252,14 +252,26 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Name = response.Hints[i].Food.Label
 			req.Food_uid = response.Hints[i].Food.FoodId
 			req.Unit = response.Hints[i].Measures[1].Label
-			req.Unit_value = response.Hints[i].Measures[1].Weight
+			req.Unit_value = int(math.Round(response.Hints[i].Measures[1].Weight))
 			req.Calories = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
 			req.Protein = int(math.Round(response.Hints[i].Food.Nutrients.Procnt))
 			req.Carbohidrate = int(math.Round(response.Hints[i].Food.Nutrients.Chocdf))
 			req.Energy = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
 			req.Image = response.Hints[i].Food.Image
+			req.Food_category = response.Hints[i].Food.CategoryLabel
 
-			_, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image, Calories: req.Calories, Protein: req.Protein, Carbohidrate: req.Carbohidrate, Energy: req.Energy})
+			_, err := fc.repo.CreateFoodThirdParty(entities.Food{
+				Food_uid:      req.Food_uid,
+				Name:          req.Name,
+				Unit:          req.Unit,
+				Unit_value:    req.Unit_value,
+				Food_category: req.Food_category,
+				Image:         req.Image,
+				Calories:      req.Calories,
+				Protein:       req.Protein,
+				Carbohidrate:  req.Carbohidrate,
+				Energy:        req.Energy,
+			})
 			log.Info(response.Hints[i].Food.Nutrients)
 			if err != nil {
 				continue
