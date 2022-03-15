@@ -37,6 +37,10 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 	foods := []entities.Food{}
 	sql := "SELECT * FROM foods"
 
+	if input == "fruit" || input == "drink" || input == "junk food" || input == "food" || input == "snack" && category == "foods" {
+		sql = fmt.Sprintf("%s WHERE food_category LIKE '%%%s%%'", sql, input)
+	}
+
 	if category == "foods" && input != "" {
 		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%'", sql, input)
 	}
