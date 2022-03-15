@@ -32,11 +32,9 @@ func (fr *FoodRepository) Create(f entities.Food) (entities.Food, error) {
 	return f, nil
 }
 func (fr *FoodRepository) GetById(food_uid string) (entities.Food, error) {
-	sql := "SELECT * FROM foods"
-	sql = fmt.Sprintf("%s WHERE food_uid = %s AND deleted_at IS NULL", sql, food_uid)
 
 	var food entities.Food
-	if err := fr.database.Raw(sql).Scan(&food).Error; err != nil {
+	if err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", food_uid).Scan(&food).Error; err != nil {
 		return food, err
 	}
 	return food, nil
