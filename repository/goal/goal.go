@@ -25,7 +25,7 @@ func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 	var goal entities.Goal
 	result := ur.database.Model(entities.Goal{}).Where("user_uid = ? AND status =?", g.User_uid, "active").First(&goal)
 	if res := result.RowsAffected; res == 1 {
-		return entities.Goal{}, errors.New("vailed to create goal")
+		return entities.Goal{}, errors.New("failed to create goal")
 	}
 
 	if bmr, cutCaloriesDay, err := ur.CheckRecommendGoal(g); err != nil {
