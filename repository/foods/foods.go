@@ -45,11 +45,11 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 	}
 
 	if category == "foods" && input != "" {
-		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%'", sql, input)
+		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%' AND deleted_at IS NULL", sql, input)
 	}
 	if category == "calories" && input != "" {
 		input, _ := strconv.Atoi(input)
-		sql = fmt.Sprintf("%s WHERE calories < %d", sql, input)
+		sql = fmt.Sprintf("%s WHERE calories < %d AND deleted_at IS NULL", sql, input)
 	}
 
 	if err := fr.database.Raw(sql).Scan(&foods).Error; err != nil {
