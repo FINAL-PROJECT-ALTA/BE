@@ -27,7 +27,7 @@ type DetailFood struct {
 type DetailMeasures struct {
 	Uri    string `json:"uri"`
 	Label  string `json:"label"`
-	Weight string `json:"weight"`
+	Weight int    `json:"weight"`
 }
 
 type Data struct {
@@ -41,11 +41,12 @@ type Response struct {
 	Hints  []Data            `json:"hints"`
 }
 
-func FoodThirdParty() (Response, error) {
+func FoodThirdParty(s string) (Response, error) {
 
 	// https://api.edamam.com/api/food-database/v2/parser?app_id=be2d6a07&app_key=28fd93ac7f43534e5a28ed8843adbfa7&ingr=a&nutrition-type=cooking
+	url := fmt.Sprintf("https://api.edamam.com/api/food-database/v2/parser?app_id=be2d6a07&app_key=28fd93ac7f43534e5a28ed8843adbfa7&ingr=%s&nutrition-type=cooking", s)
 
-	apiGet, err := http.Get("https://api.edamam.com/api/food-database/v2/parser?app_id=be2d6a07&app_key=28fd93ac7f43534e5a28ed8843adbfa7&ingr=a&nutrition-type=cooking")
+	apiGet, err := http.Get(url)
 	if err != nil {
 		return Response{}, err
 		// fmt.Print(err.Error())
@@ -61,13 +62,13 @@ func FoodThirdParty() (Response, error) {
 
 	response := Response{}
 	// bodyString := bodyData
-	fmt.Println("API as a string:\n", response)
+	// fmt.Println("API as a string:\n", response)
 
 	json.Unmarshal(bodyData, &response)
 	// fmt.Println("API as a string:\n", response)
-	for i := 0; i < len(response.Hints); i++ {
-		fmt.Print("============= ", response.Hints[i].Food.Nutrients)
-	}
+	// for i := 0; i < len(response.Hints); i++ {
+	// 	fmt.Print("============= ", response.Hints[i].Food.Nutrients)
+	// }
 	return response, nil
 
 }
