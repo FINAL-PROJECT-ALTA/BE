@@ -232,6 +232,11 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 
 func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		isAdmin := middlewares.ExtractRoles(c)
+		if !isAdmin {
+			return c.JSON(http.StatusUnauthorized, common.BadRequest(http.StatusUnauthorized, "access denied", nil))
+		}
+
 		s := c.QueryParam("s")
 		count := 0
 
