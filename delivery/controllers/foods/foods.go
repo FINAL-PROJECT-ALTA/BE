@@ -5,6 +5,8 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -67,6 +69,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 
 	}
 }
+
 func (fc *FoodsController) GetById() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
@@ -225,5 +228,25 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get all foods", response))
+	}
+}
+
+func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		apiGet, err := http.Get("https://api.edamam.com/api/food-database/v2/parser?app_id=be2d6a07&app_key=28fd93ac7f43534e5a28ed8843adbfa7&ingr=a&nutrition-type=cooking")
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Access Denied", nil))
+		}
+
+		responseData, err := ioutil.ReadAll(apiGet.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		new := string(responseData)
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "", new))
+
 	}
 }

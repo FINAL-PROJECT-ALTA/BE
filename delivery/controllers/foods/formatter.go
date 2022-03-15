@@ -77,3 +77,39 @@ type FoodsUpdateRequestFormat struct {
 	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
 }
+
+// ====== API EDAMAM RESPONSE =======
+
+type DetailNutrients struct {
+	Enerc_kcal int `json:"ENERC_KCAL"`
+	Procnt     int `json:"PROCNT"`
+	Fat        int `json:"FAT"`
+	Chocdf     int `json:"CHOCDF"`
+	Fibtg      int `json:"FIBTG"`
+}
+
+type DetailFood struct {
+	FoodId        string            `json:"foodId"`
+	Label         string            `json:"label"`
+	Nutrients     []DetailNutrients `json:"nutrients"`
+	Category      string            `json:"category"`
+	CategoryLabel string            `json:"categoryLabel"`
+	Image         string            `json:"image"`
+}
+
+type DetailMeasures struct {
+	Uri    string `json:"uri"`
+	Label  string `json:"label"`
+	Weight string `json:"weight"`
+}
+
+type Data struct {
+	Food     []DetailFood     `json:"food"`
+	Measures []DetailMeasures `json:"measures"`
+}
+
+type Response struct {
+	Text   string            `json:"text"`
+	Parsed map[string]string `json:"parsed"`
+	Hints  []Data            `json:"hints"`
+}
