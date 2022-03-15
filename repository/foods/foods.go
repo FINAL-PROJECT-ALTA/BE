@@ -120,6 +120,10 @@ func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, 
 	if food.Food_uid == f.Food_uid {
 		return entities.Food{}, errors.New("found")
 	}
+
+	if f.Image == "" {
+		f.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	}
 	log.Info(err)
 
 	if err := fr.database.Create(&f).Error; err != nil {
