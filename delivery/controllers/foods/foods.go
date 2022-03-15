@@ -232,9 +232,10 @@ func (fc *FoodsController) GetAll() echo.HandlerFunc {
 
 func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		s := c.QueryParam("s")
 
 		req := FoodsCreateRequestFormatEdamam{}
-		response, err := edamam.FoodThirdParty()
+		response, err := edamam.FoodThirdParty(s)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on thirdparty", nil))
 		}
@@ -246,14 +247,18 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Food_category = response.Hints[i].Food.CategoryLabel
 			req.Image = response.Hints[i].Food.Image
 
+			_, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image})
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			}
+
 		}
 
-		res, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image})
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "", res))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success add foods from", nil))
 
 	}
 }

@@ -113,9 +113,15 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 }
 
 func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, error) {
+	var food entities.Food
+	err := fr.database.Where("food_uid =?", f.Food_uid).First(&food).Error
+	if err != nil {
+		return entities.Food{}, err
+	}
+	if food.Food_uid == f.Food_uid {
+		return entities.Food{}, errors.New("found")
+	}
 
-	uid := shortuuid.New()
-	f.Food_uid = uid
 	if err := fr.database.Create(&f).Error; err != nil {
 		return f, err
 	}
