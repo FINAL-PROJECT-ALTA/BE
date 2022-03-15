@@ -6,6 +6,7 @@ import (
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
 	edamam "HealthFit/utils/edamam"
+	"math"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -250,10 +251,10 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Food_uid = response.Hints[i].Food.FoodId
 			req.Unit = response.Hints[i].Measures[1].Label
 			req.Unit_value = response.Hints[i].Measures[1].Weight
-			req.Calories = int(response.Hints[i].Food.Nutrients.Enerc_kcal)
-			req.Protein = int(response.Hints[i].Food.Nutrients.Procnt)
-			req.Carbohidrate = int(response.Hints[i].Food.Nutrients.Chocdf)
-			req.Energy = int(response.Hints[i].Food.Nutrients.Enerc_kcal)
+			req.Calories = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
+			req.Protein = int(math.Round(response.Hints[i].Food.Nutrients.Procnt))
+			req.Carbohidrate = int(math.Round(response.Hints[i].Food.Nutrients.Chocdf))
+			req.Energy = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
 			req.Image = response.Hints[i].Food.Image
 
 			_, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image})
