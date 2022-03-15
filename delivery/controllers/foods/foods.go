@@ -6,10 +6,12 @@ import (
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
 	edamam "HealthFit/utils/edamam"
+
 	"math"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type FoodsController struct {
@@ -257,7 +259,8 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Energy = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
 			req.Image = response.Hints[i].Food.Image
 
-			_, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image})
+			_, err := fc.repo.CreateFoodThirdParty(entities.Food{Food_uid: req.Food_uid, Name: req.Name, Unit: req.Unit, Unit_value: req.Unit_value, Food_category: req.Food_category, Image: req.Image, Calories: req.Calories, Protein: req.Protein, Carbohidrate: req.Carbohidrate, Energy: req.Energy})
+			log.Info(response.Hints[i].Food.Nutrients)
 			if err != nil {
 				continue
 			}
