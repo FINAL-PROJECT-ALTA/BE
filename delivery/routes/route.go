@@ -61,6 +61,7 @@ func RegisterPath(e *echo.Echo,
 	e.POST("/foods", fc.Create(), middlewares.JwtMiddleware())
 	e.GET("/foods", fc.GetAll())
 	e.GET("/foods/search", fc.Search())
+	e.GET("/foods/:food_uid", fc.GetById())
 	e.PUT("/foods/:food_uid", fc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/foods/:food_uid", fc.Delete(), middlewares.JwtMiddleware())
 
