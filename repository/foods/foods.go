@@ -37,7 +37,7 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 	foods := []entities.Food{}
 	sql := "SELECT * FROM foods"
 
-	if input == "fruit" || input == "drink" || input == "junk food" || input == "food" || input == "snack" {
+	if input == "food" || input == "fruit" || input == "drink" || input == "junk food" || input == "snack" {
 		if err := fr.database.Where("food_category =?", input).Find(&foods).Error; err != nil {
 			return foods, nil
 		}
