@@ -6,6 +6,7 @@ import (
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
 	edamam "HealthFit/utils/edamam"
+	"strings"
 
 	"math"
 	"net/http"
@@ -250,7 +251,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 		}
 		for i := 0; i < len(response.Hints); i++ {
 			req.Name = response.Hints[i].Food.Label
-			req.Food_uid = response.Hints[i].Food.FoodId
+			req.Food_uid = strings.Trim(response.Hints[i].Food.FoodId, "_")
 			req.Unit = response.Hints[i].Measures[1].Label
 			req.Unit_value = int(math.Round(response.Hints[i].Measures[1].Weight))
 			req.Calories = int(math.Round(response.Hints[i].Food.Nutrients.Enerc_kcal))
