@@ -146,13 +146,16 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 
 	// ======================== option 1
 
-	if foodNew.Image == "" {
-		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	}
-
-	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Create(foodNew)
+	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood)
 	if res.RowsAffected != 0 {
 		return resFood, res.Error
+	} else {
+		if foodNew.Image == "" {
+			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+		}
+		if err := fr.database.Create(&foodNew).Error; err != nil {
+			return foodNew, errors.New("failed to create food from third party")
+		}
 	}
 
 	return resFood, nil
