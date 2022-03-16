@@ -124,9 +124,9 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 	}
 
 	if err := fr.database.Create(&foodNew).Error; err != nil {
-		fr.database.Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
-		if resFood.Food_uid != "" {
-			return entities.Food{}, errors.New("food alredy created")
+		errC := fr.database.Where("food_uid = ?", foodNew.Food_uid).First(&resFood)
+		if errC != nil || resFood.Food_uid != "" {
+			return entities.Food{}, errors.New("food already created")
 		}
 		return entities.Food{}, errors.New("failed to create food from third party")
 	}
