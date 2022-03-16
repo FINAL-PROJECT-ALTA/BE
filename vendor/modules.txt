@@ -77,8 +77,6 @@ github.com/jinzhu/inflection
 github.com/jinzhu/now
 # github.com/jmespath/go-jmespath v0.4.0
 github.com/jmespath/go-jmespath
-# github.com/labstack/echo v3.3.10+incompatible
-github.com/labstack/echo
 # github.com/labstack/echo/v4 v4.7.0
 github.com/labstack/echo/v4
 github.com/labstack/echo/v4/middleware
