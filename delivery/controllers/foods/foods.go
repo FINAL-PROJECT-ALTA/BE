@@ -12,7 +12,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 type FoodsController struct {
@@ -273,8 +272,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 				Carbohidrate:  req.Carbohidrate,
 				Energy:        req.Energy,
 			})
-			log.Info(response.Hints[i].Food.Nutrients)
-			if err.Error() == "foundfood" {
+			if err != nil {
 				continue
 			}
 			count++
