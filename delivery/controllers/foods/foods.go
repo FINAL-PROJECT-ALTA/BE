@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type FoodsController struct {
@@ -260,7 +261,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Food_category = response.Hints[i].Food.CategoryLabel
 
 			_, err := fc.repo.CreateFoodThirdParty(entities.Food{
-				Food_uid:      "foodbfsqpnnacx05mhas1q",
+				Food_uid:      req.Food_uid,
 				Name:          req.Name,
 				Unit:          req.Unit,
 				Unit_value:    req.Unit_value,
@@ -275,6 +276,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 				continue
 			}
 			count++
+			log.Info(count)
 			// time.Sleep(time.Second * 4)
 
 		}
