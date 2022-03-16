@@ -62,7 +62,7 @@ func (uh *UserHistoryRepository) GetAll(user_uid string) ([]entities.User_histor
 func (uh *UserHistoryRepository) GetById(user_uid, user_history_uid string) (entities.User_history, error) {
 	user_history := entities.User_history{}
 
-	result := uh.database.Preload("Menu").Preload("Detail_menu.Food").Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).First(&user_history)
+	result := uh.database.Preload("Menu").Preload("Detail_menu.Food").Where("user_uid = ? AND user_history_uid = ?", user_uid, user_history_uid).Find(&user_history)
 	if err := result.Error; err != nil {
 		return user_history, errors.New("record not found")
 	}
