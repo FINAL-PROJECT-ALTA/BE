@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/labstack/gommon/log"
 	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
@@ -115,7 +116,8 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
 
-	res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).Find(&resFood)
+	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+	log.Info(resFood)
 	if resFood.Food_uid != "" {
 		return resFood, res.Error
 	} else {

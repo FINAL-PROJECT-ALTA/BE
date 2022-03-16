@@ -11,7 +11,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 type FoodsController struct {
@@ -276,7 +275,6 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 				continue
 			}
 			count++
-			log.Info(count)
 			// time.Sleep(time.Second * 4)
 
 		}
