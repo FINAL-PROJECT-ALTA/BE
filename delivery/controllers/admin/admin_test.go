@@ -22,7 +22,7 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
-var jwtToken = ""
+// var jwtToken = ""
 
 func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
