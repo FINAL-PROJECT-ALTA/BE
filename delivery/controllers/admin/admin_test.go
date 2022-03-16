@@ -104,6 +104,36 @@ func TestRegister(t *testing.T) {
 		assert.Equal(t, "There is some problem from server", resp.Message)
 
 	})
+
+	t.Run("Failed Bind", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]string{
+			"name":     "test",
+			"email":    "test@",
+			"password": "test",
+			"gender":   "Male",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/admin/register")
+
+		AdminController := New(&MockAdminRepository{})
+
+		AdminController.Register()(context)
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "There is some problem from input", resp.Message)
+
+	})
 }
 
 type MockAdminRepository struct{}
