@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/labstack/gommon/log"
 	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
@@ -113,23 +112,20 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	return foods, nil
 }
 
-func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, error) {
+func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	var food entities.Food
-	err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", f.Food_uid).Scan(&food)
-	fmt.Println(food)
+	if res := fr.database.Where("SELECT * FROM foods WHERE food_uid = ?", foodNew.Food_uid).Find(&food).RowsAffected; res != 0 {
+		return food, errors.New("found")
+	}
+	// time.Sleep(time.Second * 2)
 
-	if err.RowsAffected >= 1 {
-		return entities.Food{}, errors.New("found")
+	if foodNew.Image == "" {
+		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 	}
 
-	if f.Image == "" {
-		f.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	}
-	log.Info(err)
-
-	if err := fr.database.Create(&f).Error; err != nil {
-		return f, err
+	if err := fr.database.Create(&foodNew).Error; err != nil {
+		return entities.Food{}, err
 	}
 
-	return f, nil
+	return entities.Food{}, nil
 }
