@@ -274,7 +274,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 				Energy:        req.Energy,
 			})
 			log.Info(response.Hints[i].Food.Nutrients)
-			if err != nil {
+			if err.Error() == "foundfood" {
 				continue
 			}
 			count++
