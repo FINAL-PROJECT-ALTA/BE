@@ -114,17 +114,21 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
-	res := fr.database.Where("food_uid = ?", foodNew.Food_uid).First(&resFood)
-	if resFood.Food_uid != "" {
-		return entities.Food{}, res.Error
-	}
+	// res := fr.database.Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+	// if resFood.Food_uid != "" {
+	// 	return entities.Food{}, res.Error
+	// }
 
 	if foodNew.Image == "" {
 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 	}
 
 	if err := fr.database.Create(&foodNew).Error; err != nil {
-		return entities.Food{}, err
+		fr.database.Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+		if resFood.Food_uid != "" {
+			return entities.Food{}, errors.New("food alredy created")
+		}
+		return entities.Food{}, errors.New("failed to create food from third party")
 	}
 
 	return entities.Food{}, nil
