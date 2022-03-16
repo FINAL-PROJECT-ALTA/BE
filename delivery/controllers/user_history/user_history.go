@@ -75,17 +75,17 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		response := []GetAllUserHistoryResponse{}
-		for i := 0; i < len(res); i++ {
-			var resHis GetAllUserHistoryResponse
-			resHis.User_history_uid = res[i].User_history_uid
-			resHis.Goal_uid = res[i].Goal_uid
-			resHis.CreatedAt = res[i].CreatedAt
-			resHis.Menu = res[i].Menu
-			response = append(response, resHis)
-		}
+		// response := []GetAllUserHistoryResponse{}
+		// for i := 0; i < len(res); i++ {
+		// 	var resHis GetAllUserHistoryResponse
+		// 	resHis.User_history_uid = res[i].User_history_uid
+		// 	resHis.Goal_uid = res[i].Goal_uid
+		// 	resHis.CreatedAt = res[i].CreatedAt
+		// 	resHis.Menu = res[i].Menu
+		// 	response = append(response, resHis)
+		// }
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user histories", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user histories", res))
 	}
 }
 
@@ -106,11 +106,11 @@ func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "Internal Server Error", nil))
 		}
 
-		response := GetUserHistoryResponse{}
-		response.User_history_uid = res.User_history_uid
-		response.Goal_uid = res.Goal_uid
-		response.Menu = res.Menu
+		// response := GetUserHistoryResponse{}
+		// response.User_history_uid = res.User_history_uid
+		// response.Goal_uid = res.Goal_uid
+		// response.Menu = res.Menu
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", res))
 	}
 }

@@ -13,7 +13,7 @@ type User_history struct {
 	User_uid         string         `gorm:"index;type:varchar(22)" json:"user_uid"`
 	Goal_uid         string         `gorm:"index;type:varchar(22)" json:"goal_uid"`
 	Menu_uid         string         `gorm:"index;type:varchar(22)" json:"menu_uid"`
-	Menu             []Menu         `gorm:"foreignKey:Menu_uid;references:Menu_uid" json:"menu"`
+	Menu             Menu           `gorm:"foreignKey:Menu_uid;references:Menu_uid" json:"menu"`
 	CreatedAt        time.Time      `json:"cretedAt"`
 	UpdatedAt        time.Time      `json:"-"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
