@@ -115,20 +115,18 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
 
-	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
-	if resFood.Food_uid != "" {
-		return resFood, res.Error
-	} else {
-		if foodNew.Image == "" {
-			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-		}
-		if err := fr.database.Create(&foodNew).Error; err != nil {
-			return resFood, errors.New("failed to create food from third party")
-		}
-	}
-	return resFood, nil
-
-	// ======================= get data
+	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+	// if resFood.Food_uid != "" {
+	// 	return resFood, res.Error
+	// } else {
+	// 	if foodNew.Image == "" {
+	// 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	// 	}
+	// 	if err := fr.database.Create(&foodNew).Error; err != nil {
+	// 		return resFood, errors.New("failed to create food from third party")
+	// 	}
+	// }
+	// return resFood, nil
 
 	// ===================== option 2
 	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
@@ -148,19 +146,15 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 
 	// ======================== option 1
 
-	// res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).First(&foodNew)
+	if foodNew.Image == "" {
+		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	}
 
-	// if res.RowsAffected == 1 {
-	// 	return foodNew, res.Error
-	// } else {
-	// 	if foodNew.Image == "" {
-	// 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	// 	}
-	// 	err := fr.database.Create(&foodNew)
-	// 	if err != nil {
-	// 		return foodNew, err.Error
-	// 	}
-	// }
-	// return foodNew, nil
+	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Create(foodNew)
+	if res.RowsAffected != 0 {
+		return resFood, res.Error
+	}
+
+	return resFood, nil
 
 }
