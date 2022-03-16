@@ -117,6 +117,6 @@ func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 			response.Menu.Foods = append(response.Menu.Foods, res.Menu.Detail_menu[i].Food)
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", res))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", response))
 	}
 }
