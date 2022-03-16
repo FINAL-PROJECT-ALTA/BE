@@ -114,18 +114,24 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
-	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
-	if resFood.Food_uid != "" {
-		return entities.Food{}, res.Error
-	}
+	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+	// if resFood.Food_uid != "" {
+	// 	return entities.Food{}, res.Error
+	// }
 
-	if foodNew.Image == "" {
-		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	}
+	// if foodNew.Image == "" {
+	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	// }
 
-	if err := fr.database.Create(&foodNew).Error; err != nil {
-		return entities.Food{}, errors.New("failed to create food from third party")
-	}
+	// if err := fr.database.Create(&foodNew).Error; err != nil {
+	// 	return entities.Food{}, errors.New("failed to create food from third party")
+	// }
 
-	return entities.Food{}, nil
+	// return entities.Food{}, nil
+
+	res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).Create(&foodNew)
+	if res.RowsAffected == 1 {
+		return foodNew, res.Error
+	}
+	return foodNew, nil
 }
