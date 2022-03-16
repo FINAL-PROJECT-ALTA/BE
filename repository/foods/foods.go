@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/labstack/gommon/log"
 	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
@@ -117,7 +116,6 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 	resFood := entities.Food{}
 
 	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
-	log.Info(resFood)
 	if resFood.Food_uid != "" {
 		return resFood, res.Error
 	} else {
@@ -128,10 +126,9 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 			return resFood, errors.New("failed to create food from third party")
 		}
 	}
-
 	return resFood, nil
 
-	// ============== get data
+	// ======================= get data
 
 	// ===================== option 2
 	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
