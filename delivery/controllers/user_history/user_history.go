@@ -106,10 +106,16 @@ func (uh *UserHistoryController) GetByUid() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "Internal Server Error", nil))
 		}
 
-		// response := GetUserHistoryResponse{}
-		// response.User_history_uid = res.User_history_uid
-		// response.Goal_uid = res.Goal_uid
-		// response.Menu = res.Menu
+		response := GetUserHistoryByIdResponse{}
+		response.User_history_uid = res.User_history_uid
+		response.Goal_uid = res.Goal_uid
+		response.Menu.Menu_uid = res.Menu_uid
+		response.Menu.Menu_category = res.Menu.Menu_category
+		response.Menu.Created_by = res.Menu.Created_by
+		response.Menu.Total_calories = res.Menu.Total_calories
+		for i := 0; i < len(res.Menu.Detail_menu); i++ {
+			response.Menu.Foods = append(response.Menu.Foods, res.Menu.Detail_menu[i].Food)
+		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user", res))
 	}

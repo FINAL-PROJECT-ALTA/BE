@@ -25,10 +25,11 @@ type CreateUserHistoryResponse struct {
 }
 
 type Menu struct {
-	Menu_uid      string                 `json:"menu_uid"`
-	Menu_category string                 `json:"menu_category"`
-	Created_by    string                 `json:"created_by"`
-	Detail_menu   []entities.Detail_menu `json:"foods"`
+	Menu_uid       string          `json:"menu_uid"`
+	Menu_category  string          `json:"menu_category"`
+	Created_by     string          `json:"created_by"`
+	Total_calories int             `json:"total_calories"`
+	Foods          []entities.Food `json:"foods"`
 }
 
 type GetAllUserHistoryResponse struct {
@@ -42,6 +43,11 @@ type GetUserHistoryResponse struct {
 	User_history_uid string          `json:"user_history_uid"`
 	Goal_uid         string          `json:"goal_uid"`
 	Menu             []entities.Menu `json:"menu"`
+}
+type GetUserHistoryByIdResponse struct {
+	User_history_uid string `json:"user_history_uid"`
+	Goal_uid         string `json:"goal_uid"`
+	Menu             Menu   `json:"menu"`
 }
 
 type UpdateUserHistoryResponse struct {
