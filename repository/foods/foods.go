@@ -129,9 +129,14 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 
 	// return entities.Food{}, nil
 
-	res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).Create(&foodNew)
+	res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).First(&foodNew)
 	if res.RowsAffected == 1 {
 		return foodNew, res.Error
+	} else {
+		err := fr.database.Create(&foodNew)
+		if err != nil {
+			return foodNew, err.Error
+		}
 	}
 	return foodNew, nil
 }
