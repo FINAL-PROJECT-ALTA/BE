@@ -9,6 +9,7 @@ import (
 	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type FoodRepository struct {
@@ -115,29 +116,27 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
 
-	// if foodNew.Image == "" {
-	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	// }
+	if foodNew.Image == "" {
+		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	}
 
-	// fr.database.Clauses(clause.OnConflict{
-	// 	Columns: []clause.Column{{Name: "food_uid"}},
-	// 	Where:   []resFood{},
-	// 	TargetWhere: foodNew{},
-	// 	DoUpdates: clause.AssignmentColumns([]string{
-	// 		"food_uid",
-	// 		"Name",
-	// 		"calories",
-	// 		"energy",
-	// 		"carbohidrate",
-	// 		"protein",
-	// 		"unit",
-	// 		"unit_value",
-	// 		"food_category",
-	// 		"image",
-	// 	}),
-	// }).Create(&resFood)
+	fr.database.Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: foodNew.Food_uid}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"food_uid",
+			"Name",
+			"calories",
+			"energy",
+			"carbohidrate",
+			"protein",
+			"unit",
+			"unit_value",
+			"food_category",
+			"image",
+		}),
+	}).Create(&foodNew)
 
-	// return resFood, nil
+	return resFood, nil
 
 	//============
 	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood)
@@ -157,17 +156,17 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 
 	// ==============
 
-	if err := fr.database.Model(&resFood).Where("food_uid", foodNew.Food_uid).Updates(&foodNew).Error; err != nil {
-		if gorm.ErrRecordNotFound != nil {
-			if foodNew.Image == "" {
-				foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-			}
-			fr.database.Create(&foodNew)
-		} else {
-			return foodNew, errors.New("failed to create food from third party")
-		}
-	}
+	// if err := fr.database.Model(&resFood).Where("food_uid", foodNew.Food_uid).Updates(&foodNew).Error; err != nil {
+	// 	if gorm.ErrRecordNotFound != nil {
+	// 		if foodNew.Image == "" {
+	// 			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	// 		}
+	// 		fr.database.Create(&foodNew)
+	// 	} else {
+	// 		return foodNew, errors.New("failed to create food from third party")
+	// 	}
+	// }
 
-	return resFood, nil
+	// return resFood, nil
 
 }
