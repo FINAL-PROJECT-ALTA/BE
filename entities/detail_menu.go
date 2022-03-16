@@ -17,3 +17,5 @@ type Detail_menu struct {
 	UpdatedAt       time.Time      `json:"-"`
 	DeletedAt       gorm.DeletedAt `gorm:"index" json:"-"`
 }
+
+//"foreignKey:Food_uid;references:Food_uid"
