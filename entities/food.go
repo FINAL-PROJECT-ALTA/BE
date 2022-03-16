@@ -8,7 +8,7 @@ import (
 
 type Food struct {
 	ID            uint   `gorm:"primarykey" json:"-"`
-	Food_uid      string `gorm:"index;type:varchar(22)" json:"food_uid"`
+	Food_uid      string `gorm:"index;type:varchar(30)" json:"food_uid"`
 	Name          string `gorm:"type:varchar(100)" json:"name"`
 	Calories      int    `gorm:"type:int(100)" json:"calories"`
 	Energy        int    `gorm:"type:int(100)" json:"energy"`

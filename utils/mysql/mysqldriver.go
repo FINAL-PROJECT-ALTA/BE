@@ -2,7 +2,6 @@ package utils
 
 import (
 	config "HealthFit/configs"
-	"HealthFit/entities"
 	"fmt"
 
 	"github.com/labstack/gommon/log"
@@ -28,15 +27,15 @@ func InitDB(config *config.AppConfig) *gorm.DB {
 		panic(err)
 	}
 
-	AutoMigrate(DB)
+	// AutoMigrate(DB)
 	return DB
 }
 
-func AutoMigrate(DB *gorm.DB) {
-	DB.AutoMigrate(&entities.User{})
-	DB.AutoMigrate(&entities.Goal{})
-	DB.AutoMigrate(&entities.Food{})
-	DB.AutoMigrate(&entities.Menu{})
-	DB.AutoMigrate(&entities.Detail_menu{})
-	DB.AutoMigrate(&entities.User_history{})
-}
+// func AutoMigrate(DB *gorm.DB) {
+// 	DB.AutoMigrate(&entities.User{})
+// 	DB.AutoMigrate(&entities.Goal{})
+// 	DB.AutoMigrate(&entities.Food{})
+// 	DB.AutoMigrate(&entities.Menu{})
+// 	DB.AutoMigrate(&entities.Detail_menu{})
+// 	DB.AutoMigrate(&entities.User_history{})
+// }
