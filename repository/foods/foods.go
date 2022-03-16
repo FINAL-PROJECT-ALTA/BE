@@ -115,7 +115,33 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
 
-	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
+	// if foodNew.Image == "" {
+	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	// }
+
+	// fr.database.Clauses(clause.OnConflict{
+	// 	Columns: []clause.Column{{Name: "food_uid"}},
+	// 	Where:   []resFood{},
+	// 	TargetWhere: foodNew{},
+	// 	DoUpdates: clause.AssignmentColumns([]string{
+	// 		"food_uid",
+	// 		"Name",
+	// 		"calories",
+	// 		"energy",
+	// 		"carbohidrate",
+	// 		"protein",
+	// 		"unit",
+	// 		"unit_value",
+	// 		"food_category",
+	// 		"image",
+	// 	}),
+	// }).Create(&resFood)
+
+	// return resFood, nil
+
+	//============
+	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood)
+
 	// if resFood.Food_uid != "" {
 	// 	return resFood, res.Error
 	// } else {
@@ -123,37 +149,21 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 	// 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 	// 	}
 	// 	if err := fr.database.Create(&foodNew).Error; err != nil {
-	// 		return resFood, errors.New("failed to create food from third party")
+	// 		return foodNew, errors.New("failed to create food from third party")
 	// 	}
 	// }
+
 	// return resFood, nil
 
-	// ===================== option 2
-	// res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).First(&resFood)
-	// if resFood.Food_uid != "" {
-	// 	return entities.Food{}, res.Error
-	// }
+	// ==============
 
-	// if foodNew.Image == "" {
-	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	// }
-
-	// if err := fr.database.Create(&foodNew).Error; err != nil {
-	// 	return entities.Food{}, errors.New("failed to create food from third party")
-	// }
-
-	// return entities.Food{}, nil
-
-	// ======================== option 1
-
-	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood)
-	if resFood.Food_uid != "" {
-		return resFood, res.Error
-	} else {
-		if foodNew.Image == "" {
-			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-		}
-		if err := fr.database.Create(&foodNew).Error; err != nil {
+	if err := fr.database.Model(&resFood).Where("food_uid", foodNew.Food_uid).Updates(&foodNew).Error; err != nil {
+		if gorm.ErrRecordNotFound != nil {
+			if foodNew.Image == "" {
+				foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+			}
+			fr.database.Create(&foodNew)
+		} else {
 			return foodNew, errors.New("failed to create food from third party")
 		}
 	}
