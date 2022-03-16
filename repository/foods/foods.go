@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/lithammer/shortuuid"
 
@@ -114,10 +115,10 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	var food entities.Food
-	if res := fr.database.Where("SELECT * FROM foods WHERE food_uid = ?", foodNew.Food_uid).Find(&food).RowsAffected; res != 0 {
+	if err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", foodNew.Food_uid).Scan(&food).RowsAffected; err != 0 {
 		return food, errors.New("found")
 	}
-	// time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 2)
 
 	if foodNew.Image == "" {
 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
