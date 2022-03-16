@@ -118,7 +118,7 @@ func (fr *FoodRepository) CreateFoodThirdParty(f entities.Food) (entities.Food, 
 	err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", f.Food_uid).Scan(&food)
 	fmt.Println(food)
 
-	if err.RowsAffected == 1 {
+	if err.RowsAffected >= 1 {
 		return entities.Food{}, errors.New("found")
 	}
 
