@@ -10,7 +10,6 @@ import (
 	"github.com/lithammer/shortuuid"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type FoodRepository struct {
@@ -129,17 +128,9 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 	if foodNew.Image == "" {
 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 	}
-	if err := fr.database.Clauses(clause.OnConflict{
-		UpdateAll: true,
-	}).Create(&foodNew).Error; err != nil {
-		return foodNew, err
+
+	if err := fr.database.Create(&foodNew).Error; err != nil {
+		return foodNew, errors.New("failed to create food from third party")
 	}
 	return foodNew, nil
-
-	// ========================================================
-
-	// if err := fr.database.Create(&foodNew).Error; err != nil {
-	// 	return foodNew, errors.New("failed to create food from third party")
-	// }
-	// return foodNew, nil
 }
