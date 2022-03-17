@@ -112,3 +112,71 @@ func TestLogin(t *testing.T) {
 		},
 	)
 }
+
+type MockGoalRepository struct{}
+
+func (m *MockGoalRepository) Create(food entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 2,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+	}, nil
+}
+func (m *MockGoalRepository) GetById(goal_uid string, user_uid string) (entities.Goal, error) {
+	return entities.Goal{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 2,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+	}, nil
+
+}
+
+func (m *MockGoalRepository) Update(goal_uid string, newSood entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 2,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+	}, nil
+}
+func (m *MockGoalRepository) Delete(goal_uid string, user_uid string) error {
+
+	return nil
+}
+func (m *MockGoalRepository) GetAll(goal_uid string) ([]entities.Goal, error) {
+
+	return []entities.Goal{{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 2,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+	}}, nil
+}
+func (m *MockGoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
+
+	return entities.Goal{}, nil
+}
