@@ -274,10 +274,10 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 				Carbohidrate:  req.Carbohidrate,
 				Energy:        req.Energy,
 			})
-			if err.Error() != "succes tp create" {
-				continue
+			if err.Error() == "succes tp create" {
+				count++
 			}
-			count++
+
 			// }
 
 			// time.Sleep(time.Second * 4)
