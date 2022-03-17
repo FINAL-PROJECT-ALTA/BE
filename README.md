@@ -5,7 +5,7 @@
 <!-- PROJECT LOGO -->
 <div align="center">
   <a href="https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png">
-    <img src="image/logo-white.png" alt="Logo" width="250" height="180">
+    <img src="https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png" alt="Logo" width="250" height="180">
   </a>
 
   <h3 align="center">Healthy Fit</h3>
@@ -24,22 +24,24 @@
 <br />
 
 <!-- TABLE OF CONTENTS -->
-## ✨Table of Contents
+## Table of Contents
 1. [About the Project](#about-the-project)
 2. [Feature](#feture)
 3. [Tech Stack](#tech-stack)
 4. [Hight Level Architecture](#high-level-architecture)
-5. [How to Contribute](#contribute)
-6. [Authors](#authors)
+5. [ERD](#erd)
+6. [Unit Testing](#unit-testing)
+6. [How to Contribute](#contribute)
+7. [Authors](#authors)
 
 <!-- ABOUT THE PROJECT -->
-## 📔 About The Project
+## About The Project
 -  
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## 🎭 Feature
+## Feature
 -  Login and Logout
 -  Create account registration
 
@@ -56,7 +58,7 @@ As Admin
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## 🎒 Tech Stack
+## Tech Stack
 ### Framework
 -
 ### Build With
@@ -70,7 +72,7 @@ As Admin
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- Preview -->
-## 💻 Contribute
+## Contribute
 
 - Fork this repository
 
@@ -86,14 +88,28 @@ As Admin
 
 
 <!-- HLA -->
-## 👓 High Level Architecture
+## High Level Architecture
 
 <img src="https://github.com/FINAL-PROJECT-ALTA/BE/raw/main/doc/HLA.png" alt="display-preview">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- ERD -->
+## ERD
+
+<img src="" alt="display-preview">
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- Testing -->
+## Unit Testing
+
+<img src="" alt="display-preview">
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- CONTACT -->
-## 👤 Authors
+## Authors
 * Arya Nur Dewangga Putra - [Github]() · [LinkedIn]()
 * Ade Mawan - [Github]() · [LinkedIn]()
 
