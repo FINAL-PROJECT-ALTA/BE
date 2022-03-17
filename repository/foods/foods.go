@@ -136,6 +136,7 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 		if err := fr.database.Create(&foodNew).Error; err != nil {
 			return foodNew, errors.New("failed to create food from third party")
 		}
+		return foodNew, errors.New("succes to create")
 	}
-	return foodNew, nil
+	return foodNew, errors.New("food is found")
 }
