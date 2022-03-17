@@ -261,9 +261,10 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Image = response.Hints[i].Food.Image
 			req.Food_category = response.Hints[i].Food.CategoryLabel
 
-			resGet, errGet := fc.repo.GetById(req.Food_uid)
+			food_uid := c.Param(req.Food_uid)
+			resGet, errGet := fc.repo.GetById(food_uid)
 			log.Info(resGet)
-			if errGet == nil {
+			if errGet != nil {
 				_, err := fc.repo.CreateFoodThirdParty(entities.Food{
 					Food_uid:      req.Food_uid,
 					Name:          req.Name,
