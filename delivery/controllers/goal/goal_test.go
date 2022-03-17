@@ -284,6 +284,46 @@ func TestCreate(t *testing.T) {
 		assert.Equal(t, "access denied ", resp.Message)
 
 	})
+	t.Run("Failed impossible create", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"height":        150,
+			"weight":        55,
+			"age":           24,
+			"daily_active":  "not active",
+			"weight_target": 10,
+			"range_time":    30,
+			"target":        "lose weight",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+
+		goalController := New(&MockImpossibleGoalRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Create())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, "impossible", resp.Message)
+
+	})
 }
 
 type MockGoalRepository struct{}
