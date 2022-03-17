@@ -114,6 +114,19 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
+	if err := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood).Error; err != nil {
+		return foodNew, err
+	}
+
+	if foodNew.Image == "" {
+		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
+	}
+
+	if err := fr.database.Create(&foodNew).Error; err != nil {
+		return foodNew, errors.New("failed to create food from third party")
+	}
+	return foodNew, nil
+	// ==============
 
 	// if foodNew.Image == "" {
 	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
@@ -136,22 +149,6 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 	// }).Create(&foodNew)
 
 	// return resFood, nil
-
-	//============
-	res := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood)
-
-	if res.Error == nil {
-		return resFood, res.Error
-	} else {
-		if foodNew.Image == "" {
-			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-		}
-		if err := fr.database.Create(&foodNew).Error; err != nil {
-			return foodNew, errors.New("failed to create food from third party")
-		}
-	}
-
-	return resFood, nil
 
 	// ==============
 
