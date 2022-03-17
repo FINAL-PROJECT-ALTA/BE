@@ -126,7 +126,7 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	resFood := entities.Food{}
 
-	if err := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).First(&resFood).Error; err != nil {
+	if err := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).Find(&resFood).Error; err != nil {
 		if foodNew.Image == "" {
 			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 		}
