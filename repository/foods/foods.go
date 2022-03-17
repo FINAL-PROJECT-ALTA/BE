@@ -115,7 +115,7 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 
 func (fr *FoodRepository) GetFoodThirdParty(food_uid string) error {
 	resFood := entities.Food{}
-	if err := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: food_uid}).Find(resFood).Error; err != nil {
+	if err := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: food_uid}).Find(&resFood).Error; err != nil {
 		return err
 	}
 	log.Info(resFood)
