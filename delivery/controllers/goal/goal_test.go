@@ -1,16 +1,19 @@
 package goal
 
 import (
+	"HealthFit/configs"
 	"HealthFit/delivery/controllers/auth"
 	"HealthFit/delivery/controllers/common"
 	"HealthFit/entities"
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/labstack/echo/middleware"
 	"github.com/labstack/echo/v4"
 
 	"github.com/go-playground/assert"
@@ -111,6 +114,51 @@ func TestLogin(t *testing.T) {
 			assert.Equal(t, "ADMIN - berhasil masuk, mendapatkan token baru", response.Message)
 		},
 	)
+}
+func TestCreate(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(CreateGoalRequest{
+			Height:        150,
+			Weight:        55,
+			Age:           24,
+			Daily_active:  "not active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+
+		goalController := New(&MockGoalRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Create())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusCreated), resp.Code)
+		assert.Equal(t, "Success create goal", resp.Message)
+
+	})
 }
 
 type MockGoalRepository struct{}
