@@ -263,7 +263,7 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 
 			resGet, errGet := fc.repo.GetById(req.Food_uid)
 			log.Info(resGet)
-			if errGet != nil {
+			if errGet == nil {
 				_, err := fc.repo.CreateFoodThirdParty(entities.Food{
 					Food_uid:      req.Food_uid,
 					Name:          req.Name,
