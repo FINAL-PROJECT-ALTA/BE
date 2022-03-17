@@ -9,6 +9,6 @@ type Food interface {
 	Update(food_uid string, newFood entities.Food) (entities.Food, error)
 	Delete(food_uid string) error
 	GetAll(category string) ([]entities.Food, error)
-	GetFoodThirdParty(food_uid string) error
+	GetFoodThirdParty(food_uid string) (entities.Food, error)
 	CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error)
 }

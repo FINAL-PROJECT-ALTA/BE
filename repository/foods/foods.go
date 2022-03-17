@@ -114,13 +114,13 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	return foods, nil
 }
 
-func (fr *FoodRepository) GetFoodThirdParty(food_uid string) error {
+func (fr *FoodRepository) GetFoodThirdParty(food_uid string) (entities.Food, error) {
 	resFood := entities.Food{}
 	if err := fr.database.Model(&resFood).Where("food_uid", food_uid).Find(&resFood).Error; err != nil {
-		return err
+		return resFood, err
 	}
 	log.Info(resFood)
-	return nil
+	return resFood, nil
 
 }
 
