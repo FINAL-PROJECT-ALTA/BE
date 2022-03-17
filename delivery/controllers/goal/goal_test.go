@@ -13,8 +13,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/go-playground/assert"
 	"github.com/go-playground/validator"
@@ -199,6 +199,48 @@ func TestCreate(t *testing.T) {
 		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
 		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
 		assert.Equal(t, "There is some error on server", resp.Message)
+
+	})
+	t.Run("Failed bind create", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"height":        "",
+			"weight":        55,
+			"age":           24,
+			"daily_active":  "not active",
+			"weight_target": 2,
+			"range_time":    30,
+			"target":        "lose weight",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+
+		goalController := New(&MockFailedGoalRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Create())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "There is some problem from input", resp.Message)
 
 	})
 }
