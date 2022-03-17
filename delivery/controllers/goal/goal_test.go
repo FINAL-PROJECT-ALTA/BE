@@ -209,3 +209,32 @@ func (m *MockFailedGoalRepository) CancelGoal(user_uid string) (entities.Goal, e
 
 	return entities.Goal{}, errors.New("There is some error on server")
 }
+
+type MockImpossibleGoalRepository struct{}
+
+func (m *MockImpossibleGoalRepository) Create(food entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("impossible")
+}
+
+func (m *MockImpossibleGoalRepository) GetById(goal_uid string, user_uid string) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("There is some error on server")
+}
+
+func (m *MockImpossibleGoalRepository) Update(goal_uid string, newSood entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("There is some error on server")
+}
+func (m *MockImpossibleGoalRepository) Delete(goal_uid string, user_uid string) error {
+
+	return errors.New("")
+}
+func (m *MockImpossibleGoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
+
+	return []entities.Goal{}, errors.New("There is some error on server")
+}
+func (m *MockImpossibleGoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("There is some error on server")
+}
