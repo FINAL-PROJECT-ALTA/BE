@@ -260,22 +260,26 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Image = response.Hints[i].Food.Image
 			req.Food_category = response.Hints[i].Food.CategoryLabel
 
-			_, err := fc.repo.CreateFoodThirdParty(entities.Food{
-				Food_uid:      req.Food_uid,
-				Name:          req.Name,
-				Unit:          req.Unit,
-				Unit_value:    req.Unit_value,
-				Food_category: req.Food_category,
-				Image:         req.Image,
-				Calories:      req.Calories,
-				Protein:       req.Protein,
-				Carbohidrate:  req.Carbohidrate,
-				Energy:        req.Energy,
-			})
-			if err != nil {
-				continue
+			errGet := fc.repo.GetFoodThirdParty(req.Food_uid)
+			if !errGet {
+				_, err := fc.repo.CreateFoodThirdParty(entities.Food{
+					Food_uid:      req.Food_uid,
+					Name:          req.Name,
+					Unit:          req.Unit,
+					Unit_value:    req.Unit_value,
+					Food_category: req.Food_category,
+					Image:         req.Image,
+					Calories:      req.Calories,
+					Protein:       req.Protein,
+					Carbohidrate:  req.Carbohidrate,
+					Energy:        req.Energy,
+				})
+				if err != nil {
+					continue
+				}
+				count++
 			}
-			count++
+
 			// time.Sleep(time.Second * 4)
 
 		}

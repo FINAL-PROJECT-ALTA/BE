@@ -112,12 +112,16 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	return foods, nil
 }
 
-func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
+func (fr *FoodRepository) GetFoodThirdParty(food_uid string) bool {
 	resFood := entities.Food{}
-	if err := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: foodNew.Food_uid}).Find(resFood).Error; err != nil {
-		return foodNew, err
+	if err := fr.database.Model(&resFood).Where(&entities.Food{Food_uid: resFood.Food_uid}).Find(resFood).Error; err != nil {
+		return true
 	}
+	return false
 
+}
+
+func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
 	if foodNew.Image == "" {
 		foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
 	}
@@ -126,43 +130,4 @@ func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.
 		return foodNew, errors.New("failed to create food from third party")
 	}
 	return foodNew, nil
-	// ==============
-
-	// if foodNew.Image == "" {
-	// 	foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	// }
-
-	// fr.database.Clauses(clause.OnConflict{
-	// 	Columns: []clause.Column{{Name: foodNew.Food_uid}},
-	// 	DoUpdates: clause.AssignmentColumns([]string{
-	// 		"food_uid",
-	// 		"Name",
-	// 		"calories",
-	// 		"energy",
-	// 		"carbohidrate",
-	// 		"protein",
-	// 		"unit",
-	// 		"unit_value",
-	// 		"food_category",
-	// 		"image",
-	// 	}),
-	// }).Create(&foodNew)
-
-	// return resFood, nil
-
-	// ==============
-
-	// if err := fr.database.Model(&resFood).Where("food_uid", foodNew.Food_uid).Updates(&foodNew).Error; err != nil {
-	// 	if gorm.ErrRecordNotFound != nil {
-	// 		if foodNew.Image == "" {
-	// 			foodNew.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png"
-	// 		}
-	// 		fr.database.Create(&foodNew)
-	// 	} else {
-	// 		return foodNew, errors.New("failed to create food from third party")
-	// 	}
-	// }
-
-	// return resFood, nil
-
 }
