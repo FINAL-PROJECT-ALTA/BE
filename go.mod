@@ -16,7 +16,6 @@ require (
 )
 
 require (
-	github.com/go-playground/assert v1.2.1
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

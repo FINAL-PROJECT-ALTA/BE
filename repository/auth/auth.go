@@ -51,7 +51,7 @@ func (ad *AuthDb) Login(email, password string) (entities.User, error) {
 }
 func (ad *AuthDb) RefreshGoalAuth(user_uid string) (interface{}, error) {
 
-	var goal entities.Goal
+	goal := entities.Goal{}
 	res := ad.db.Model(entities.Goal{}).Where("user_uid =? AND status=?", user_uid, "active").First(&goal)
 
 	if res.Error != nil {
@@ -59,11 +59,11 @@ func (ad *AuthDb) RefreshGoalAuth(user_uid string) (interface{}, error) {
 	}
 	time := time.Now()
 	different := goal.CreatedAt.Sub(time)
-
 	days := math.Abs(float64(int(different.Hours() / 24)))
+
 	if int(days) > goal.Range_time {
 		status := "not active"
-		if err := ad.db.Model(&entities.Goal{}).Where("goal_uid = ?", goal.Goal_uid).Update("status", status).Error; err != nil {
+		if err := ad.db.Model(&goal).Where("goal_uid = ?", goal.Goal_uid).Update("status", status).Error; err != nil {
 			return "failed updated", err
 		}
 		return "updated", nil
