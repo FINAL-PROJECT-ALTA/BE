@@ -27,7 +27,7 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 	u.Roles = false
 
 	if err := ur.database.Create(&u).Error; err != nil {
-		return u, errors.New("invalid input")
+		return u, errors.New("invalid input or this email was created (duplicated entry)")
 	}
 
 	return u, nil

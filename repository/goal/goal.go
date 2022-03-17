@@ -55,7 +55,7 @@ func (ur *GoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
 func (ur *GoalRepository) GetById(goal_uid string, user_uid string) (entities.Goal, error) {
 	goal := entities.Goal{}
 
-	result := ur.database.Where("goal_uid = ? AND user_uid=?", goal_uid).First(&goal)
+	result := ur.database.Where("goal_uid = ? AND user_uid=?", goal_uid, user_uid).First(&goal)
 	if err := result.Error; err != nil {
 		return goal, err
 	}

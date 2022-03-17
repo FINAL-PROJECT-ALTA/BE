@@ -5,7 +5,9 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	"HealthFit/repository/goal"
+	"math"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -53,7 +55,7 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 				resErr := CreateResponseErrorGoal{Bmr: res.Weight, Cut_calories_every_day: res.Height}
 				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRepo.Error(), resErr))
 			}
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some error on server", nil))
 		}
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create goal", res))
@@ -97,11 +99,32 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 
 		res, err := ac.repo.GetById(goal_uid, user_uid)
 
+		response := GetByIdGoalResponse{}
+		response.Goal_uid = res.Goal_uid
+		response.Height = res.Height
+		response.Weight = res.Height
+		response.Age = res.Age
+		response.Daily_active = res.Daily_active
+		response.Weight_target = res.Weight_target
+		response.Range_time = res.Range_time
+		response.Status = res.Status
+		response.Target = res.Target
+
+		time := time.Now()
+		different := res.CreatedAt.Sub(time)
+		days := math.Abs(float64(int(different.Hours() / 24)))
+		diff := res.Range_time - int(days)
+		if diff <= 0 {
+			response.Count = 0
+		} else {
+			response.Count = diff
+		}
+
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", res))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", response))
 	}
 }
 
