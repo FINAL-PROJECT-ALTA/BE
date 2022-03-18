@@ -187,7 +187,7 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 			Weight:        newGoal.Weight,
 			Age:           newGoal.Age,
 			Daily_active:  newGoal.Daily_active,
-			Weight_target: newGoal.Weight,
+			Weight_target: newGoal.Weight_target,
 			Range_time:    newGoal.Range_time,
 			Target:        newGoal.Target,
 		})
