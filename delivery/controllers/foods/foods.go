@@ -5,22 +5,27 @@ import (
 	"HealthFit/delivery/middlewares"
 	"HealthFit/entities"
 	food "HealthFit/repository/foods"
+	utils "HealthFit/utils/aws_S3"
 	edamam "HealthFit/utils/edamam"
 	"strings"
 
 	"math"
 	"net/http"
 
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type FoodsController struct {
 	repo food.Food
+	conn *session.Session
 }
 
-func New(repository food.Food) *FoodsController {
+func New(repository food.Food, S3 *session.Session) *FoodsController {
 	return &FoodsController{
 		repo: repository,
+		conn: S3,
 	}
 }
 
@@ -39,6 +44,22 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
+		file, errO := c.FormFile("image")
+		if errO != nil {
+			log.Info(errO)
+		}
+
+		if file != nil {
+			src, _ := file.Open()
+			link, errU := utils.Upload(fc.conn, src, *file)
+			if errU != nil {
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
+			}
+			newFoods.Image = link
+		} else if file == nil {
+			newFoods.Image = "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png"
+		}
+
 		res, err := fc.repo.Create(entities.Food{
 			Name:          newFoods.Name,
 			Calories:      newFoods.Calories,
@@ -48,7 +69,7 @@ func (fc *FoodsController) Create() echo.HandlerFunc {
 			Unit:          newFoods.Unit,
 			Unit_value:    newFoods.Unit_value,
 			Food_category: newFoods.Food_category,
-			Image:         "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png",
+			Image:         newFoods.Image,
 		})
 
 		if err != nil {
@@ -154,6 +175,33 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
+		resGet, errGet := fc.repo.GetById(food_uid)
+		if errGet != nil {
+			log.Info(resGet)
+		}
+
+		file, errO := c.FormFile("image")
+		if errO != nil {
+			log.Info(errO)
+		} else if errO == nil {
+			src, _ := file.Open()
+			if resGet.Image != "" {
+				var updateImage = resGet.Image
+				updateImage = strings.Replace(updateImage, "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/", "", -1)
+
+				var resUp = utils.UpdateUpload(fc.conn, updateImage, src, *file)
+				if resUp != "success to update image" {
+					return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
+				}
+			} else if resGet.Image == "" {
+				var image, errUp = utils.Upload(fc.conn, src, *file)
+				if errUp != nil {
+					return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
+				}
+				updateFoods.Image = image
+			}
+		}
+
 		res, err := fc.repo.Update(food_uid, entities.Food{
 			Name:          updateFoods.Name,
 			Calories:      updateFoods.Calories,
@@ -163,6 +211,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			Unit:          updateFoods.Unit,
 			Unit_value:    updateFoods.Unit_value,
 			Food_category: updateFoods.Food_category,
+			Image:         updateFoods.Image,
 		})
 
 		if err != nil {
