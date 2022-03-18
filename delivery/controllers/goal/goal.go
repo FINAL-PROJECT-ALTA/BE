@@ -76,12 +76,39 @@ func (ac *GoalController) GetAll() echo.HandlerFunc {
 		user_uid := middlewares.ExtractTokenUserUid(c)
 
 		res, err := ac.repo.GetAll(user_uid)
-
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get all goal", res))
+		response := []GetAllResponse{}
+		for _, result := range res {
+			var count int
+			time := time.Now()
+			different := result.CreatedAt.Sub(time)
+			days := math.Abs(float64(int(different.Hours() / 24)))
+			diff := result.Range_time - int(days)
+			if diff <= 0 {
+				count = 0
+			} else {
+				count = diff
+			}
+
+			response = append(response, GetAllResponse{
+				Goal_uid:      result.Goal_uid,
+				Height:        result.Height,
+				Weight:        result.Weight,
+				Age:           result.Age,
+				Daily_active:  result.Daily_active,
+				Weight_target: result.Weight_target,
+				Range_time:    result.Range_time,
+				Status:        result.Status,
+				Target:        result.Target,
+				CreatedAt:     result.CreatedAt,
+				Count:         count,
+			})
+		}
+
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get all goal", response))
 	}
 }
 
@@ -102,7 +129,7 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 		response := GetByIdGoalResponse{}
 		response.Goal_uid = res.Goal_uid
 		response.Height = res.Height
-		response.Weight = res.Height
+		response.Weight = res.Weight
 		response.Age = res.Age
 		response.Daily_active = res.Daily_active
 		response.Weight_target = res.Weight_target
