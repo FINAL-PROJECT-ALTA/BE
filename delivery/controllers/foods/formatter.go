@@ -64,7 +64,7 @@ type FoodsCreateRequestFormat struct {
 	Unit_value    int    `form:"unit_value" json:"unit_value"`
 	Food_category string `form:"food_categories" json:"food_categories"`
 	Image         string `form:"image" json:"image"`
-}
+
 type FoodsCreateRequestFormatEdamam struct {
 	Admin         string
 	Food_uid      string
@@ -91,9 +91,8 @@ type FoodsUpdateRequestFormat struct {
 	Unit_value    int    `form:"unit_value" json:"unit_value"`
 	Food_category string `form:"food_categories" json:"food_categories"`
 	Image         string `form:"image" json:"image"`
-}
 
-// ====== API EDAMAM RESPONSE =======
+  // ====== API EDAMAM RESPONSE =======
 
 type DetailNutrients struct {
 	Enerc_kcal int `json:"ENERC_KCAL"`
