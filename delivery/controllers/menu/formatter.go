@@ -7,7 +7,7 @@ import "HealthFit/entities"
 type MenuCreateRequestFormat struct {
 	Menu_uid      string
 	User_uid      string
-	Menu_category string `json:"menu_category"`
+	Menu_category string `json:"menu_category" validate:"required,min=3,max=15,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Created_by    string
 	Foods         []entities.Food `json:"foods"`
 }
@@ -15,7 +15,7 @@ type MenuCreateRequestFormat struct {
 type MenuUpdateRequestFormat struct {
 	Menu_uid      string
 	User_uid      string
-	Menu_category string          `json:"menu_category"`
+	Menu_category string          `json:"menu_category" validate:"omitempty,required,min=3,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Foods         []entities.Food `json:"foods"`
 }
 
