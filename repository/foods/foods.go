@@ -32,6 +32,7 @@ func (fr *FoodRepository) Create(f entities.Food) (entities.Food, error) {
 
 	return f, nil
 }
+
 func (fr *FoodRepository) GetById(food_uid string) (entities.Food, error) {
 
 	var food entities.Food
@@ -78,9 +79,8 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 func (fr *FoodRepository) Update(food_uid string, newFoods entities.Food) (entities.Food, error) {
 
 	var foods entities.Food
-	fr.database.Where("food_uid =?", food_uid).First(&foods)
 
-	if err := fr.database.Model(&foods).Updates(&newFoods).Error; err != nil {
+	if err := fr.database.Model(&foods).Where("food_uid =?", food_uid).Updates(&newFoods).Error; err != nil {
 		return foods, err
 	}
 
