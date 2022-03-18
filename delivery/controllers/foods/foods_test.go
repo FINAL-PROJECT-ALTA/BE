@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -143,7 +144,7 @@ func TestCreate(t *testing.T) {
 		context := e.NewContext(req, res)
 		context.SetPath("/foods")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -187,7 +188,7 @@ func TestCreate(t *testing.T) {
 		context := e.NewContext(req, res)
 		context.SetPath("/foods")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -230,7 +231,7 @@ func TestCreate(t *testing.T) {
 		context := e.NewContext(req, res)
 		context.SetPath("/foods")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -273,7 +274,7 @@ func TestCreate(t *testing.T) {
 		context := e.NewContext(req, res)
 		context.SetPath("/foods")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		err := middleware.JWT([]byte(configs.JWT_SECRET))(foodController.Create())(context)
 
@@ -307,7 +308,7 @@ func TestGetById(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		foodController.GetById()(context)
 
@@ -336,7 +337,7 @@ func TestGetById(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		foodController.GetById()(context)
 
@@ -364,7 +365,7 @@ func TestGetById(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockNotFoundFoodRepository{})
+		foodController := New(&MockNotFoundFoodRepository{}, &session.Session{})
 
 		foodController.GetById()(context)
 
@@ -396,7 +397,7 @@ func TestSearch(t *testing.T) {
 		context.Set("input", "a")
 		context.Set("category", "foods")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		foodController.Search()(context)
 
@@ -425,7 +426,7 @@ func TestSearch(t *testing.T) {
 		context.Set("input", "a")
 		context.Set("category", "foods")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		foodController.Search()(context)
 
@@ -466,7 +467,7 @@ func TestUpdate(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -511,7 +512,7 @@ func TestUpdate(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -556,7 +557,7 @@ func TestUpdate(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -601,7 +602,7 @@ func TestUpdate(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		err := middleware.JWT([]byte(configs.JWT_SECRET))(foodController.Update())(context)
 
@@ -636,7 +637,7 @@ func TestDelete(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -670,7 +671,7 @@ func TestDelete(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		// foodController.Create()(context)
 
@@ -703,7 +704,7 @@ func TestDelete(t *testing.T) {
 		context.SetParamNames("food_uid")
 		context.SetParamValues("xyz")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		err := middleware.JWT([]byte(configs.JWT_SECRET))(foodController.Delete())(context)
 
@@ -735,7 +736,7 @@ func TestGetAll(t *testing.T) {
 		context.SetPath("/foods")
 		context.Set("category", "a")
 
-		foodController := New(&MockFoodRepository{})
+		foodController := New(&MockFoodRepository{}, &session.Session{})
 
 		foodController.GetAll()(context)
 
@@ -763,7 +764,7 @@ func TestGetAll(t *testing.T) {
 		context.SetPath("/foods")
 		context.Set("category", "a")
 
-		foodController := New(&MockFailedFoodRepository{})
+		foodController := New(&MockFailedFoodRepository{}, &session.Session{})
 
 		foodController.GetAll()(context)
 
