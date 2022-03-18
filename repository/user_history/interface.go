@@ -8,6 +8,5 @@ type UserHistory interface {
 	GetById(user_uid, user_history_uid string) (entities.User_history, error)
 	// Update(user_uid, user_history_uid string, updateHistory entities.User_history)
 	// Delete(user_uid, user_history_uid string) error
-	// Update(user_uid, user_history_uid string, updateHistory entities.User_history)
-	// Delete(user_uid, user_history_uid string) error
+	//dlsahakjhkfhalkjfelkwjf
 }
