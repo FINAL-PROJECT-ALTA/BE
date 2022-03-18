@@ -185,7 +185,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			log.Info(errO)
 		} else if errO == nil {
 			src, _ := file.Open()
-			if resGet.Image == "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png" {
+			link := "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png"
+			if resGet.Image == link {
 				var updateImage = resGet.Image
 				updateImage = strings.Replace(updateImage, "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/", "", -1)
 
@@ -193,7 +194,8 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 				if resUp != "success to update image" {
 					return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
 				}
-			} else {
+
+			} else if resGet.Image != link {
 
 				var updateImage = resGet.Image
 				updateImage = strings.Replace(updateImage, "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/", "", -1)
@@ -202,6 +204,9 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 				if resUp != "success to update image" {
 					return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
 				}
+
+			} else if file == nil {
+				updateFoods.Image = resGet.Image
 			}
 		}
 
