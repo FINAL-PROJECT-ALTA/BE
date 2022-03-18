@@ -649,6 +649,40 @@ func TestDelete(t *testing.T) {
 		assert.Equal(t, "Success delete goal", resp.Message)
 
 	})
+	t.Run("failed delete goal", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+		context.SetParamNames("goal_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedGoalRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Delete())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, "There is some error on server", resp.Message)
+
+	})
 }
 
 type MockGoalRepository struct{}
