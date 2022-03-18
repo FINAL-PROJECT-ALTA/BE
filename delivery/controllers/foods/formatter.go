@@ -55,7 +55,7 @@ type FoodsGetAllResponse struct {
 type FoodsCreateRequestFormat struct {
 	Admin         string
 	Food_uid      string
-	Name          string `json:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Name          string `form:"name" json:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Calories      int    `form:"calories" json:"calories"`
 	Energy        int    `form:"energy" json:"energy"`
 	Carbohidrate  int    `form:"carbohidrate" json:"carbohidrate"`
@@ -82,7 +82,7 @@ type FoodsCreateRequestFormatEdamam struct {
 type FoodsUpdateRequestFormat struct {
 	Admin_uid     string
 	Food_uid      string
-	Name          string `json:"name" validate:"omitempty,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Name          string `form:"name" json:"name" validate:"omitempty,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
 	Calories      int    `form:"calories" json:"calories"`
 	Energy        int    `form:"energy" json:"energy"`
 	Carbohidrate  int    `form:"carbohidrate" json:"carbohidrate"`
