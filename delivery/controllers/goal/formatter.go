@@ -1,5 +1,7 @@
 package goal
 
+import "time"
+
 //=============== Request Format ===================//
 type CreateGoalRequest struct {
 	Height        int    `json:"height" form:"height" validate:"required"`
@@ -34,18 +36,34 @@ type GoalResponse struct {
 	Target        string `json:"target"`
 }
 
-type GetByIdGoalResponse struct {
-	Goal_uid      string `json:"goal_uid"`
-	Height        int    `json:"height"`
-	Weight        int    `json:"weight"`
-	Age           int    `json:"age"`
-	Daily_active  string `json:"daily_active"`
-	Weight_target int    `json:"weight_target"`
-	Range_time    int    `json:"range_time"`
-	Target        string `json:"target"`
-	Status        string `json:"status"`
-	Count         int    `json:"count"`
+type GetAllResponse struct {
+	Goal_uid      string    `json:"goal_uid"`
+	Height        int       `json:"height"`
+	Weight        int       `json:"weight"`
+	Age           int       `json:"age"`
+	Daily_active  string    `json:"daily_active"`
+	Weight_target int       `json:"weight_target"`
+	Range_time    int       `json:"range_time"`
+	Target        string    `json:"target"`
+	Status        string    `json:"status"`
+	CreatedAt     time.Time `json:"createdAt"`
+	Count         int       `json:"count"`
 }
+
+type GetByIdGoalResponse struct {
+	Goal_uid      string    `json:"goal_uid"`
+	Height        int       `json:"height"`
+	Weight        int       `json:"weight"`
+	Age           int       `json:"age"`
+	Daily_active  string    `json:"daily_active"`
+	Weight_target int       `json:"weight_target"`
+	Range_time    int       `json:"range_time"`
+	Target        string    `json:"target"`
+	Status        string    `json:"status"`
+	CreatedAt     time.Time `json:"createdAt"`
+	Count         int       `json:"count"`
+}
+
 type CreateResponseErrorGoal struct {
 	Bmr                    int `json:"bmr"`
 	Cut_calories_every_day int `json:"cut_calories_every_day"`
