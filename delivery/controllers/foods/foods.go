@@ -187,13 +187,12 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 			src, _ := file.Open()
 			link := "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png"
 			if resGet.Image == link {
-				var updateImage = resGet.Image
-				updateImage = strings.Replace(updateImage, "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/", "", -1)
 
-				var resUp = utils.UpdateUpload(fc.conn, updateImage, src, *file)
-				if resUp != "success to update image" {
-					return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
+				var resUp, errUp = utils.Upload(fc.conn, src, *file)
+				if errUp != nil {
+					return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
 				}
+				updateFoods.Image = resUp
 
 			} else if resGet.Image != link {
 
