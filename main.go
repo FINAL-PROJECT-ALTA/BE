@@ -59,7 +59,7 @@ func main() {
 	adminController := _adminController.New(adminRepo)
 	userController := _userController.New(userRepo, awsConn)
 	goalController := _goalController.New(goalRepo)
-	foodsController := _foodsController.New(foodsRepo)
+	foodsController := _foodsController.New(foodsRepo, awsConn)
 	menuController := _menuController.New(menuRepo)
 	userHistoryController := _userHistoryController.New(userHistoryRepo)
 

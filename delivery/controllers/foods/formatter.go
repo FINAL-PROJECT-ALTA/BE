@@ -63,6 +63,7 @@ type FoodsCreateRequestFormat struct {
 	Unit          string `json:"unit"`
 	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
+	Image         string `json:"image"`
 }
 type FoodsCreateRequestFormatEdamam struct {
 	Admin         string
@@ -89,6 +90,7 @@ type FoodsUpdateRequestFormat struct {
 	Unit          string `json:"unit"`
 	Unit_value    int    `json:"unit_value"`
 	Food_category string `json:"food_categories"`
+	Image         string `json:"image"`
 }
 
 // ====== API EDAMAM RESPONSE =======
