@@ -157,6 +157,46 @@ func TestCreate(t *testing.T) {
 		assert.Equal(t, "Success create menu", resp.Message)
 
 	})
+
+	t.Run("success create menu by admin", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_category": "food",
+			"foods":         []entities.Food{{Food_uid: "xyz"}},
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		// log.Info(req)
+
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+
+		goalController := New(&MockMenuAdminRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Create())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusCreated), resp.Code)
+		assert.Equal(t, "Success create menu", resp.Message)
+
+	})
 }
 
 type MockMenuRepository struct{}
