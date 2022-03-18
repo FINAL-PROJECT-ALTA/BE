@@ -74,18 +74,22 @@ func (uh *UserHistoryController) GetAll() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
+		allHistory := []GetUserHistoryByIdResponse{}
+		for i := 0; i < len(res); i++ {
+			response := GetUserHistoryByIdResponse{}
+			response.User_history_uid = res[i].User_history_uid
+			response.Goal_uid = res[i].Goal_uid
+			response.Menu.Menu_uid = res[i].Menu_uid
+			response.Menu.Menu_category = res[i].Menu.Menu_category
+			response.Menu.Created_by = res[i].Menu.Created_by
+			response.Menu.Total_calories = res[i].Menu.Total_calories
+			for i := 0; i < len(res[i].Menu.Detail_menu); i++ {
+				response.Menu.Foods = append(response.Menu.Foods, res[i].Menu.Detail_menu[i].Food)
+			}
+			allHistory = append(allHistory, response)
+		}
 
-		// response := []GetAllUserHistoryResponse{}
-		// for i := 0; i < len(res); i++ {
-		// 	var resHis GetAllUserHistoryResponse
-		// 	resHis.User_history_uid = res[i].User_history_uid
-		// 	resHis.Goal_uid = res[i].Goal_uid
-		// 	resHis.CreatedAt = res[i].CreatedAt
-		// 	resHis.Menu = res[i].Menu
-		// 	response = append(response, resHis)
-		// }
-
-		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user histories", res))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get user histories", allHistory))
 	}
 }
 
