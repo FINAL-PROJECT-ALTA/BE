@@ -784,6 +784,35 @@ func TestGetAll(t *testing.T) {
 		assert.Equal(t, "There is some error on server", response.Message)
 
 	})
+	t.Run("Failed access delete", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+
+		goalController := New(&MockFailedGoalRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "access denied ", resp.Message)
+
+	})
 }
 
 type MockGoalRepository struct{}
