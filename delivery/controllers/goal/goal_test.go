@@ -479,6 +479,50 @@ func TestUpdate(t *testing.T) {
 		assert.Equal(t, "Success update goal", resp.Message)
 
 	})
+	t.Run("failed update food", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(UpdateGoalRequest{
+			Height:        150,
+			Weight:        55,
+			Age:           24,
+			Daily_active:  "not active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+		})
+
+		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+		context.SetParamNames("goal_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedGoalRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Update())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, "There is some error on server", resp.Message)
+
+	})
 }
 
 type MockGoalRepository struct{}
