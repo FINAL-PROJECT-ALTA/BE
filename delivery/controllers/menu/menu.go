@@ -34,7 +34,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 			c.Bind(&newMenu)
 			errB := c.Validate(&newMenu)
 			if errB != nil {
-				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 			}
 
 			resRepo, err := mc.repo.CreateMenuAdmin(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
@@ -50,7 +50,7 @@ func (mc *MenuController) Create() echo.HandlerFunc {
 			c.Bind(&newMenu)
 			errB := c.Validate(&newMenu)
 			if errB != nil {
-				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There Something Error in Server", nil))
+				return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 			}
 
 			resRepo, err := mc.repo.CreateMenuUser(newMenu.Foods, entities.Menu{User_uid: newMenu.User_uid,
@@ -278,7 +278,7 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		c.Bind(&newMenu)
 		errB := c.Validate(&newMenu)
 		if errB != nil {
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "access denied ", nil))
+			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
 		res, err := mc.repo.Update(menu_uid, newMenu.Foods, entities.Menu{
@@ -304,7 +304,7 @@ func (mc *MenuController) Update() echo.HandlerFunc {
 		}
 		response.Foods = foods
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success update menu", response))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success update menu", response))
 
 	}
 }
@@ -324,7 +324,7 @@ func (mc *MenuController) Delete() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success delete menu", nil))
+		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success delete menu", nil))
 
 	}
 }
