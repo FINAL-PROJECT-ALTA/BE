@@ -123,10 +123,12 @@ func (mc *MenuController) GetRecommendBreakfast() echo.HandlerFunc {
 
 		if err != nil {
 			var errRes string = "There is some error on server"
+			var statusCode int = 500
 			if err.Error() == "impossible" {
 				errRes = err.Error()
+				statusCode = 400
 			}
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
+			return c.JSON(statusCode, common.InternalServerError(statusCode, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -161,10 +163,12 @@ func (mc *MenuController) GetRecommendLunch() echo.HandlerFunc {
 
 		if err != nil {
 			var errRes string = "There is some error on server"
+			var statusCode int = 500
 			if err.Error() == "impossible" {
 				errRes = err.Error()
+				statusCode = 400
 			}
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
+			return c.JSON(statusCode, common.InternalServerError(statusCode, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -199,10 +203,12 @@ func (mc *MenuController) GetRecommendDinner() echo.HandlerFunc {
 
 		if err != nil {
 			var errRes string = "There is some error on server"
+			var statusCode int = 500
 			if err.Error() == "impossible" {
 				errRes = err.Error()
+				statusCode = 400
 			}
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
+			return c.JSON(statusCode, common.InternalServerError(statusCode, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
@@ -237,10 +243,12 @@ func (mc *MenuController) GetRecommendOverTime() echo.HandlerFunc {
 
 		if err != nil {
 			var errRes string = "There is some error on server"
+			var statusCode int = 500
 			if err.Error() == "impossible" {
 				errRes = err.Error()
+				statusCode = 400
 			}
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRes, nil))
+			return c.JSON(statusCode, common.InternalServerError(statusCode, errRes, nil))
 		}
 
 		response := []MenuGetAllResponse{}
