@@ -351,6 +351,882 @@ func TestCreate(t *testing.T) {
 	})
 }
 
+func TestUpdate(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_category": "food",
+			"foods":         entities.Food{},
+		})
+
+		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockMenuRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Update())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusOK), resp.Code)
+		assert.Equal(t, "Success update menu", resp.Message)
+
+	})
+	t.Run("failed update menu", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_category": "food",
+			"foods":         entities.Food{Food_uid: "xyz"},
+		})
+
+		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Update())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, "There is some error on server", resp.Message)
+
+	})
+	t.Run("failed bind update menu", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_category": "food@",
+			"foods":         entities.Food{Food_uid: "xyz"},
+		})
+
+		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid)")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockMenuRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Update())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "There is some problem from input", resp.Message)
+
+	})
+	t.Run("Failed access update", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_category": "food",
+			"foods":         entities.Food{Food_uid: "xyz"},
+		})
+		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Update())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "access denied ", resp.Message)
+
+	})
+}
+func TestDelete(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockMenuRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Delete())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusOK), resp.Code)
+		assert.Equal(t, "Success delete menu", resp.Message)
+
+	})
+	t.Run("failed delete menu", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		// goalController.Create()(context)
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Delete())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, "There is some error on server", resp.Message)
+
+	})
+	t.Run("Failed access delete", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.SetParamNames("menu_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.Delete())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "access denied ", resp.Message)
+
+	})
+}
+func TestGetAllMenu(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.Set("ctegory", "food")
+		context.Set("createdBy", "admin")
+
+		goalController := New(&MockMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success Get All Menu ", response.Message)
+
+	})
+
+	t.Run("Failed get all menu", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus")
+		context.Set("ctegory", "food")
+		context.Set("createdBy", "admin")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "There is some error on server", response.Message)
+
+	})
+
+}
+func TestGetRecommendBreakfast(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendBreakfast())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success Get Menu Recommended", response.Message)
+
+	})
+
+	t.Run("Failed get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendBreakfast())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "There is some error on server", response.Message)
+
+	})
+	t.Run("Failed access get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendBreakfast())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "access denied", response.Message)
+
+	})
+	t.Run("impossible", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockImpossibleMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendBreakfast())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "impossible", response.Message)
+
+	})
+
+}
+
+func TestGetRecommendLunch(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendLunch())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success Get Menu Recommended", response.Message)
+
+	})
+
+	t.Run("Failed get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendLunch())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "There is some error on server", response.Message)
+
+	})
+	t.Run("Failed access get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendLunch())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "access denied", response.Message)
+
+	})
+	t.Run("impossible", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/breakfast")
+
+		goalController := New(&MockImpossibleMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendLunch())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "impossible", response.Message)
+
+	})
+
+}
+
+func TestGetRecommendDinner(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/dinner")
+
+		goalController := New(&MockMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendDinner())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success Get Menu Recommended", response.Message)
+
+	})
+
+	t.Run("Failed get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/dinner")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendDinner())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "There is some error on server", response.Message)
+
+	})
+	t.Run("Failed access get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/dinner")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendDinner())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "access denied", response.Message)
+
+	})
+	t.Run("impossible", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/dinner")
+
+		goalController := New(&MockImpossibleMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendDinner())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "impossible", response.Message)
+
+	})
+
+}
+
+func TestGetRecommendOverTime(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/overtime")
+
+		goalController := New(&MockMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendOverTime())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success Get Menu Recommended", response.Message)
+
+	})
+
+	t.Run("Failed get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/overtime")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendOverTime())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "There is some error on server", response.Message)
+
+	})
+	t.Run("Failed access get all menu recommended", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/overtime")
+
+		goalController := New(&MockFailedMenuRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendOverTime())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "access denied", response.Message)
+
+	})
+	t.Run("impossible", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/menus/recommend/overtime")
+
+		goalController := New(&MockImpossibleMenuRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetRecommendOverTime())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		assert.Equal(t, "impossible", response.Message)
+
+	})
+
+}
+
 type MockMenuRepository struct{}
 
 func (m *MockMenuRepository) CreateMenuAdmin(foods []entities.Food, menus entities.Menu) (entities.Menu, error) {
