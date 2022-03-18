@@ -52,7 +52,7 @@ func (uh *UserHistoryRepository) Insert(newHistory entities.User_history) (entit
 func (uh *UserHistoryRepository) GetAll(user_uid string) ([]entities.User_history, error) {
 	userHistory := []entities.User_history{}
 
-	if err := uh.database.Preload("Menu").Where("user_uid", user_uid).Find(&userHistory).Error; err != nil {
+	if err := uh.database.Preload("Menu").Preload("Menu.Detail_menu").Preload("Menu.Detail_menu.Food").Where("user_uid", user_uid).Find(&userHistory).Error; err != nil {
 		return userHistory, err
 	}
 
