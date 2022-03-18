@@ -55,16 +55,16 @@ type FoodsGetAllResponse struct {
 type FoodsCreateRequestFormat struct {
 	Admin         string
 	Food_uid      string
-	Name          string `json:"name" form:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
-	Calories      int    `json:"calories" form:"calories"`
-	Energy        int    `json:"energy" form:"energy"`
-	Carbohidrate  int    `json:"carbohidrate" form:"carbohidrate"`
-	Protein       int    `json:"protein" form:"protein"`
-	Unit          string `json:"unit" form:"unit"`
-	Unit_value    int    `json:"unit_value" form:"unit_value"`
-	Food_category string `json:"food_categories" form:"food_categories"`
-	Image         string `json:"image" form:"image"`
-}
+	Name          string `form:"name" json:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Calories      int    `form:"calories" json:"calories"`
+	Energy        int    `form:"energy" json:"energy"`
+	Carbohidrate  int    `form:"carbohidrate" json:"carbohidrate"`
+	Protein       int    `form:"protein" json:"protein"`
+	Unit          string `form:"unit" json:"unit"`
+	Unit_value    int    `form:"unit_value" json:"unit_value"`
+	Food_category string `form:"food_categories" json:"food_categories"`
+	Image         string `form:"image" json:"image"`
+
 type FoodsCreateRequestFormatEdamam struct {
 	Admin         string
 	Food_uid      string
@@ -82,18 +82,17 @@ type FoodsCreateRequestFormatEdamam struct {
 type FoodsUpdateRequestFormat struct {
 	Admin_uid     string
 	Food_uid      string
-	Name          string `json:"name" form:"name" validate:"required,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
-	Calories      int    `json:"calories" form:"calories"`
-	Energy        int    `json:"energy" form:"energy"`
-	Carbohidrate  int    `json:"carbohidrate" form:"carbohidrate"`
-	Protein       int    `json:"protein" form:"protein"`
-	Unit          string `json:"unit" form:"unit"`
-	Unit_value    int    `json:"unit_value" form:"unit_value"`
-	Food_category string `json:"food_categories" form:"food_categories"`
-	Image         string `json:"image" form:"image"`
-}
+	Name          string `form:"name" json:"name" validate:"omitempty,min=2,max=20,excludesall=!@#?^#*()_+-=0123456789%&"`
+	Calories      int    `form:"calories" json:"calories"`
+	Energy        int    `form:"energy" json:"energy"`
+	Carbohidrate  int    `form:"carbohidrate" json:"carbohidrate"`
+	Protein       int    `form:"protein" json:"protein"`
+	Unit          string `form:"unit" json:"unit"`
+	Unit_value    int    `form:"unit_value" json:"unit_value"`
+	Food_category string `form:"food_categories" json:"food_categories"`
+	Image         string `form:"image" json:"image"`
 
-// ====== API EDAMAM RESPONSE =======
+  // ====== API EDAMAM RESPONSE =======
 
 type DetailNutrients struct {
 	Enerc_kcal int `json:"ENERC_KCAL"`
