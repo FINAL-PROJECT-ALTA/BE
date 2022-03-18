@@ -7,7 +7,7 @@ import (
 
 	_adminController "HealthFit/delivery/controllers/admin"
 	_authController "HealthFit/delivery/controllers/auth"
-	_authGoogleController "HealthFit/delivery/controllers/auth_google"
+
 	_foodsController "HealthFit/delivery/controllers/foods"
 	_goalController "HealthFit/delivery/controllers/goal"
 	_menuController "HealthFit/delivery/controllers/menu"
@@ -23,7 +23,7 @@ import (
 	_userHistoryRepo "HealthFit/repository/user_history"
 
 	awsS3 "HealthFit/utils/aws_S3"
-	setGoogle "HealthFit/utils/google"
+
 	"fmt"
 	"log"
 
@@ -42,7 +42,6 @@ func main() {
 	config := config.GetConfig()
 	db := utils.InitDB(config)
 	awsConn := awsS3.InitS3(config.S3_KEY, config.S3_SECRET, config.S3_REGION)
-	authGoogle := setGoogle.GoogleConfig(config.Username, config.Google_Client_ID, config.Google_Secret_ID)
 
 	//REPOSITORY-DATABASE
 	authRepo := _authRepo.New(db)
@@ -55,7 +54,6 @@ func main() {
 
 	//CONTROLLER
 	authController := _authController.New(authRepo)
-	authGoogleController := _authGoogleController.New(authGoogle)
 	adminController := _adminController.New(adminRepo)
 	userController := _userController.New(userRepo, awsConn)
 	goalController := _goalController.New(goalRepo)
@@ -74,7 +72,6 @@ func main() {
 		adminController,
 		menuController,
 		userHistoryController,
-		authGoogleController,
 	)
 
 	log.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
