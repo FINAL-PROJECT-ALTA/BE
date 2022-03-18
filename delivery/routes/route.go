@@ -60,7 +60,7 @@ func RegisterPath(e *echo.Echo,
 	e.GET("/users/goals/:goal_uid", gc.GetById(), middlewares.JwtMiddleware())
 	e.PUT("/users/goals/:goal_uid", gc.Update(), middlewares.JwtMiddleware())
 	e.DELETE("/users/goals/:goal_uid", gc.Delete(), middlewares.JwtMiddleware())
-	e.PUT("/users/goals/cencel", gc.CencelGoal(), middlewares.JwtMiddleware())
+	e.PUT("/users/goals/cancel", gc.CencelGoal(), middlewares.JwtMiddleware())
 
 	//ROUTE FOODS
 	e.POST("/foods", fc.Create(), middlewares.JwtMiddleware())

@@ -121,7 +121,13 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 		}
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
+			statusCode := 500
+			message := "There is some error on server"
+			if err.Error() == "not found" {
+				statusCode = 404
+				message = " Goal is not found"
+			}
+			return c.JSON(statusCode, common.InternalServerError(statusCode, message, nil))
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success get goal", response))

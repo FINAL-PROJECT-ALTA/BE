@@ -12,13 +12,13 @@ type CreateGoalRequest struct {
 }
 
 type UpdateGoalRequest struct {
-	Height        int    `json:"height" form:"height" validate:"required"`
-	Weight        int    `json:"weight" form:"weight" validate:"required"`
-	Age           int    `json:"age" form:"age" validate:"required"`
-	Daily_active  string `json:"daily_active" form:"daily_active" validate:"required"`
-	Weight_target int    `json:"weight_target" form:"weight_target" validate:"required"`
-	Range_time    int    `json:"range_time" form:"range_time" validate:"required"`
-	Target        string `json:"target" form:"target" validate:"required"`
+	Height        int    `json:"height" form:"height" validate:"omitempty,required"`
+	Weight        int    `json:"weight" form:"weight" validate:"omitempty,required"`
+	Age           int    `json:"age" form:"age" validate:"omitempty,required"`
+	Daily_active  string `json:"daily_active" form:"daily_active" validate:"omitempty,required"`
+	Weight_target int    `json:"weight_target" form:"weight_target" validate:"omitempty,required"`
+	Range_time    int    `json:"range_time" form:"range_time" validate:"omitempty,required"`
+	Target        string `json:"target" form:"target" validate:"omitempty,required"`
 }
 
 //=============== Response Format ==================//

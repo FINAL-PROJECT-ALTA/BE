@@ -829,7 +829,7 @@ func TestCancelGoal(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		context := e.NewContext(req, res)
-		context.SetPath("/users/goals/cencel")
+		context.SetPath("/users/goals/cancel")
 
 		goalController := New(&MockGoalRepository{})
 		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.CencelGoal())(context)
@@ -861,7 +861,7 @@ func TestCancelGoal(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		context := e.NewContext(req, res)
-		context.SetPath("/users/goals/cencel")
+		context.SetPath("/users/goals/cancel")
 
 		goalController := New(&MockFailedGoalRepository{})
 
@@ -893,7 +893,7 @@ func TestCancelGoal(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		context := e.NewContext(req, res)
-		context.SetPath("/users/goals/cencel")
+		context.SetPath("/users/goals/cancel")
 
 		goalController := New(&MockFailedGoalRepository{})
 

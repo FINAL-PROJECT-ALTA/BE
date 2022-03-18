@@ -57,6 +57,9 @@ func (ur *GoalRepository) GetById(goal_uid string, user_uid string) (entities.Go
 
 	result := ur.database.Where("goal_uid = ? AND user_uid=?", goal_uid, user_uid).First(&goal)
 	if err := result.Error; err != nil {
+		if result.RowsAffected == 0 {
+			return goal, errors.New("not found")
+		}
 		return goal, err
 	}
 	time := time.Now()
