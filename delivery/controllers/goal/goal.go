@@ -181,7 +181,16 @@ func (ac *GoalController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some problem from input", nil))
 		}
 
-		res, err := ac.repo.Update(goal_uid, entities.Goal{User_uid: user_uid, Height: newGoal.Height, Weight: newGoal.Weight, Age: newGoal.Age, Range_time: newGoal.Range_time, Target: newGoal.Target})
+		res, err := ac.repo.Update(goal_uid, entities.Goal{
+			User_uid:      user_uid,
+			Height:        newGoal.Height,
+			Weight:        newGoal.Weight,
+			Age:           newGoal.Age,
+			Daily_active:  newGoal.Daily_active,
+			Weight_target: newGoal.Weight,
+			Range_time:    newGoal.Range_time,
+			Target:        newGoal.Target,
+		})
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
