@@ -815,6 +815,42 @@ func TestGetAll(t *testing.T) {
 	})
 }
 
+func TestCancelGoal(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodPut, "/", nil)
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals/cencel")
+
+		goalController := New(&MockGoalRepository{})
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.CencelGoal())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success cancel goal", response.Message)
+
+	})
+}
+
 type MockGoalRepository struct{}
 
 func (m *MockGoalRepository) Create(food entities.Goal) (entities.Goal, error) {
