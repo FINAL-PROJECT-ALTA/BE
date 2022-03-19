@@ -77,23 +77,23 @@ func TestGetById(t *testing.T) {
 	})
 
 	t.Run("fail run GetById", func(t *testing.T) {
-		mocUser := entities.User{
-			Name:     "test",
-			Email:    "test",
-			Password: "test",
-			Gender:   "male",
-		}
+		// mocUser := entities.User{
+		// 	Name:     "test",
+		// 	Email:    "test",
+		// 	Password: "test",
+		// 	Gender:   "male",
+		// }
 
-		res, err := repo.Register(mocUser)
-		if err != nil {
-			t.Fatal()
-		}
-		log.Info(res)
+		// res, err := repo.Register(mocUser)
+		// if err != nil {
+		// 	t.Fatal()
+		// }
+		// log.Info(res)
 
-		resA, _ := repo.GetById("eaf")
+		resA, errA := repo.GetById("")
 
 		log.Info(resA)
-		assert.NotEqual(t, "hefb", res.User_uid)
+		assert.NotNil(t, errA)
 
 	})
 }
