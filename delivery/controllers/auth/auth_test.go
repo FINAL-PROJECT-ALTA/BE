@@ -209,6 +209,41 @@ func TestLogin(t *testing.T) {
 		},
 	)
 }
+func TestAdminLogin(t *testing.T) {
+	t.Run(
+		"1. Success Login Admin Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "testadmin@gmail.com",
+					Password: "testadmin",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/admin/login")
+
+			authController := New(&MockAuthRepository{})
+			authController.AdminLogin()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+			data := (response.Data).(map[string]interface{})
+			// log.Info(data)
+			// log.Info(response)
+			jwtTokenAdmin = data["token"].(string)
+			log.Info(data)
+			log.Info(response)
+			assert.Equal(t, "ADMIN - berhasil masuk, mendapatkan token baru", response.Message)
+		},
+	)
+}
 
 type MockAuthRepository struct{}
 
