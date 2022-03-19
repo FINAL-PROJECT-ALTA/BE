@@ -320,7 +320,7 @@ func TestCreate(t *testing.T) {
 		var resp common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
-		assert.Equal(t, float64(http.StatusInternalServerError), resp.Code)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
 		assert.Equal(t, "impossible", resp.Message)
 
 	})

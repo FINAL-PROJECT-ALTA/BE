@@ -53,9 +53,9 @@ func (ac *GoalController) Create() echo.HandlerFunc {
 		if errRepo != nil {
 			if errRepo.Error() == "impossible" {
 				resErr := CreateResponseErrorGoal{Bmr: res.Weight, Cut_calories_every_day: res.Height}
-				return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, errRepo.Error(), resErr))
+				return c.JSON(http.StatusBadRequest, common.InternalServerError(http.StatusBadRequest, errRepo.Error(), resErr))
 			}
-			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "There is some error on server", nil))
+			return c.JSON(http.StatusInternalServerError, common.BadRequest(http.StatusInternalServerError, "There is some error on server", nil))
 		}
 
 		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success create goal", res))
