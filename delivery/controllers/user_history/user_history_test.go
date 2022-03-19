@@ -430,6 +430,42 @@ func TestGeAll(t *testing.T) {
 		assert.Equal(t, "There is some error on server", response.Message)
 
 	})
+	t.Run("Failed access get by userhistory uid", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_uid": "xyzmenu",
+			"goal_uid": "xyzgoal",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenAdmin))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/userhistories")
+
+		userhistoryController := New(&MockFailedUserHistoryRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(userhistoryController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusUnauthorized), resp.Code)
+		assert.Equal(t, "access denied", resp.Message)
+
+	})
+
 }
 
 type MockUserHistoryRepository struct{}
