@@ -190,6 +190,41 @@ func TestInsert(t *testing.T) {
 		assert.Equal(t, "Internal Server Error", resp.Message)
 
 	})
+	t.Run("Failed bind create", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"menu_uid": "",
+			"goal_uid": "xyzgoal",
+		})
+
+		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
+		res := httptest.NewRecorder()
+
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/userhistories")
+
+		userhistoryController := New(&MockFailedUserHistoryRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(userhistoryController.Insert())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var resp common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
+		assert.Equal(t, float64(http.StatusBadRequest), resp.Code)
+		assert.Equal(t, "There is some problem from input", resp.Message)
+
+	})
 }
 
 type MockUserHistoryRepository struct{}
