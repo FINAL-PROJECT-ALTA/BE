@@ -298,6 +298,38 @@ func TestGetByUid(t *testing.T) {
 		assert.Equal(t, "Success get user", response.Message)
 
 	})
+	t.Run("Failed get user history uid", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/userhistories")
+		context.SetParamNames("user_history_uid")
+		context.SetParamValues("xyz")
+
+		userhistoryController := New(&MockFailedUserHistoryRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(userhistoryController.GetByUid())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		assert.Equal(t, "Internal Server Error", response.Message)
+
+	})
 }
 
 type MockUserHistoryRepository struct{}
