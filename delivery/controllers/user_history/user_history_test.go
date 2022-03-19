@@ -366,6 +366,41 @@ func TestGetByUid(t *testing.T) {
 
 	})
 }
+func TestGeAll(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/userhistories")
+
+		userhistoryController := New(&MockUserHistoryRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(userhistoryController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success get user histories", response.Message)
+
+	})
+}
 
 type MockUserHistoryRepository struct{}
 
