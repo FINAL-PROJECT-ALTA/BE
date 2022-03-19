@@ -43,10 +43,10 @@ func (ur *GoalRepository) Create(g entities.Goal) (entities.Goal, error) {
 func (ur *GoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
 	goals := []entities.Goal{}
 
-	res := ur.database.Where("user_uid", user_uid).Find(&goals)
+	ur.database.Where("user_uid = ?", user_uid).Find(&goals)
 
-	if err := res.Error; err != nil {
-		return []entities.Goal{}, err
+	if len(goals) < 1 {
+		return goals, errors.New("")
 	}
 
 	return goals, nil
@@ -91,8 +91,9 @@ func (ur *GoalRepository) Update(goal_uid string, newGoal entities.Goal) (entiti
 
 func (ur *GoalRepository) Delete(goal_uid string, user_uid string) error {
 
-	if err := ur.database.Where("goal_uid =? AND user_uid =?", goal_uid, user_uid).Delete(&entities.Goal{}).Error; err != nil {
-		return err
+	res := ur.database.Where("goal_uid =? AND user_uid =?", goal_uid, user_uid).Delete(&entities.Goal{})
+	if res.RowsAffected == 0 {
+		return errors.New("")
 	}
 	return nil
 
@@ -121,6 +122,7 @@ func (ur *GoalRepository) RefreshGoal(user_uid string) (bool, error) {
 	return true, nil
 
 }
+
 func (ur *GoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
 
 	var goal entities.Goal
