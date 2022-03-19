@@ -36,8 +36,9 @@ func (fr *FoodRepository) Create(f entities.Food) (entities.Food, error) {
 func (fr *FoodRepository) GetById(food_uid string) (entities.Food, error) {
 
 	var food entities.Food
-	if err := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", food_uid).Scan(&food).Error; err != nil {
-		return food, err
+	res := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", food_uid).Scan(&food)
+	if res.RowsAffected == 0 {
+		return food, errors.New("")
 	}
 	log.Info(food)
 	return food, nil
@@ -67,12 +68,6 @@ func (fr *FoodRepository) Search(input, category string) ([]entities.Food, error
 		return foods, err
 	}
 
-	// result := fr.database.Where("name = ?", input).Or("calories", input).Find(&foods)
-
-	// if err := result.Error; err != nil {
-	// 	return foods, err
-	// }
-
 	return foods, nil
 }
 
@@ -80,8 +75,9 @@ func (fr *FoodRepository) Update(food_uid string, newFoods entities.Food) (entit
 
 	var foods entities.Food
 
-	if err := fr.database.Model(&foods).Where("food_uid =?", food_uid).Updates(&newFoods).Error; err != nil {
-		return foods, err
+	res := fr.database.Model(&foods).Where("food_uid =?", food_uid).Updates(&newFoods)
+	if res.RowsAffected == 0 {
+		return foods, errors.New("")
 	}
 
 	return foods, nil
@@ -89,8 +85,9 @@ func (fr *FoodRepository) Update(food_uid string, newFoods entities.Food) (entit
 
 func (fr *FoodRepository) Delete(food_uid string) error {
 
-	if err := fr.database.Where("food_uid = ?", food_uid).Delete(&entities.Food{}).Error; err != nil {
-		return err
+	res := fr.database.Where("food_uid = ?", food_uid).Delete(&entities.Food{})
+	if res.RowsAffected == 0 {
+		return errors.New("")
 	}
 
 	return nil
@@ -105,8 +102,8 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 			return nil, errors.New("nil value")
 		}
 	} else {
-		fr.database.Find(&foods)
-		if len(foods) < 1 {
+		res := fr.database.Find(&foods)
+		if res.RowsAffected == 0 {
 			return nil, errors.New("nil value")
 		}
 	}
@@ -114,19 +111,8 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	return foods, nil
 }
 
-// func (fr *FoodRepository) GetFoodThirdParty(food_uid string) (entities.Food, error) {
-// 	resFood := entities.Food{}
-// 	if err := fr.database.Model(&resFood).Where("food_uid", food_uid).First(&resFood).Error; err != nil {
-// 		return resFood, err
-// 	}
-// 	log.Info(resFood)
-// 	return resFood, nil
-// }
-
 func (fr *FoodRepository) CreateFoodThirdParty(foodNew entities.Food) (entities.Food, error) {
-	// resFood := entities.Food{}
 
-	// res := fr.database.Model(&resFood).Where("food_uid = ?", foodNew.Food_uid).Find(&resFood)
 	res, err := fr.GetById(foodNew.Food_uid)
 	log.Info(res)
 	if res.Food_uid == "" || err != nil {
