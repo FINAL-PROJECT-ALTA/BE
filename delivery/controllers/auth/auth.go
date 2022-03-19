@@ -33,7 +33,7 @@ func (ac *AuthController) Login() echo.HandlerFunc {
 		checkedUser, err_repo := ac.repo.Login(Userlogin.Email, Userlogin.Password)
 
 		if err_repo != nil {
-			var statusCode int
+			var statusCode int = 500
 			if err_repo.Error() == "email not found" {
 				statusCode = http.StatusUnauthorized
 			} else if err_repo.Error() == "incorrect password" {
@@ -75,7 +75,7 @@ func (ac *AuthController) AdminLogin() echo.HandlerFunc {
 		checkedUser, err_repo := ac.repo.Login(Userlogin.Email, Userlogin.Password)
 
 		if err_repo != nil {
-			var statusCode int
+			var statusCode int = 500
 			if err_repo.Error() == "email not found" {
 				statusCode = http.StatusUnauthorized
 			} else if err_repo.Error() == "incorrect password" {

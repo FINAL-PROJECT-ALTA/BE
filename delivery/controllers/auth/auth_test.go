@@ -1,118 +1,275 @@
 package auth
 
-// import (
-// 	"HealthFit/entities"
-// 	"bytes"
-// 	"encoding/json"
-// 	"errors"
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"testing"
+import (
+	"HealthFit/delivery/controllers/common"
+	"HealthFit/entities"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-// 	"github.com/labstack/echo/v4"
-// 	"github.com/labstack/gommon/log"
-// 	"github.com/stretchr/testify/assert"
-// 	"gorm.io/gorm"
-// )
+	// "github.com/aws/aws-sdk-go/aws/session"
 
-// type MockAuthLib struct{}
+	"github.com/labstack/echo/v4"
 
-// func (m *MockAuthLib) Login(email, password string) (entities.User, error) {
-// 	if email != "test" && password != "test" {
-// 		return entities.User{}, errors.New("record not found")
-// 	}
-// 	return entities.User{Model: gorm.Model{ID: 1}, Email: email, Password: password}, nil
-// }
+	"github.com/go-playground/assert"
+	"github.com/go-playground/validator"
+	"github.com/labstack/gommon/log"
+	"gorm.io/gorm"
+	// "github.com/labstack/gommon/log"
+)
 
-// type MockAuthLibToken struct{}
+type CustomValidator struct {
+	validator *validator.Validate
+}
 
-// func (m *MockAuthLibToken) Login(email, password string) (entities.User, error) {
-// 	return entities.User{}, nil
-// }
+var jwtTokenUser = ""
+var jwtTokenAdmin = ""
 
-// func TestLogin(t *testing.T) {
-// 	t.Run("error in input file", func(t *testing.T) {
-// 		e := echo.New()
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 
-// 		reqBody, _ := json.Marshal(map[string]string{
-// 			"email": "anonim@123",
-// 		})
+//////
 
-// 		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
-// 		res := httptest.NewRecorder()
-// 		req.Header.Set("Content-Type", "application/json")
+func TestLogin(t *testing.T) {
+	t.Run(
+		"1. Success Login User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
 
-// 		context := e.NewContext(req, res)
-// 		context.SetPath("/login")
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "testuser@gmail.com",
+					Password: "testuser",
+				},
+			)
 
-// 		authCont := New(&MockAuthLib{})
-// 		authCont.Login()(context)
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
 
-// 		resp := LoginRespFormat{}
+			authController := New(&MockAuthRepository{})
+			authController.Login()(context)
 
-// 		json.Unmarshal([]byte(res.Body.Bytes()), &resp)
-// 		assert.Equal(t, 400, resp.Code)
-// 		assert.Equal(t, "error in input file", resp.Message)
+			var response common.Response
 
-// 	})
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+			data := (response.Data).(map[string]interface{})
+			log.Info(data)
+			log.Info(response)
+			jwtTokenUser = data["token"].(string)
 
-// 	t.Run("error in call database", func(t *testing.T) {
-// 		e := echo.New()
+			assert.Equal(t, "USERS - berhasil masuk, mendapatkan token baru", response.Message)
+		},
+	)
+	t.Run(
+		"1. failed Login User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
 
-// 		reqBody, _ := json.Marshal(map[string]string{
-// 			"email":    "anonim",
-// 			"password": "anonim",
-// 		})
-// 		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
-// 		res := httptest.NewRecorder()
-// 		req.Header.Set("Content-Type", "application/json")
-// 		context := e.NewContext(req, res)
-// 		context.SetPath("/login")
-// 		authController := New(&MockAuthLib{})
-// 		authController.Login()(context)
-// 		response := LoginRespFormat{}
-// 		log.Info(res.Body)
-// 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-// 		assert.Equal(t, 500, response.Code)
-// 		assert.Equal(t, "error in call database", response.Message)
-// 	})
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser@gmail.com",
+					Password: "testuser",
+				},
+			)
 
-// 	t.Run("fail in process token", func(t *testing.T) {
-// 		e := echo.New()
-// 		reqBody, _ := json.Marshal(map[string]string{
-// 			"email":    "anonim@123",
-// 			"password": "anonim123",
-// 		})
-// 		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
-// 		res := httptest.NewRecorder()
-// 		req.Header.Set("Content-Type", "application/json")
-// 		context := e.NewContext(req, res)
-// 		context.SetPath("/login")
-// 		authController := New(&MockAuthLibToken{})
-// 		authController.Login()(context)
-// 		response := LoginRespFormat{}
-// 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
 
-// 		assert.Equal(t, 406, response.Code)
-// 		assert.Equal(t, "error in process token", response.Message)
-// 	})
+			authController := New(&MockAuthFailRepository{})
+			authController.Login()(context)
 
-// 	t.Run("success login", func(t *testing.T) {
-// 		e := echo.New()
-// 		reqBody, _ := json.Marshal(map[string]string{
-// 			"email":    "test",
-// 			"password": "test",
-// 		})
-// 		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(reqBody))
-// 		res := httptest.NewRecorder()
-// 		req.Header.Set("Content-Type", "application/json")
-// 		context := e.NewContext(req, res)
-// 		context.SetPath("/login")
-// 		authController := New(&MockAuthLib{})
-// 		authController.Login()(context)
-// 		response := LoginRespFormat{}
-// 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+			var response common.Response
 
-// 		assert.Equal(t, 200, response.Code)
-// 	})
-// }
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		},
+	)
+	t.Run(
+		"1. failed Login email not found User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser@gmail.com",
+					Password: "testuser",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
+
+			authController := New(&MockAuthNotFoundRepository{})
+			authController.Login()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusUnauthorized), response.Code)
+		},
+	)
+	t.Run(
+		"1. failed Login Incorrect Password User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser@gmail.com",
+					Password: "testuser",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
+
+			authController := New(&MockAuthIncorrectPasswordRepository{})
+			authController.Login()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusUnauthorized), response.Code)
+		},
+	)
+
+	t.Run(
+		"1. failed bind Login User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser",
+					Password: "testuser",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
+
+			authController := New(&MockAuthIncorrectPasswordRepository{})
+			authController.Login()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		},
+	)
+	t.Run(
+		"1. failed token generate Login User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser@gmail.com",
+					Password: "testuser",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
+
+			authController := New(&MockAuthFailTokenRepository{})
+			authController.Login()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusNotAcceptable), response.Code)
+		},
+	)
+}
+
+type MockAuthRepository struct{}
+
+func (m *MockAuthRepository) Login(email, password string) (entities.User, error) {
+
+	return entities.User{Model: gorm.Model{ID: 1}, Email: "testuser@gmail.com", Name: "testuser", Password: "testuser", Roles: false}, nil
+
+}
+func (m *MockAuthRepository) LoginAdmin(email, password string) (entities.User, error) {
+
+	return entities.User{Model: gorm.Model{ID: 2}, Email: "testadmin@gmail.com", Name: "testadmin", Password: "testadmin", Roles: true}, nil
+
+}
+
+type MockAuthFailRepository struct{}
+
+func (m *MockAuthFailRepository) Login(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("")
+
+}
+func (m *MockAuthFailRepository) LoginAdmin(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("")
+
+}
+
+type MockAuthNotFoundRepository struct{}
+
+func (m *MockAuthNotFoundRepository) Login(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("email not found")
+
+}
+func (m *MockAuthNotFoundRepository) LoginAdmin(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("email not found")
+
+}
+
+type MockAuthIncorrectPasswordRepository struct{}
+
+func (m *MockAuthIncorrectPasswordRepository) Login(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("incorrect password")
+
+}
+func (m *MockAuthIncorrectPasswordRepository) LoginAdmin(email, password string) (entities.User, error) {
+
+	return entities.User{}, errors.New("incorrect password")
+
+}
+
+type MockAuthFailTokenRepository struct{}
+
+func (m *MockAuthFailTokenRepository) Login(email, password string) (entities.User, error) {
+
+	return entities.User{Model: gorm.Model{ID: 0}, Email: "testuser@gmail.com", Name: "testuser", Password: "testuser", Roles: false}, nil
+
+}
+func (m *MockAuthFailTokenRepository) LoginAdmin(email, password string) (entities.User, error) {
+
+	return entities.User{Model: gorm.Model{ID: 0}, Email: "testadmin@gmail.com", Name: "testadmin", Password: "testadmin", Roles: false}, nil
+}
