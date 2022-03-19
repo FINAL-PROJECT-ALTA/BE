@@ -243,6 +243,34 @@ func TestAdminLogin(t *testing.T) {
 			assert.Equal(t, "ADMIN - berhasil masuk, mendapatkan token baru", response.Message)
 		},
 	)
+	t.Run(
+		"1. failed Login Admin Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetadmin@gmail.com",
+					Password: "testadmin",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/admin/login")
+
+			authController := New(&MockAuthFailRepository{})
+			authController.AdminLogin()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
+		},
+	)
 }
 
 type MockAuthRepository struct{}
