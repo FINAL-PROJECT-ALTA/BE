@@ -6,6 +6,7 @@ import (
 	utils "HealthFit/utils/mysql"
 	"testing"
 
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,6 +18,9 @@ func TestCreate(t *testing.T) {
 	db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 
 	t.Run("failed run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+
 		mocFood := entities.Food{
 			Name:          "makanan",
 			Calories:      100,
@@ -43,6 +47,8 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("success run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 
 		mocFood := entities.Food{
 			Name:          "makanan",
@@ -94,24 +100,11 @@ func TestGetById(t *testing.T) {
 	t.Run("success run Create", func(t *testing.T) {
 		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
-		mocFood := entities.Food{
-			Name:          "makanan",
-			Calories:      100,
-			Energy:        200,
-			Carbohidrate:  300,
-			Protein:       400,
-			Food_category: "snack",
-			Unit:          "ons",
-			Unit_value:    1,
-		}
-		_, err := repo.Create(mocFood)
-		if err != nil {
-			t.Fail()
-		}
 
-		resG, _ := repo.GetById("kn hb")
+		resG, errG := repo.GetById("")
+		log.Info(resG)
 
-		assert.NotEqual(t, "dadwa", resG.Name)
+		assert.NotNil(t, errG)
 
 	})
 
@@ -206,34 +199,15 @@ func TestDeleteById(t *testing.T) {
 
 	})
 
-	// t.Run("fail run Create", func(t *testing.T) {
-	// 	db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
-	// 	db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+	t.Run("fail run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 
-	// 	mocFood := entities.Food{
-	// 		Name:          "herbal",
-	// 		Calories:      100,
-	// 		Energy:        200,
-	// 		Carbohidrate:  300,
-	// 		Protein:       400,
-	// 		Food_category: "snack",
-	// 		Unit:          "ons",
-	// 		Unit_value:    1,
-	// 	}
-	// 	res, err := repo.Create(mocFood)
-	// 	if err != nil {
-	// 		t.Fail()
-	// 	}
+		errK := repo.Delete("res.Food_uid")
 
-	// 	errD := repo.Delete(res.Food_uid)
-	// 	if errD != nil {
-	// 		t.Fail()
-	// 	}
-	// 	errK := repo.Delete(res.Food_uid)
+		assert.NotNil(t, errK)
 
-	// 	assert.NotNil(t, errK)
-
-	// })
+	})
 }
 
 func TestGetAll(t *testing.T) {
@@ -267,17 +241,18 @@ func TestGetAll(t *testing.T) {
 		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 
-		// mocFood := entities.Food{
-		// 	Name:          "makanan",
-		// 	Calories:      100,
-		// 	Energy:        200,
-		// 	Carbohidrate:  300,
-		// 	Protein:       400,
-		// 	Food_category: "snack",
-		// 	Unit:          "ons",
-		// 	Unit_value:    1,
-		// }
-		// res, _ := repo.Create(mocFood)
+		mocFood := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		_, err := repo.Create(mocFood)
+		log.Info(err)
 
 		_, errG := repo.GetAll("res.Food_category")
 
@@ -289,23 +264,12 @@ func TestGetAll(t *testing.T) {
 		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
 
-		// mocFood := entities.Food{
-		// 	Name:          "makanan",
-		// 	Calories:      100,
-		// 	Energy:        200,
-		// 	Carbohidrate:  300,
-		// 	Protein:       400,
-		// 	Food_category: "snack",
-		// 	Unit:          "ons",
-		// 	Unit_value:    1,
-		// }
-		// res, _ := repo.Create(mocFood)
-
 		_, errG := repo.GetAll("res.Food_category")
 
 		assert.NotNil(t, errG)
 
 	})
+
 }
 
 func TestSearch(t *testing.T) {
@@ -357,6 +321,70 @@ func TestSearch(t *testing.T) {
 		_, errG := repo.Search("", "")
 
 		assert.Nil(t, errG)
+
+	})
+}
+
+func TestThird(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
+
+	t.Run("success run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+
+		mocFood := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+
+		res, err := repo.CreateFoodThirdParty(mocFood)
+		log.Info(res)
+
+		assert.NotNil(t, err)
+
+	})
+
+	t.Run("success run Create", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+		db.AutoMigrate(&entities.Food{}, &entities.Menu{}, &entities.Detail_menu{})
+
+		mocFood := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+
+		resC, _ := repo.Create(mocFood)
+		log.Info(resC)
+
+		mocFoodI := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+
+		res, err := repo.CreateFoodThirdParty(mocFoodI)
+		log.Info(res)
+
+		assert.NotNil(t, err)
 
 	})
 }
