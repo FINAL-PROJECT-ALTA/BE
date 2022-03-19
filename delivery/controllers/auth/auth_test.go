@@ -151,6 +151,35 @@ func TestLogin(t *testing.T) {
 			assert.Equal(t, float64(http.StatusUnauthorized), response.Code)
 		},
 	)
+
+	t.Run(
+		"1. failed bind Login User Test", func(t *testing.T) {
+			e := echo.New()
+			e.Validator = &CustomValidator{validator: validator.New()}
+
+			requestBody, _ := json.Marshal(
+				LoginReqFormat{
+					Email:    "tetuser",
+					Password: "testuser",
+				},
+			)
+
+			req := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(requestBody))
+			res := httptest.NewRecorder()
+			req.Header.Set("Content-Type", "application/json")
+			context := e.NewContext(req, res)
+			context.SetPath("/users/login")
+
+			authController := New(&MockAuthIncorrectPasswordRepository{})
+			authController.Login()(context)
+
+			var response common.Response
+
+			json.Unmarshal([]byte(res.Body.Bytes()), &response)
+
+			assert.Equal(t, float64(http.StatusBadRequest), response.Code)
+		},
+	)
 }
 
 type MockAuthRepository struct{}
