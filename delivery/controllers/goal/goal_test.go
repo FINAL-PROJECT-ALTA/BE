@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -430,6 +431,40 @@ func TestGetById(t *testing.T) {
 		assert.Equal(t, "Goal is not found", response.Message)
 
 	})
+	t.Run("Failed diff time get goal ById", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+		context.SetParamNames("goal_uid")
+		context.SetParamValues("xyz")
+
+		goalController := New(&MockDiffTimeGoalRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetById())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success get goal", response.Message)
+
+	})
 	t.Run("Failed access get goal ById", func(t *testing.T) {
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
@@ -784,6 +819,38 @@ func TestGetAll(t *testing.T) {
 		assert.Equal(t, "Success get all goal", response.Message)
 
 	})
+	t.Run("Failed diff time get all goal", func(t *testing.T) {
+		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		res := httptest.NewRecorder()
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", jwtTokenUser))
+
+		req.Header.Set("Content-Type", "application/json")
+
+		context := e.NewContext(req, res)
+		context.SetPath("/users/goals")
+
+		goalController := New(&MockDiffTimeGoalRepository{})
+
+		err := middleware.JWT([]byte(configs.JWT_SECRET))(goalController.GetAll())(context)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var response common.Response
+
+		json.Unmarshal([]byte(res.Body.Bytes()), &response)
+		// data := (response.Data).(map[string]interface{})
+		// log.Info(data)
+		// log.Info(response)
+		assert.Equal(t, float64(http.StatusOK), response.Code)
+		assert.Equal(t, "Success get all goal", response.Message)
+
+	})
 	t.Run("Failed get all goal", func(t *testing.T) {
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
@@ -1097,6 +1164,58 @@ func (m *MockNotFoundGoalRepository) GetAll(user_uid string) ([]entities.Goal, e
 	return []entities.Goal{}, errors.New("There is some error on server")
 }
 func (m *MockNotFoundGoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("There is some error on server")
+}
+
+type MockDiffTimeGoalRepository struct{}
+
+//2022-03-13 00:48:23.026
+func (m *MockDiffTimeGoalRepository) Create(food entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("impossible")
+}
+
+func (m *MockDiffTimeGoalRepository) GetById(goal_uid string, user_uid string) (entities.Goal, error) {
+	time := time.Date(2022, 03, 15, 10, 20, 0, 0, time.UTC)
+	return entities.Goal{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 1,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+		CreatedAt:     time,
+	}, nil
+}
+
+func (m *MockDiffTimeGoalRepository) Update(goal_uid string, newSood entities.Goal) (entities.Goal, error) {
+
+	return entities.Goal{}, errors.New("There is some error on server")
+}
+func (m *MockDiffTimeGoalRepository) Delete(goal_uid string, user_uid string) error {
+
+	return errors.New("")
+}
+func (m *MockDiffTimeGoalRepository) GetAll(user_uid string) ([]entities.Goal, error) {
+	time := time.Date(2022, 03, 15, 10, 20, 0, 0, time.UTC)
+	return []entities.Goal{{
+		User_uid:      "xyz",
+		Height:        150,
+		Weight:        55,
+		Age:           24,
+		Daily_active:  "not active",
+		Weight_target: 1,
+		Range_time:    30,
+		Target:        "lose weight",
+		Status:        "active",
+		CreatedAt:     time,
+	}}, nil
+}
+func (m *MockDiffTimeGoalRepository) CancelGoal(user_uid string) (entities.Goal, error) {
 
 	return entities.Goal{}, errors.New("There is some error on server")
 }

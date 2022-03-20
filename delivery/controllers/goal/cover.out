@@ -20,7 +20,7 @@ HealthFit/delivery/controllers/goal/goal.go:79.17,81.4 1 1
 HealthFit/delivery/controllers/goal/goal.go:84.30,90.17 6 1
 HealthFit/delivery/controllers/goal/goal.go:96.4,108.6 1 1
 HealthFit/delivery/controllers/goal/goal.go:90.17,92.5 1 1
-HealthFit/delivery/controllers/goal/goal.go:92.10,94.5 1 0
+HealthFit/delivery/controllers/goal/goal.go:92.10,94.5 1 1
 HealthFit/delivery/controllers/goal/goal.go:115.54,116.36 1 1
 HealthFit/delivery/controllers/goal/goal.go:116.36,120.14 2 1
 HealthFit/delivery/controllers/goal/goal.go:124.3,144.16 18 1
@@ -28,7 +28,7 @@ HealthFit/delivery/controllers/goal/goal.go:150.3,150.17 1 1
 HealthFit/delivery/controllers/goal/goal.go:160.3,160.92 1 1
 HealthFit/delivery/controllers/goal/goal.go:120.14,123.4 1 1
 HealthFit/delivery/controllers/goal/goal.go:144.16,146.4 1 1
-HealthFit/delivery/controllers/goal/goal.go:146.9,148.4 1 0
+HealthFit/delivery/controllers/goal/goal.go:146.9,148.4 1 1
 HealthFit/delivery/controllers/goal/goal.go:150.17,153.34 3 1
 HealthFit/delivery/controllers/goal/goal.go:157.4,157.83 1 1
 HealthFit/delivery/controllers/goal/goal.go:153.34,156.5 2 1
