@@ -36,7 +36,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
--  
+An application to get recommendations for health-supporting foods to lose weight or gain weight
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -46,10 +46,10 @@
 -  Create account registration
 
 As Users
--  see the content of the food or drink
--  set a goal to get a recommendation menu calculation
--  choose the recommend menu
--  view the history of the selected menu
+-  See the content of the food or drink
+-  Set a goal to get a recommendation menu calculation
+-  Choose the recommend menu
+-  View the history of the selected menu
 
 As Admin
 -  CRUD types of food, drinks, fruit, snacks
@@ -60,11 +60,24 @@ As Admin
 
 ## Tech Stack
 ### Framework
--
+- [Echo (Go Web Framework)](https://echo.labstack.com/)
+
 ### Build With
--
+- [Golang (Language)](https://go.dev/) 
+- [Gorm (ORM Library)](https://aws.amazon.com/id/?nc2=h_lg)
+- [Testify (Unit Test)](https://github.com/stretchr/testify)
+
+### Third Party
+- [AWS S3 Bucket](https://aws.amazon.com/id/?nc2=h_lg)
+- [Edamam Food Databases](https://www.edamam.com/)
+
+### Database
+- [AWS RDS](https://aws.amazon.com/id/?nc2=h_lg)
+
 ### Deployment
--
+- [Docker (Container - image)](https://hub.docker.com/)
+- [Okteto (Kuberneter Platform)](https://www.okteto.com/)
+
 ### Collaboration 
 - [Trello](https://trello.com/) - Manage Project
 - [Github](https://github.com/) - Versioning Project
@@ -90,14 +103,14 @@ As Admin
 <!-- HLA -->
 ## High Level Architecture
 
-<img src="https://github.com/FINAL-PROJECT-ALTA/BE/raw/main/doc/HLA.png" alt="display-preview">
+<img src="./doc/HLA.png" alt="display-preview">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ERD -->
 ## ERD
 
-<img src="" alt="display-preview">
+<img src="./doc/ERD.png" alt="display-preview">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -110,7 +123,7 @@ As Admin
 
 <!-- CONTACT -->
 ## Authors
-* Arya Nur Dewangga Putra - [Github]() · [LinkedIn]()
-* Ade Mawan - [Github]() · [LinkedIn]()
+* Arya Nur Dewangga Putra - [Github](https://github.com/aaryadewangga) · [LinkedIn](https://www.linkedin.com/in/aryadewangga/)
+* Ade Mawan - [Github](https://github.com/ademawan) · [LinkedIn](https://www.linkedin.com/in/ade-mawan-527657177/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
