@@ -10,7 +10,7 @@ type Detail_menu struct {
 	ID uint `gorm:"primarykey" json:"-"`
 
 	Detail_menu_uid string         `json:"-"`
-	Menu_uid        string         `gorm:"index;type:varchar(32)" json:"-"`
+	Menu_uid        string         `gorm:"index;type:varchar(22)" json:"-"`
 	Food_uid        string         `gorm:"index;type:varchar(32)" json:"-"`
 	Food            Food           `gorm:"foreignKey:Food_uid;references:Food_uid" json:"food"`
 	CreatedAt       time.Time      `json:"-"`
