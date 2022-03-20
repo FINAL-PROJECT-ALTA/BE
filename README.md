@@ -88,8 +88,8 @@ As Admin
 ``` bash
 Healthy Fit
   ├── configs                
-  │     └──config.go           # Configs files
-  ├── delivery                 # Endpoints handlers or controllers
+  │     └──config.go                  # Configs files
+  ├── delivery                        # Endpoints handlers or controllers
   │     ├──controllers
   │     │   └── users
   │     │     ├── formatter.go        # Default response format for spesific controllers
@@ -98,25 +98,25 @@ Healthy Fit
   │     ├──middlewares
   │     │   └── jwtMiddleware.go      # Middlewares Function
   │     └──routes  
-  │         └── routes.go     # Endpoints list
+  │         └── routes.go             # Endpoints list
   ├── deployment               
-  │     └── app.yaml          # deploymen installer
+  │     └── app.yaml                  # Deploymen installer
   ├── entities                
-  │     └── users.go          # database model
+  │     └── users.go                  # Database model
   ├── repository              
-  │     ├── interface.go      # Repository Interface for controllers
-  │     ├── users_test.go     # Unit test for spesific repository
-  │     └── users.go          # Spesific Repository
+  │     ├── interface.go              # Repository Interface for controllers
+  │     ├── users_test.go             # Unit test for spesific repository
+  │     └── users.go                  # Spesific Repository
   ├── utils                 
   │     ├── mysql
-  │     │    └── driver.go      # Database driver
+  │     │    └── driver.go            # Database driver
   │     └── thrid_party
-  │          └── thirdParty.go  # Third Party driver
+  │          └── thirdParty.go        # Third Party driver
   ├── .gitignore  
-  ├── dockerfile                # Which files to ignore when committing
+  ├── dockerfile                      # Which files to ignore when committing
   ├── go.mod                  
   ├── go.sum                  
-  ├── main.go                   # Main Program
+  ├── main.go                         # Main Program
   └── README.md    
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
