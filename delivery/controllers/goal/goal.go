@@ -152,7 +152,7 @@ func (ac *GoalController) GetById() echo.HandlerFunc {
 			message := "There is some error on server"
 			if err.Error() == "not found" {
 				statusCode = 404
-				message = " Goal is not found"
+				message = "Goal is not found"
 			}
 			return c.JSON(statusCode, common.InternalServerError(statusCode, message, nil))
 		}
