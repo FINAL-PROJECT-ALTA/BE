@@ -364,7 +364,9 @@ func TestUpdate(t *testing.T) {
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
 
-		reqBody, _ := json.Marshal(map[string]string{})
+		reqBody, _ := json.Marshal(map[string]interface{}{
+			"name": 123,
+		})
 
 		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(reqBody))
 		res := httptest.NewRecorder()
