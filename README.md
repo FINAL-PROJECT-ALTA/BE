@@ -76,7 +76,7 @@ As Admin
 
 ### Deployment
 - [Docker (Container - image)](https://hub.docker.com/)
-- [Okteto (Kuberneter Platform)](https://www.okteto.com/)
+- [Okteto (Kubernetes Platform)](https://www.okteto.com/)
 
 ### Collaboration 
 - [Trello](https://trello.com/) - Manage Project
