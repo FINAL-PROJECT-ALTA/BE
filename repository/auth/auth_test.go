@@ -94,13 +94,14 @@ func TestLogin(t *testing.T) {
 
 		mockGoal := entities.Goal{
 			User_uid:      res.User_uid,
-			Height:        150,
-			Weight:        55,
-			Age:           24,
-			Daily_active:  "not active",
-			Weight_target: 50,
-			Range_time:    14,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "quite active",
+			Weight_target: 2,
+			Range_time:    30,
 			Target:        "lose weight",
+			Status:        "active",
 		}
 
 		resG, errG := gr.New(db).Create(mockGoal)

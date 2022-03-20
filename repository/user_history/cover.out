@@ -1,0 +1,19 @@
+mode: set
+HealthFit/repository/user_history/user_history.go:15.46,19.2 1 1
+HealthFit/repository/user_history/user_history.go:21.106,23.57 1 1
+HealthFit/repository/user_history/user_history.go:44.2,44.16 1 1
+HealthFit/repository/user_history/user_history.go:48.2,48.24 1 1
+HealthFit/repository/user_history/user_history.go:23.57,29.85 4 1
+HealthFit/repository/user_history/user_history.go:32.3,33.100 2 1
+HealthFit/repository/user_history/user_history.go:36.3,37.113 2 1
+HealthFit/repository/user_history/user_history.go:41.3,41.13 1 1
+HealthFit/repository/user_history/user_history.go:29.85,31.4 1 1
+HealthFit/repository/user_history/user_history.go:33.100,35.4 1 0
+HealthFit/repository/user_history/user_history.go:37.113,39.4 1 0
+HealthFit/repository/user_history/user_history.go:44.16,46.3 1 1
+HealthFit/repository/user_history/user_history.go:51.91,55.27 3 1
+HealthFit/repository/user_history/user_history.go:59.2,59.25 1 1
+HealthFit/repository/user_history/user_history.go:55.27,57.3 1 1
+HealthFit/repository/user_history/user_history.go:62.108,66.30 3 1
+HealthFit/repository/user_history/user_history.go:70.2,70.26 1 1
+HealthFit/repository/user_history/user_history.go:66.30,68.3 1 1
