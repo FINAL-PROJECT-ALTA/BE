@@ -8,6 +8,8 @@ info:
   version: '1.0'
 servers:
   # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
   - url: https://aaryadewangga.cloud.okteto.net/{entity}
     variables:
       entity:
@@ -18,8 +20,9 @@ servers:
           - users goals
           - users history
           - foods
-          - menu
-          - menu details
+          - menus
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/aaryadewangga/Final_Project/1.0
 tags:
   - name: Admin
     description: Admin Register/Update/Delete
@@ -33,8 +36,6 @@ tags:
     description: Foods Methods
   - name: Menus
     description: Menu 
-  - name: Menus Details
-    description: Menu Detail 
 paths:
   /admin/register:
     post:
@@ -161,15 +162,15 @@ paths:
                 gender:
                   type: string
                   enum:
-                    - Pria
-                    - Wanita
+                    - male
+                    - female
               example:
                 name: test
                 email: test@mail.com
                 password: test
-                gender: Pria
+                gender: male
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json:
@@ -192,8 +193,8 @@ paths:
                       gender:
                         type: string
                         enum:
-                          - Pria
-                          - Wanita
+                          - male
+                          - female
                 example:
                   code: 200
                   message: success to get new Account
@@ -201,7 +202,9 @@ paths:
                     user_uid: jksfbkjfkjabruablnlab
                     name: test
                     email: test@mail.com
-                    gender: Pria
+                    gender: male
+                    roles: false
+                    image: ""
         '400':
           $ref: '#/components/responses/400'
   /users/login:
@@ -225,13 +228,19 @@ paths:
                 type: object
               example:
                 code: 200
-                message: Success login, get a new token
+                message: USERS - berhasil masuk, mendapatkan token baru
                 data:
+                  user_uid: jbeakbfkajlfablbalenvlabvljdvjlbjl
+                  name: test
+                  email: test@mail.com
+                  rules: false 
                   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  goal_active: false
+                  goal_expired: false
         '500':
           description: Invalid Authorization
           content:
-            application/json:
+            application/json: 
               schema:
                 type: object
               example:
@@ -280,8 +289,12 @@ paths:
                       example:
                           user_uid: jksfbkjfkjabruablnlab
                           name: test
-                          email: test@test.com
-                          gender: Pria
+                          email: test@mail.com
+                          gender: male
+                          roles: false
+                          image: ""
+                          goal: []
+                          history: []
     put:
       summary: Update By ID
       tags:
@@ -349,13 +362,31 @@ paths:
                   type: integer
                 age:
                   type: integer
+                daily_active:
+                  type: string
+                  enum:
+                    - not active
+                    - little active
+                    - quite active
+                    - active
+                    - very active
+                weight_target:
+                  type: integer
                 range_time:
                   type: integer
+                target:
+                  type: string
+                  enum:
+                    - lose weight
+                    - gain weiht 
               example:
                 height: 175
                 weight: 75
                 age: 24
+                daily_active: not active
+                weight_target: 5
                 range_time: 30
+                target: lose weight 
       responses:
         '201':
           description: OK
@@ -384,14 +415,78 @@ paths:
                       range_time:
                         type: integer
                 example:
-                  id: 1
-                  user_uid: kaehbiafbkajfl
-                  height: 175
-                  weight: 75
-                  age: 24
-                  range_time: 30
+                    height: 175
+                    weight: 75
+                    age: 24
+                    daily_active: not active
+                    weight_target: 5
+                    range_time: 30
+                    target: lose weight
+                    status: "active"
+                    createdAt: "2022-03-20T10:26:25.094Z"
         '400':
           $ref: '#/components/responses/400'
+    get:
+        summary: Get all Goals
+        tags:
+          - Users Goals
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message :
+                      type: string
+                      example: Success to get goals users profile
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            calories:
+                              type: integer
+                            category:
+                              type: string
+                              enum:
+                                - fruit
+                                - drink
+                                - junk food
+                                - food
+                                - snack
+                            image :
+                              type: string
+                        example:
+                          - height: 175
+                            weight: 75
+                            age: 24
+                            daily_active: not active
+                            weight_target: 5
+                            range_time: 30
+                            target: lose weight
+                            status: "active"
+                            createdAt: "2022-03-20T10:26:25.094Z"
+                          - height: 175
+                            weight: 75
+                            age: 24
+                            daily_active: not active
+                            weight_target: 5
+                            range_time: 30
+                            target: lose weight
+                            status: "not active"
+                            createdAt: "2022-12-20T10:26:25.094Z"
   /users/goals/:goal_uid:  
     get:
         summary: Goals by User Profile
@@ -430,12 +525,15 @@ paths:
                           range_time:
                             type: integer
                       example:
-                          id: 1
-                          user_uid: kaehbiafbkajfl
                           height: 175
                           weight: 75
                           age: 24
+                          daily_active: not active
+                          weight_target: 5
                           range_time: 30
+                          target: lose weight
+                          status: "active"
+                          createdAt: "2022-03-20T10:26:25.094Z"
     put:
       summary: Update By ID
       tags:
@@ -481,59 +579,43 @@ paths:
               example:
                 code: 200
                 message: success to delete goals user data
-  /users/history:
-    get:
-        summary: History by User Profile
-        tags:
-          - User History
-        description: User Profile
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    code:
-                      type: integer
-                      example: 200
-                    message :
-                      type: string
-                      example: Success to get users history
-                    data:
-                      type: object
-                      example:
-                          code: 201
-                          message: success to get users history
-                          data:
-                            id: 1
-                            user_uid: jabfkanflabe
-                            menu_category: breakfast
-                            created_at: 07:32:32
-                            menu:
-                              - id : 3
-                                food_uid: kshefkaefk
-                                name: Nasi Goreng
-                                calories: 244
-                                category: foods
-                                image: Nasi_images.jpg (image using form-data for uplaod)
-                              - id : 6
-                                food_uid: kjnlvanlfwf
-                                name: Mie Ayam
-                                calories: 143
-                                category: foods
-                                image: nasi-campur_images.jpg (image using form-data for uplaod)
-  /foods:
-    post:
-      summary: Add / Create Foods Data
+  /users/goals/cancel:
+    put:
+      summary: Update By ID
       tags:
-        - Foods
+        - Users Goals
       requestBody:
         required: true
-        description: Create / Add Foods Data
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/UserInput'
+            example:
+              status: cancel
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessSingleResponse'
+              example:
+                code: 200
+                message: Success to Update Goals User Data
+        '204':
+          $ref: '#/components/responses/204'
+  /userhistories:
+    post:
+      summary: Add / Create User History Data
+      tags:
+        - User History
+      requestBody:
+        required: true
+        description: Create / Add User history Data
         content:
           application/json:
             schema:
@@ -554,10 +636,8 @@ paths:
                 image :
                   type: string
               example:
-                name: Soto Ayam
-                calories: 244
-                category: foods
-                image: soto_images.jpg (image using form-data for uplaod)
+                menu_uid: kahebajebvkabvkab
+                goal_uid: ehfayvibaubfkabkj
       security:
         - bearerAuth: []
       responses:
@@ -595,12 +675,271 @@ paths:
                   code: 201
                   message: sukses menambahkan foods baru
                   data:
-                    id : 1
+                    user_uid: fbakfbakjbfkajbej
+                    useer_history_uid: jdawdjafkaebfkk
+                    goal_uid: ehfayvibaubfkabkj
+                    menu_uid: kahebajebvkabvkab
+                    menu:
+                      - menu_uid: kahebajebvkabvkab
+                        menu_category: "breakfast"
+                        total_calories: 488 
+                        created_by: admin
+                        count: 0,
+                        foods: 
+                          - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                            name: soto betawi
+                            calories: 244
+                            energy: 244
+                            carbohidrate: 180
+                            protein: 123
+                            unit: bowl
+                            unit_value: 1
+                            food_category: food
+                            image: "soto.png"
+                          - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                            name: soto betawi
+                            calories: 244
+                            energy: 244
+                            carbohidrate: 180
+                            protein: 123
+                            unit: bowl
+                            unit_value: 1
+                            food_category: food
+                            image: "soto.png"
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+        summary: History by User Profile
+        tags:
+          - User History
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+         '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    message:
+                      type: string
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        calories:
+                          type: integer
+                        category:
+                          type: string
+                          enum:
+                            - fruit
+                            - drink
+                            - junk food
+                            - food
+                            - snack
+                        image :
+                          type: string
+                  example:
+                    code: 201
+                    message: sukses menambahkan foods baru
+                    data:
+                      user_uid: fbakfbakjbfkajbej
+                      useer_history_uid: jdawdjafkaebfkk
+                      goal_uid: ehfayvibaubfkabkj
+                      menu_uid: kahebajebvkabvkab
+                      menu:
+                        - menu_uid: kahebajebvkabvkab
+                          menu_category: "breakfast"
+                          total_calories: 488 
+                          created_by: admin
+                          count: 0,
+                          foods: 
+                            - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                              name: soto betawi
+                              calories: 244
+                              energy: 244
+                              carbohidrate: 180
+                              protein: 123
+                              unit: bowl
+                              unit_value: 1
+                              food_category: food
+                              image: "soto.png"
+                            - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                              name: soto betawi
+                              calories: 244
+                              energy: 244
+                              carbohidrate: 180
+                              protein: 123
+                              unit: bowl
+                              unit_value: 1
+                              food_category: food
+                              image: "soto.png"
+  /userhistories/:user_history_uid:
+    get:
+        summary: History by User Profile
+        tags:
+          - User History
+        description: User Profile
+        security:
+          - bearerAuth: []
+        responses:
+         '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    message:
+                      type: string
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        calories:
+                          type: integer
+                        category:
+                          type: string
+                          enum:
+                            - fruit
+                            - drink
+                            - junk food
+                            - food
+                            - snack
+                        image :
+                          type: string
+                  example:
+                    code: 201
+                    message: sukses menambahkan foods baru
+                    data:
+                      user_uid: fbakfbakjbfkajbej
+                      useer_history_uid: jdawdjafkaebfkk
+                      goal_uid: ehfayvibaubfkabkj
+                      menu_uid: kahebajebvkabvkab
+                      menu:
+                        - menu_uid: kahebajebvkabvkab
+                          menu_category: "breakfast"
+                          total_calories: 488 
+                          created_by: admin
+                          count: 0,
+                          foods: 
+                            - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                              name: soto betawi
+                              calories: 244
+                              energy: 244
+                              carbohidrate: 180
+                              protein: 123
+                              unit: bowl
+                              unit_value: 1
+                              food_category: food
+                              image: "soto.png"
+                            - food_uid: "ARoJQigPxCZyNmeFR8qFLh"
+                              name: soto betawi
+                              calories: 244
+                              energy: 244
+                              carbohidrate: 180
+                              protein: 123
+                              unit: bowl
+                              unit_value: 1
+                              food_category: food
+                              image: "soto.png"
+  /foods:
+    post:
+      summary: Add / Create Foods Data (Just For Admin)
+      tags:
+        - Foods
+      requestBody:
+        required: true
+        description: Create / Add Foods Data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                calories:
+                  type: integer
+                category:
+                  type: string
+                  enum:
+                    - fruit
+                    - drink
+                    - junk food
+                    - food
+                    - snack
+                image :
+                  type: string
+              example:
+                name: Mangga muda
+                calories: 100
+                energy: 200
+                carbohidrate: 300
+                protein: 400
+                unit: gram
+                unit_value: 2 
+                food_categories: fruit
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      calories:
+                        type: integer
+                      category:
+                        type: string
+                        enum:
+                          - fruit
+                          - drink
+                          - junk food
+                          - food
+                          - snack
+                      image :
+                        type: string
+                example:
+                  code: 201
+                  message: sukses menambahkan foods baru
+                  data:
                     food_uid: kshefkaefk
-                    name: Soto Ayam
-                    calories: 244
-                    category: foods
-                    image: soto_images.jpg (image using form-data for uplaod)
+                    name: Mangga muda
+                    calories: 100
+                    energy: 200
+                    carbohidrate: 300
+                    protein: 400
+                    unit: gram
+                    unit_value: 2 
+                    food_categories: fruit
+                    image: ""
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -646,18 +985,26 @@ paths:
                     code: 200
                     message: success to get all foods
                     data:
-                      - id : 1
-                        food_uid: kshefkaefk
-                        name: Soto Ayam
-                        calories: 244
-                        category: foods
-                        image: soto_images.jpg (image using form-data for uplaod)
-                      - id : 2
-                        food_uid: kjnlvanlfwf
-                        name: Nasi Campur
-                        calories: 244
-                        category: foods
-                        image: nasi-campur_images.jpg (image using form-data for uplaod)
+                      -  food_uid: kshefkaefk
+                         name: Mangga muda
+                         calories: 100
+                         energy: 200
+                         carbohidrate: 300
+                         protein: 400
+                         unit: gram
+                         unit_value: 2 
+                         food_categories: fruit
+                         image: ""
+                      -  food_uid: kshefkaefk
+                         name: Mangga muda
+                         calories: 100
+                         energy: 200
+                         carbohidrate: 300
+                         protein: 400
+                         unit: gram
+                         unit_value: 2 
+                         food_categories: fruit
+                         image: ""
   /foods/search/:
     get:
       summary: Get Foods by Name or Calories
@@ -718,13 +1065,79 @@ paths:
                   code: 200
                   message: Berhasil mendapatkan data foods
                   data:
-                    id : 1
-                    food_uid: kshefkaefk
-                    name: Soto Ayam
-                    calories: 244
-                    category: foods
-                    image: soto_images.jpg (image using form-data for uplaod)
-  /foods/:food_uid:  
+                    -  food_uid: kshefkaefk
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
+                    -  food_uid: kshefkaefk
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
+  /foods/:food_uid: 
+    get:
+        summary: Foods by UID
+        tags:
+          - Foods
+        description: foods
+        security:
+          - bearerAuth: []
+        responses:
+         '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    message:
+                      type: string
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        calories:
+                          type: integer
+                        category:
+                          type: string
+                          enum:
+                            - fruit
+                            - drink
+                            - junk food
+                            - food
+                            - snack
+                        image :
+                          type: string
+                  example:
+                    code: 201
+                    message: sukses menambahkan foods baru
+                    data: 
+                       food_uid: kshefkaefk
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
     put:
       summary: Update Foods Data
       tags:
@@ -788,13 +1201,16 @@ paths:
                   code: 200
                   message: Berhasil mengupdate data foods
                   data:
-                    id : 1
-                    food_uid: kshefkaefk
-                    name: Bakso
-                    calories: 312
-                    category: foods
-                    image: soto_images.jpg (image using form-data for uplaod)
-        '400':
+                       food_uid: kshefkaefk
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
           $ref: '#/components/responses/400'
         '401':
           description: Authorization Failed
@@ -862,7 +1278,9 @@ paths:
                   type: integer
               example:
                 menu_categories: breakfast
-                total_calories: 1000  
+                foods:
+                  - food_uid: kaefkabfakae
+                  - food_uid: adtafjfaekjf
       security:
         - bearerAuth: []
       responses:
@@ -898,39 +1316,499 @@ paths:
                   code: 201
                   message: sukses menambahkan menu baru
                   data:
-                    id : 1
-                    menu_uid: kshefkaefk
+                    menu_uid: haevfbkaev
                     menu_category: breakfast
-                    total_calories: 1000
+                    total_calories: 200
+                    created_by: admin
                     foods: 
-                    - id : 3
-                      food_uid: kshefkaefk
-                      name: Soto Ayam
-                      calories: 356
-                      category: foods
-                      image: soto_images.jpg (image using form-data for uplaod)
-                    - id : 7
-                      food_uid: kjnlvanlfwf
-                      name: Nasi Campur
-                      calories: 392
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-                    - id : 8
-                      food_uid: ehbfkablfnan
-                      name: Es Campur
-                      calories: 196
-                      category: drink
-                      image: es-campur_images.jpg (image using form-data for uplaod)
-                    - id : 10
-                      food_uid: ehblfnlebukvbe
-                      name: Es Teh
-                      calories: 100
-                      category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)
+                    -  food_uid: kaefkabfakae
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
+                    -  food_uid: adtafjfaekjf
+                       name: Mangga muda
+                       calories: 100
+                       energy: 200
+                       carbohidrate: 300
+                       protein: 400
+                       unit: gram
+                       unit_value: 2 
+                       food_categories: fruit
+                       image: ""
         '400':
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+    get:
+        summary: Get All Menu
+        tags:
+          - Menus
+        description: All Menus
+        security:
+          - bearerAuth: []
+        responses:
+         '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    message:
+                      type: string
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        calories:
+                          type: integer
+                        category:
+                          type: string
+                          enum:
+                            - fruit
+                            - drink
+                            - junk food
+                            - food
+                            - snack
+                        image :
+                          type: string
+                  example:
+                    code: 201
+                    message: sukses mendapatkan menu baru
+                    data: 
+                      - menu_uid: haevfbkaev
+                        menu_category: breakfast
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                      - menu_uid: haevfbkaev
+                        menu_category: breakfast
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+         '400':
+            $ref: '#/components/responses/400'
+         '500':
+            $ref: '#/components/responses/500'
+  /menus/recommend/breakfast:  
+    get:
+      summary: Get Menu By Menu Category - breakfast
+      tags:
+        - Menus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses mendapatkan rekomendasi menu breakfast
+                  data:
+                      - menu_uid: haevfbkaev
+                        menu_category: breakfast
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                      - menu_uid: haevfbkaev
+                        menu_category: breakfast
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+        '400':
+            $ref: '#/components/responses/400'
+        '500':
+            $ref: '#/components/responses/500'
+  /menus/recommend/lunch:  
+    get:
+      summary: Get Menu By Menu Category - lunch
+      tags:
+        - Menus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses mendapatkan rekomendasi menu breakfast
+                  data:
+                      - menu_uid: haevfbkaev
+                        menu_category: lunch
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                      - menu_uid: haevfbkaev
+                        menu_category: lunch
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+        '400':
+            $ref: '#/components/responses/400'
+        '500':
+            $ref: '#/components/responses/500'
+  /menus/recommend/dinner:  
+    get:
+      summary: Get Menu By Menu Category - dinner
+      tags:
+        - Menus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses mendapatkan rekomendasi menu breakfast
+                  data:
+                      - menu_uid: haevfbkaev
+                        menu_category: dinner
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                      - menu_uid: haevfbkaev
+                        menu_category: dinner
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+        '400':
+            $ref: '#/components/responses/400'
+        '500':
+            $ref: '#/components/responses/500'
+  /menus/recommend/overtime:  
+    get:
+      summary: Get Menu By Menu Category - overtime
+      tags:
+        - Menus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      menu_uid:
+                        type: string
+                      menu_category:
+                        type: string
+                        enum:
+                          - breakfast
+                          - lunch
+                          - dinner
+                      total_calories:
+                        type: integer
+                      foods :
+                        type: object
+                example:
+                  code: 201
+                  message: sukses mendapatkan rekomendasi menu breakfast
+                  data:
+                      - menu_uid: haevfbkaev
+                        menu_category: overtime
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                      - menu_uid: haevfbkaev
+                        menu_category: overtime
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: kaefkabfakae
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: adtafjfaekjf
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+        '400':
+            $ref: '#/components/responses/400'
+        '500':
+            $ref: '#/components/responses/500'
   /menus/:menus_uid:
     put:
       summary: Update Menus Data
@@ -942,7 +1820,7 @@ paths:
           description: menus_uid
           required: true
           schema:
-            type: integer
+            type: string
       security:
         - bearerAuth: []
       requestBody:
@@ -964,9 +1842,10 @@ paths:
                 total_calories:
                   type: integer
               example:
-                menu_uid: kshefkaefk
                 menu_categories: dinner
-                total_calories: 2000  
+                foods:
+                  - food_uid: hkabfkabkabavv
+                  - food_uid: kfbakfbalblabv
       responses:
         '200':
           description: OK
@@ -1000,35 +1879,31 @@ paths:
                   code: 201
                   message: sukses mengubah data menu
                   data:
-                    id : 1
-                    menu_uid: kshefkaefk
-                    menu_category: dinner
-                    total_calories: 2000
-                    foods: 
-                    - id : 3
-                      food_uid: kshefkaefk
-                      name: Soto Ayam
-                      calories: 356
-                      category: foods
-                      image: soto_images.jpg (image using form-data for uplaod)
-                    - id : 7
-                      food_uid: kjnlvanlfwf
-                      name: Nasi Campur
-                      calories: 392
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-                    - id : 8
-                      food_uid: ehbfkablfnan
-                      name: Es Campur
-                      calories: 196
-                      category: drink
-                      image: es-campur_images.jpg (image using form-data for uplaod)
-                    - id : 10
-                      food_uid: ehblfnlebukvbe
-                      name: Es Teh
-                      calories: 100
-                      category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)
+                    -   menu_uid: haevfbkaev
+                        menu_category: dinner
+                        total_calories: 200
+                        created_by: admin
+                        foods: 
+                        - food_uid: hkabfkabkabavv
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
+                        - food_uid: kfbakfbalblabv
+                          name: Mangga muda
+                          calories: 100
+                          energy: 200
+                          carbohidrate: 300
+                          protein: 400
+                          unit: gram
+                          unit_value: 2 
+                          food_categories: fruit
+                          image: ""
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -1056,243 +1931,6 @@ paths:
               example:
                 code: 200
                 message: success to delete menus
-                data:
-  /menus/{categories}:  
-    get:
-      summary: Get Menu By Menu Category
-      tags:
-        - Menus
-      requestBody:
-        required: true
-        description: Create / Add Menus Data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                menu_categories:
-                  type: string
-                  enum:
-                    - breakfast
-                    - lunch
-                    - dinner
-                total_calories:
-                  type: integer
-              example:
-                menu_categories: breakfast
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      menu_uid:
-                        type: string
-                      menu_category:
-                        type: string
-                        enum:
-                          - breakfast
-                          - lunch
-                          - dinner
-                      total_calories:
-                        type: integer
-                      foods :
-                        type: object
-                example:
-                  code: 201
-                  message: sukses menambahkan menu baru
-                  data:
-                  - id : 1
-                    menu_uid: kshefkaefk
-                    menu_category: breakfast
-                    total_calories: 1000
-                    foods: 
-                    - id : 3
-                      food_uid: kshefkaefk
-                      name: Soto Ayam
-                      calories: 356
-                      category: foods
-                      image: soto_images.jpg (image using form-data for uplaod)
-                    - id : 7
-                      food_uid: kjnlvanlfwf
-                      name: Nasi Campur
-                      calories: 392
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-                    - id : 8
-                      food_uid: ehbfkablfnan
-                      name: Es Campur
-                      calories: 196
-                      category: drink
-                      image: es-campur_images.jpg (image using form-data for uplaod)
-                    - id : 10
-                      food_uid: ehblfnlebukvbe
-                      name: Es Teh
-                      calories: 100
-                      category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)     
-                  - id : 2
-                    menu_uid: kshefkaefk
-                    menu_category: breakfast
-                    total_calories: 1500
-                    foods: 
-                    - id : 10
-                      food_uid: kshefkaefk
-                      name: Soto Ayam
-                      calories: 453
-                      category: foods
-                      image: soto_images.jpg (image using form-data for uplaod)
-                    - id : 18
-                      food_uid: kjnlvanlfwf
-                      name: Nasi Campur
-                      calories: 392
-                      category: foods
-                      image: nasi-campur_images.jpg (image using form-data for uplaod)
-                    - id : 21
-                      food_uid: ehbfkablfnan
-                      name: Es Campur
-                      calories: 196
-                      category: drink
-                      image: es-campur_images.jpg (image using form-data for uplaod)
-                    - id : 26
-                      food_uid: ehblfnlebukvbe
-                      name: Es Teh
-                      calories: 221
-                      category: drink
-                      image: es-teh_images.jpg (image using form-data for uplaod)       
-  /menus/detail:
-    post:
-      summary: Create Menus Details
-      tags:
-        - Menus Details
-      description: Create Menus Details
-      security:
-          - bearerAuth: []
-      requestBody:
-        required: true
-        description: Create Menus Details with valid schema
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_uid:
-                  type: string
-                menu_uid:
-                  type: string
-              example:
-                user_uid: jabfkanflabe
-                menu_uid: fkeabflnalef
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      user_uid: 
-                        type: string
-                      menu_uid:
-                        type: string
-                example:
-                  code: 201
-                  message: sukses menambahkan menu baru
-                  data:
-                    id: 1
-                    user_uid: jabfkanflabe
-                    menu_uid: fkeabflnalef
-                    menu:
-                      - id : 3
-                        food_uid: kshefkaefk
-                        name: Nasi Goreng
-                        calories: 244
-                        category: foods
-                        image: Nasi_images.jpg (image using form-data for uplaod)
-                      - id : 6
-                        food_uid: kjnlvanlfwf
-                        name: Mie Ayam
-                        calories: 143
-                        category: foods
-                        image: nasi-campur_images.jpg (image using form-data for uplaod)
-        '400':
-          $ref: '#/components/responses/400'
-    get:
-        summary: Get Menus Details
-        tags:
-          - Menus Details
-        description: User Profile
-        security:
-          - bearerAuth: []
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    code:
-                      type: integer
-                      example: 200
-                    message :
-                      type: string
-                      example: Success to get goals users profile
-                    data:
-                      type: object
-                      properties:
-                          id:
-                            type: integer
-                          user_uid: 
-                            type: string
-                          height:
-                            type: integer
-                          weight:
-                            type: integer
-                          age:
-                            type: integer
-                          range_time:
-                            type: integer
-                      example:
-                          code: 200
-                          message: sukses menambahkan menu baru
-                          data:
-                            id: 1
-                            user_uid: jabfkanflabe
-                            menu_uid: fkeabflnalef
-                            menu:
-                              - id : 3
-                                food_uid: kshefkaefk
-                                name: Nasi Goreng
-                                calories: 244
-                                category: foods
-                                image: Nasi_images.jpg (image using form-data for uplaod)
-                              - id : 6
-                                food_uid: kjnlvanlfwf
-                                name: Mie Ayam
-                                calories: 143
-                                category: foods
-                                image: nasi-campur_images.jpg (image using form-data for uplaod)
 components:
   parameters:
     UserID:
