@@ -15,6 +15,6 @@ HealthFit/repository/auth/auth.go:52.73,57.22 3 1
 HealthFit/repository/auth/auth.go:60.2,64.33 4 1
 HealthFit/repository/auth/auth.go:73.2,73.54 1 1
 HealthFit/repository/auth/auth.go:57.22,59.3 1 1
-HealthFit/repository/auth/auth.go:64.33,66.123 2 1
+HealthFit/repository/auth/auth.go:64.33,66.112 2 1
 HealthFit/repository/auth/auth.go:69.3,69.24 1 1
-HealthFit/repository/auth/auth.go:66.123,68.4 1 0
+HealthFit/repository/auth/auth.go:66.112,68.4 1 0
