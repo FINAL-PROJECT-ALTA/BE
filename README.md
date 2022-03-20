@@ -7,7 +7,6 @@
    <a href="https://hub.docker.com/"><img src = https://img.shields.io/badge/Deploy-%20Docker-blue></a>
    <a href="https://www.okteto.com/"><img src = https://img.shields.io/badge/Deploy-%20Okteto-purple></a>
 </div>
-<br />
 
 # Healthy Fit
 
