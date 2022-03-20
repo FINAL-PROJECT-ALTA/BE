@@ -54,7 +54,7 @@ func (uh *UserHistoryController) Insert() echo.HandlerFunc {
 		response.Goal_uid = res.Goal_uid
 		response.Menu_uid = res.Menu_uid
 
-		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success Create User", response))
+		return c.JSON(http.StatusCreated, common.Success(http.StatusCreated, "Success Create User History", response))
 
 	}
 }
