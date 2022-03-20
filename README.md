@@ -84,21 +84,42 @@ As Admin
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- Preview -->
-## Contribute
-
-- Fork this repository
-
-    ```sh
-    $ git clone https://github.com/YOUR_USERNAME/FINAL-PROJECT-ALTA/BE.git
-    > Cloning into `healthy-fit`...
-    > remote: Counting objects: 10, done.
-    > remote: Compressing objects: 100% (8/8), done.
-    > remove: Total 10 (delta 1), reused 10 (delta 1)
-    > Unpacking objects: 100% (10/10), done.
-    ```
+## Structure
+``` bash
+Healthy Fit
+  ├── configs                
+  │     └──config.go           # Configs files
+  ├── delivery                 # Endpoints handlers or controllers
+  │     ├──controllers
+  │     │   └── users
+  │     │     ├── formatter.go        # Default response format for spesific controllers
+  │     │     ├── users_test.go       # Unit tests for spesific controllers
+  │     │     └── users.go            # Spesific controller
+  │     ├──middlewares
+  │     │   └── jwtMiddleware.go      # Middlewares Function
+  │     └──routes  
+  │         └── routes.go     # Endpoints list
+  ├── deployment               
+  │     └── app.yaml          # deploymen installer
+  ├── entities                
+  │     └── users.go          # database model
+  ├── repository              
+  │     ├── interface.go      # Repository Interface for controllers
+  │     ├── users_test.go     # Unit test for spesific repository
+  │     └── users.go          # Spesific Repository
+  ├── utils                 
+  │     ├── mysql
+  │     │    └── driver.go      # Database driver
+  │     └── thrid_party
+  │          └── thirdParty.go  # Third Party driver
+  ├── .gitignore  
+  ├── dockerfile                # Which files to ignore when committing
+  ├── go.mod                  
+  ├── go.sum                  
+  ├── main.go                   # Main Program
+  └── README.md    
+```
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 <!-- HLA -->
 ## High Level Architecture
@@ -119,6 +140,20 @@ As Admin
 
 <img src="" alt="display-preview">
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Contribute
+
+- Fork this repository
+
+    ```sh
+    $ git clone https://github.com/YOUR_USERNAME/FINAL-PROJECT-ALTA/BE.git
+    > Cloning into `healthy-fit`...
+    > remote: Counting objects: 10, done.
+    > remote: Compressing objects: 100% (8/8), done.
+    > remove: Total 10 (delta 1), reused 10 (delta 1)
+    > Unpacking objects: 100% (10/10), done.
+    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
