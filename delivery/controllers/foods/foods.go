@@ -100,11 +100,13 @@ func (fc *FoodsController) GetById() echo.HandlerFunc {
 		res, err := fc.repo.GetById(food_uid)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server", nil))
-		}
-		if res.Food_uid == "" {
-			return c.JSON(http.StatusNotFound, common.Success(http.StatusNotFound, "Not found", nil))
-
+			var statusCode int = 500
+			var message string = "There is some error on server"
+			if err.Error() == "not found" {
+				statusCode = 404
+				message = "food is not found"
+			}
+			return c.JSON(statusCode, common.InternalServerError(statusCode, message, nil))
 		}
 
 		response := FoodsCreateResponse{}

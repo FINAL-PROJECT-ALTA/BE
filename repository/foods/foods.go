@@ -38,7 +38,7 @@ func (fr *FoodRepository) GetById(food_uid string) (entities.Food, error) {
 	var food entities.Food
 	res := fr.database.Raw("SELECT * FROM foods WHERE food_uid = ? AND deleted_at IS NULL", food_uid).Scan(&food)
 	if res.RowsAffected == 0 {
-		return food, errors.New("")
+		return food, errors.New("not found")
 	}
 	log.Info(food)
 	return food, nil
