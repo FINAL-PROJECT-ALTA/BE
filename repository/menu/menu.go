@@ -132,7 +132,7 @@ func (mr *MenuRepository) GetAllMenu(category string, createdBy string) ([]entit
 	menus := []entities.Menu{}
 
 	if category != "" && createdBy == "" {
-		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category = ?", category).Find(&menus)
+		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_category = ?", category).Order("created_at desc").Find(&menus)
 		if err := res.Error; err != nil {
 			return menus, err
 		}
