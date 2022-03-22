@@ -102,7 +102,7 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 			return nil, errors.New("nil value")
 		}
 	} else {
-		res := fr.database.Find(&foods)
+		res := fr.database.Order("name").Find(&foods)
 		if res.RowsAffected == 0 {
 			return nil, errors.New("nil value")
 		}
