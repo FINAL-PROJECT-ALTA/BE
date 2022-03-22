@@ -188,7 +188,7 @@ func (fc *FoodsController) Update() echo.HandlerFunc {
 		} else if errO == nil {
 			src, _ := file.Open()
 			link := "https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/main/image/logo-white.png"
-			if resGet.Image == link {
+			if resGet.Image == link || resGet.Image == "" {
 
 				var resUp, errUp = utils.Upload(fc.conn, src, *file)
 				if errUp != nil {
