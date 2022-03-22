@@ -36,9 +36,12 @@ func (ur *UserRepository) Register(u entities.User) (entities.User, error) {
 func (ur *UserRepository) GetById(user_uid string) (entities.User, error) {
 	arrUser := entities.User{}
 
-	result := ur.database.Preload("Goal").Preload("History").Raw("SELECT * FROM users WHERE user_uid =?AND deleted_at IS NULL", user_uid).First(&arrUser)
-	if err := result.Error; err != nil {
+	result := ur.database.Preload("Goal").Preload("History").Where("user_uid =?", user_uid).First(&arrUser)
+	if result.RowsAffected == 0 {
 		return arrUser, errors.New("record not found")
+	}
+	if err := result.Error; err != nil {
+		return arrUser, err
 	}
 
 	return arrUser, nil
