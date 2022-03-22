@@ -97,7 +97,7 @@ func (fr *FoodRepository) GetAll(category string) ([]entities.Food, error) {
 	foods := []entities.Food{}
 
 	if category != "" {
-		fr.database.Where("food_category=?", category).Find(&foods)
+		fr.database.Where("food_category=?", category).Order("id desc").Find(&foods)
 		if len(foods) < 1 {
 			return nil, errors.New("nil value")
 		}

@@ -28,7 +28,7 @@ func (mr *MenuRepository) CreateMenuAdmin(foods []entities.Food, newMenu entitie
 	err := mr.database.Transaction(func(tx *gorm.DB) error {
 		var total_calories int
 
-		if err := tx.Preload("Detail_menu").Preload("Detail_menu.Food").Create(&newMenu).Error; err != nil {
+		if err := tx.Create(&newMenu).Error; err != nil {
 			return err
 		}
 		for i := 0; i < len(foods); i++ {
@@ -112,7 +112,7 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories}).Error; err != nil {
 			return err
 		}
-		res := mr.database.Preload("Detail_menu").Preload("Detail_menu.Food").Where("menu_uid = ?", uid).Find(&newMenu)
+		res := mr.database.Where("menu_uid = ?", uid).First(&newMenu)
 
 		if err := res.Error; err != nil {
 			return err
