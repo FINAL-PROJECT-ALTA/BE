@@ -26,7 +26,6 @@ type MenuCreateResponse struct {
 	Menu_category  string `json:"menu_category"`
 	Total_calories int    `json:"total_calories"`
 	Created_by     string
-	Foods          []entities.Food `json:"foods"`
 }
 
 type MenuUpdateResponse struct {
