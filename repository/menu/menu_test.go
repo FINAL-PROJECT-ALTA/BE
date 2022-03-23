@@ -779,9 +779,8 @@ func TestGetAll(t *testing.T) {
 	db := utils.InitDB(config)
 	repo := New(db)
 
-	t.Run("fail Create menu user because err database create menu", func(t *testing.T) {
+	t.Run("get all menu category tidak = kosong dan createdBy = kosong", func(t *testing.T) {
 		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
-		db.Migrator().DropTable(&entities.Food{}, &entities.Menu{})
 		db.AutoMigrate(&entities.User{})
 		db.AutoMigrate(&entities.Food{})
 		db.AutoMigrate(&entities.Menu{})
@@ -821,9 +820,192 @@ func TestGetAll(t *testing.T) {
 		}
 		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
 		fmt.Println(errAdmin)
+		_, errGet := repo.GetAllMenu("breakfast", "")
+
+		assert.Nil(t, errGet)
+	})
+
+	t.Run("fail get all menu category tidak = kosong dan createdBy = kosong", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.Migrator().DropColumn(&entities.Menu{}, "created_at")
+
+		_, errGet := repo.GetAllMenu("breakfast", "")
+
+		assert.NotNil(t, errGet)
+	})
+
+	t.Run("get all menu createdBy != kosong dan category = kosong ", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "zzz",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+		_, errGet := repo.GetAllMenu("", "admin")
+
+		assert.Nil(t, errGet)
+	})
+
+	t.Run("fail get all menu createdBy != kosong dan category = kosong", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.Migrator().DropColumn(&entities.Menu{}, "created_by")
+
+		_, errGet := repo.GetAllMenu("", "admin")
+
+		assert.NotNil(t, errGet)
+	})
+
+	t.Run("get all menu createdBy != kosong dan category != kosong ", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
 		_, errGet := repo.GetAllMenu("breakfast", "admin")
 
 		assert.Nil(t, errGet)
+	})
+
+	t.Run("fail get all menu createdBy != kosong dan category != kosong", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.Migrator().DropColumn(&entities.Menu{}, "created_by")
+		db.Migrator().DropColumn(&entities.Menu{}, "menu_category")
+
+		_, errGet := repo.GetAllMenu("breakfast", "admin")
+
+		assert.NotNil(t, errGet)
+	})
+
+	t.Run("get all menu createdBy = kosong dan category = kosong ", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+		_, errGet := repo.GetAllMenu("", "")
+
+		assert.Nil(t, errGet)
+	})
+
+	t.Run("fail get all menu createdBy = kosong dan category = kosong", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+
+		_, errGet := repo.GetAllMenu("", "")
+
+		assert.NotNil(t, errGet)
 	})
 
 }
