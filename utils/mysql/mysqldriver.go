@@ -20,10 +20,10 @@ func InitDB(config *config.AppConfig) *gorm.DB {
 		config.LOC,
 	)
 	fmt.Println(connectionString)
-	DB, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{ /* DisableForeignKeyConstraintWhenMigrating: true,*/ })
+	DB, err := gorm.Open(mysql.Open(connectionString))
 
 	if err != nil {
-		log.Info("error in connect database ", err)
+		log.Info("error in connect database : ", err)
 		panic(err)
 	}
 
