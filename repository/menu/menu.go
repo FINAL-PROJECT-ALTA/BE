@@ -102,8 +102,8 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		user_history.Menu_uid = newMenu.Menu_uid
 		user_history.User_uid = newMenu.User_uid
 		user_history.Goal_uid = goal.Goal_uid
-		uid := shortuuid.New()
-		user_history.User_history_uid = uid
+		userhistory_uid := shortuuid.New()
+		user_history.User_history_uid = userhistory_uid
 
 		if err := tx.Debug().Model(entities.User_history{}).Create(&user_history).Error; err != nil {
 			return err
@@ -112,13 +112,13 @@ func (mr *MenuRepository) CreateMenuUser(foods []entities.Food, newMenu entities
 		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", uid).Updates(entities.Menu{Total_calories: total_calories}).Error; err != nil {
 			return err
 		}
-		res := mr.database.Where("menu_uid = ?", uid).First(&newMenu)
-
-		if err := res.Error; err != nil {
-			return err
-		}
 		return nil
 	})
+	res := mr.database.Where("menu_uid = ?", uid).First(&newMenu)
+
+	if err := res.Error; err != nil {
+		return newMenu, err
+	}
 
 	if err != nil {
 		return newMenu, err

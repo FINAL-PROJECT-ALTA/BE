@@ -4,11 +4,13 @@ import (
 	"HealthFit/configs"
 	"HealthFit/repository/admin"
 	food "HealthFit/repository/foods"
+	"HealthFit/repository/goal"
+	"HealthFit/repository/user"
 	"fmt"
 
-	"HealthFit/repository/goal"
+	// "HealthFit/repository/goal"
 
-	"HealthFit/repository/user"
+	// "HealthFit/repository/user"
 
 	utils "HealthFit/utils/mysql"
 
@@ -19,7 +21,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreate(t *testing.T) {
+func TestCreateMenuAdmin(t *testing.T) {
 	config := configs.GetConfig()
 	db := utils.InitDB(config)
 	repo := New(db)
@@ -242,6 +244,15 @@ func TestCreate(t *testing.T) {
 			{
 				Food_uid: f1.Food_uid,
 			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
 		}
 		mocMenu := entities.Menu{
 			User_uid:      adminres.User_uid,
@@ -255,10 +266,92 @@ func TestCreate(t *testing.T) {
 	})
 
 }
+
 func TestCreateMenuUser(t *testing.T) {
 	config := configs.GetConfig()
 	db := utils.InitDB(config)
 	repo := New(db)
+
+	t.Run("success create menu", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.Goal{}, &entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Goal{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.User_history{})
+		db.AutoMigrate(&entities.Detail_menu{})
+
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+
+		mocUser := entities.User{
+			Name:     "test",
+			Email:    "testuser@mail.com",
+			Password: "test",
+			Gender:   "Male",
+		}
+
+		resUser, _ := user.New(db).Register(mocUser)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+		fmt.Println(resAdmin)
+		mockGoal := entities.Goal{
+			User_uid:      resUser.User_uid,
+			Height:        160,
+			Weight:        70,
+			Age:           24,
+			Daily_active:  "not active",
+			Weight_target: 1,
+			Range_time:    30,
+			Target:        "lose weight",
+			Status:        "active",
+		}
+		resGoal, _ := goal.New(db).Create(mockGoal)
+		fmt.Println(resGoal)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		resMenuAdmin, _ := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(resMenuAdmin)
+
+		mocMenuUser := entities.Menu{
+			User_uid:      resUser.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "user",
+		}
+		_, errMenuUser := repo.CreateMenuUser(mocFood, mocMenuUser)
+		fmt.Println(errMenuUser)
+
+		assert.Nil(t, errMenuUser)
+
+	})
+
+	///===================new======================//
 
 	t.Run("fail Create menu user because err database create menu", func(t *testing.T) {
 		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
@@ -396,7 +489,6 @@ func TestCreateMenuUser(t *testing.T) {
 	})
 	t.Run("fail Create detail menu", func(t *testing.T) {
 		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
-		// db.Migrator().DropTable(&entities.Food{}, &entities.Menu{})
 		db.AutoMigrate(&entities.User{})
 		db.AutoMigrate(&entities.Food{})
 		db.AutoMigrate(&entities.Menu{})
@@ -449,7 +541,6 @@ func TestCreateMenuUser(t *testing.T) {
 		db.AutoMigrate(&entities.Menu{})
 		db.AutoMigrate(&entities.User_history{})
 		db.AutoMigrate(&entities.Detail_menu{})
-		// db.Migrator().DropColumn(&entities.Menu{}, "total_calories")
 
 		mocFood1 := entities.Food{
 			Name:          "makanan",
@@ -631,7 +722,7 @@ func TestCreateMenuUser(t *testing.T) {
 		f1, _ := food.New(db).Create(mocFood1)
 
 		mocUser := entities.User{
-			Name:     "test",
+			Name:     "testuser",
 			Email:    "testuser@mail.com",
 			Password: "test",
 			Gender:   "Male",
@@ -668,18 +759,6 @@ func TestCreateMenuUser(t *testing.T) {
 				Food_uid: f1.Food_uid,
 			},
 		}
-		mocMenu := entities.Menu{
-			User_uid:      resAdmin.User_uid,
-			Menu_category: "breakfast",
-			Created_by:    "admin",
-		}
-		resMenuAdmin, _ := repo.CreateMenuAdmin(mocFood, mocMenu)
-		fmt.Println(resMenuAdmin)
-		// db.Migrator().DropColumn(&entities.Menu{}, "total_calories")
-
-		// mockUserhistory := entities.User_history{User_uid: resUser.User_uid, Goal_uid: resGoal.Goal_uid, Menu_uid: resMenuAdmin.Menu_uid}
-		// _, errUserHis := userhistory.New(db).Insert(mockUserhistory)
-		// fmt.Println(errUserHis)
 
 		mocMenuUser := entities.Menu{
 			User_uid:      resUser.User_uid,
@@ -694,6 +773,7 @@ func TestCreateMenuUser(t *testing.T) {
 	})
 
 }
+
 func TestGetAll(t *testing.T) {
 	config := configs.GetConfig()
 	db := utils.InitDB(config)
