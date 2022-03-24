@@ -4,20 +4,18 @@ import (
 	"HealthFit/configs"
 	"HealthFit/repository/admin"
 	food "HealthFit/repository/foods"
+
 	"HealthFit/repository/goal"
 	"HealthFit/repository/user"
 	"fmt"
-
-	// "HealthFit/repository/goal"
-
-	// "HealthFit/repository/user"
 
 	utils "HealthFit/utils/mysql"
 
 	"HealthFit/entities"
 	"testing"
 
-	// "github.com/labstack/gommon/log"
+	"github.com/labstack/gommon/log"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -1012,11 +1010,923 @@ func TestGetAll(t *testing.T) {
 
 }
 
-// func Test(t *testing.T) {
-// 	config := configs.GetConfig()
-// 	db := utils.InitDB(config)
-// 	repo := New(db)
-// }
+func TestGetRecommedBreakfast(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
+
+	t.Run("Success to get recommed breakfast (lose weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "quite active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendBreakfast(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Success to get recommed breakfast (gain weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "gain weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendBreakfast(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Failed to get recommed breakfast (no goal)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendBreakfast(resU.User_uid)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Failed to get recommed breakfast (no menus)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		log.Info(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "female",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		_, row, breakfast, err := repo.GetRecommendBreakfast(resU.User_uid)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, int64(0), row)
+		assert.Equal(t, 0, breakfast)
+	})
+
+}
+
+func TestGetRecommedLunch(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
+
+	t.Run("Success to get recommed Lunch (lose weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "lunch",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "little active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendLunch(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Success to get recommed Lunch (gain weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "lunch",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "not active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "gain weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendLunch(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Failed to get recommed Lunch (no goal)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "lunch",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendLunch(resU.User_uid)
+
+		assert.NotNil(t, err)
+	})
+}
+
+func TestGetRecommedDinner(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
+
+	t.Run("Success to get recommed Dinner (lose weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "dinner",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "little active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendDinner(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Success to get recommed Dinner (gain weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "dinner",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "not active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "gain weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendDinner(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Failed to get recommed Dinner (no goal)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "dinner",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendDinner(resU.User_uid)
+
+		assert.NotNil(t, err)
+	})
+}
+
+func TestGetRecommedOverTime(t *testing.T) {
+	config := configs.GetConfig()
+	db := utils.InitDB(config)
+	repo := New(db)
+
+	t.Run("Success to get recommed OverTime (lose weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "overtime",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "little active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "lose weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendOverTime(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Success to get recommed OverTime (gain weight)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "overtime",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		mockGoal := entities.Goal{
+			User_uid:      resU.User_uid,
+			Height:        160,
+			Weight:        50,
+			Age:           25,
+			Daily_active:  "not active",
+			Weight_target: 2,
+			Range_time:    30,
+			Target:        "gain weight",
+			Status:        "active",
+		}
+
+		_, errG := goal.New(db).Create(mockGoal)
+		if errG != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendOverTime(resU.User_uid)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("Failed to get recommed OverTime (no goal)", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "overtime",
+			Created_by:    "admin",
+		}
+		_, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+
+		mocUser := entities.User{
+			Name:     "arya",
+			Email:    "arya@mail.com",
+			Password: "arya",
+			Gender:   "male",
+		}
+		resU, errU := user.New(db).Register(mocUser)
+		if errU != nil {
+			t.Fail()
+		}
+
+		_, _, _, err := repo.GetRecommendOverTime(resU.User_uid)
+
+		assert.NotNil(t, err)
+	})
+}
 
 func TestUpdate(t *testing.T) {
 	config := configs.GetConfig()
