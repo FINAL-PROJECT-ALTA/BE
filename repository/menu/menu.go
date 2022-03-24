@@ -360,19 +360,23 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 
 		var menu entities.Menu
 
-		if err := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Find(&menu).Error; err != nil {
-			return err
-		}
+		err1 := tx.Model(entities.Menu{}).Where("menu_uid = ?", menu_uid).Find(&menu).Error
 
 		// var detail entities.Detail_menu
-		if err := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Detail_menu{}).Error; err != nil {
-			return err
-		}
+		err2 := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Detail_menu{}).Error
 
-		if err := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Menu{}).Error; err != nil {
-			return err
+		err3 := tx.Where("menu_uid =?", menu_uid).Delete(&entities.Menu{}).Error
+		if err1 != nil || err2 != nil || err3 != nil {
+			var errors []error
+			errors = append(errors, err1)
+			errors = append(errors, err2)
+			errors = append(errors, err3)
+			for i := 0; i < len(errors); i++ {
+				if errors[i] != nil {
+					return errors[i]
+				}
+			}
 		}
-
 		uid := shortuuid.New()
 		updateMenu.Menu_uid = uid
 
@@ -384,12 +388,11 @@ func (mr *MenuRepository) Update(menu_uid string, foods []entities.Food, updateM
 				Menu_uid: updateMenu.Menu_uid,
 				Food_uid: foods[i].Food_uid,
 			}
-			if err := tx.Model(entities.Detail_menu{}).Create(&detail).Error; err != nil {
-				return err
-			}
+			errcreatedetail := tx.Model(entities.Detail_menu{}).Create(&detail).Error
 			var food entities.Food
-			if err := tx.Debug().Model(entities.Food{}).Where("food_uid=?", foods[i].Food_uid).First(&food).Error; err != nil {
-				return err
+			errgetfood := tx.Debug().Model(entities.Food{}).Where("food_uid=?", foods[i].Food_uid).First(&food).Error
+			if errcreatedetail != nil || errgetfood != nil {
+				return errors.New("failed to create detail menu or get food data")
 			}
 			total_calories += food.Calories
 		}

@@ -2034,10 +2034,10 @@ func TestUpdate(t *testing.T) {
 
 		_, errGet := repo.Update("dfdsjs", mocFood, mocUpdateMenu)
 
-		assert.Nil(t, errGet)
+		assert.NotNil(t, errGet)
 	})
 
-	t.Run("fail delete food from detail menu", func(t *testing.T) {
+	t.Run("failed create new menu", func(t *testing.T) {
 		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
 		db.AutoMigrate(&entities.User{})
 		db.AutoMigrate(&entities.Food{})
@@ -2080,14 +2080,141 @@ func TestUpdate(t *testing.T) {
 		fmt.Println(errAdmin)
 		mocUpdateMenu := entities.Menu{
 			User_uid:      resAdmin.User_uid,
+			Menu_category: "saa",
+			Created_by:    "admin",
+		}
+		_, errGet := repo.Update(resMenuAdmin.Menu_uid, mocFood, mocUpdateMenu)
+
+		assert.NotNil(t, errGet)
+	})
+
+	t.Run("failed create create new detail or get food data", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocFoodupdate := []entities.Food{
+			{
+				Food_uid: "dsjds",
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "dinner",
+			Created_by:    "admin",
+		}
+		resMenuAdmin, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+		mocUpdateMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
 			Menu_category: "breakfast",
 			Created_by:    "admin",
 		}
-		db.Migrator().DropColumn(&entities.Detail_menu{}, "menu_uid")
+		_, errGet := repo.Update(resMenuAdmin.Menu_uid, mocFoodupdate, mocUpdateMenu)
 
-		_, errGet := repo.Update(resMenuAdmin.Menu_uid, mocFood, mocUpdateMenu)
+		assert.NotNil(t, errGet)
+	})
 
-		assert.Nil(t, errGet)
+	t.Run("failed update menu total calories", func(t *testing.T) {
+		db.Migrator().DropTable(&entities.User{}, &entities.User_history{}, &entities.Detail_menu{}, &entities.Food{}, &entities.Menu{})
+		db.AutoMigrate(&entities.User{})
+		db.AutoMigrate(&entities.Food{})
+		db.AutoMigrate(&entities.Menu{})
+		db.AutoMigrate(&entities.Detail_menu{})
+		db.AutoMigrate(&entities.User_history{})
+		mocFood1 := entities.Food{
+			Name:          "makanan",
+			Calories:      100,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		mocFood2 := entities.Food{
+			Name:          "makanan",
+			Calories:      2147483646,
+			Energy:        200,
+			Carbohidrate:  300,
+			Protein:       400,
+			Food_category: "snack",
+			Unit:          "ons",
+			Unit_value:    1,
+		}
+		f1, _ := food.New(db).Create(mocFood1)
+		f2, _ := food.New(db).Create(mocFood2)
+		mocAdmin := entities.User{
+			Name:     "test",
+			Email:    "testadmin@mail.com",
+			Password: "test",
+		}
+
+		resAdmin, _ := admin.New(db).Register(mocAdmin)
+
+		mocFood := []entities.Food{
+			{
+				Food_uid: f1.Food_uid,
+			},
+			{
+				Food_uid: f1.Food_uid,
+			},
+		}
+		mocFoodupdate := []entities.Food{
+			{
+				Food_uid: f2.Food_uid,
+			},
+			{
+				Food_uid: f2.Food_uid,
+			},
+		}
+		mocMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "dinner",
+			Created_by:    "admin",
+		}
+		resMenuAdmin, errAdmin := repo.CreateMenuAdmin(mocFood, mocMenu)
+		fmt.Println(errAdmin)
+		mocUpdateMenu := entities.Menu{
+			User_uid:      resAdmin.User_uid,
+			Menu_category: "breakfast",
+			Created_by:    "admin",
+		}
+		_, errGet := repo.Update(resMenuAdmin.Menu_uid, mocFoodupdate, mocUpdateMenu)
+
+		assert.NotNil(t, errGet)
 	})
 
 }
