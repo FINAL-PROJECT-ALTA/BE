@@ -21,7 +21,6 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
-	// "github.com/labstack/gommon/log"
 )
 
 type CustomValidator struct {
@@ -107,8 +106,7 @@ func TestLogin(t *testing.T) {
 
 			json.Unmarshal([]byte(res.Body.Bytes()), &response)
 			data := (response.Data).(map[string]interface{})
-			// log.Info(data)
-			// log.Info(response)
+
 			jwtTokenAdmin = data["token"].(string)
 			log.Info(data)
 			log.Info(response)
@@ -356,9 +354,7 @@ func TestGetById(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusOK), response.Code)
 		assert.Equal(t, "Success get goal", response.Message)
 
@@ -390,9 +386,7 @@ func TestGetById(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
 		assert.Equal(t, "There is some error on server", response.Message)
 
@@ -424,9 +418,7 @@ func TestGetById(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusNotFound), response.Code)
 		assert.Equal(t, "Goal is not found", response.Message)
 
@@ -458,9 +450,7 @@ func TestGetById(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusOK), response.Code)
 		assert.Equal(t, "Success get goal", response.Message)
 
@@ -492,9 +482,7 @@ func TestGetById(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
 		assert.Equal(t, "access denied ", response.Message)
 
@@ -812,9 +800,7 @@ func TestGetAll(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusOK), response.Code)
 		assert.Equal(t, "Success get all goal", response.Message)
 
@@ -844,9 +830,7 @@ func TestGetAll(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusOK), response.Code)
 		assert.Equal(t, "Success get all goal", response.Message)
 
@@ -877,9 +861,7 @@ func TestGetAll(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
 		assert.Equal(t, "There is some error on server", response.Message)
 
@@ -942,9 +924,7 @@ func TestCancelGoal(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusOK), response.Code)
 		assert.Equal(t, "Success cancel goal", response.Message)
 
@@ -975,9 +955,7 @@ func TestCancelGoal(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusInternalServerError), response.Code)
 		assert.Equal(t, "There is some error on server", response.Message)
 
@@ -1170,7 +1148,6 @@ func (m *MockNotFoundGoalRepository) CancelGoal(user_uid string) (entities.Goal,
 
 type MockDiffTimeGoalRepository struct{}
 
-//2022-03-13 00:48:23.026
 func (m *MockDiffTimeGoalRepository) Create(food entities.Goal) (entities.Goal, error) {
 
 	return entities.Goal{}, errors.New("impossible")

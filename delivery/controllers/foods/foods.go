@@ -318,8 +318,6 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			req.Image = response.Hints[i].Food.Image
 			req.Food_category = response.Hints[i].Food.CategoryLabel
 
-			// _, errGet := fc.repo.GetFoodThirdParty(req.Food_uid)
-			// if errGet == nil {
 			_, err := fc.repo.CreateFoodThirdParty(entities.Food{
 				Food_uid:      req.Food_uid,
 				Name:          req.Name,
@@ -335,12 +333,6 @@ func (fc *FoodsController) GetFromThirdPary() echo.HandlerFunc {
 			if err.Error() == "succes to create" {
 				count++
 			}
-
-			// }
-
-			// time.Sleep(time.Second * 4)
-
-			// }
 		}
 
 		return c.JSON(http.StatusOK, common.Success(http.StatusOK, "Success add foods from", count))

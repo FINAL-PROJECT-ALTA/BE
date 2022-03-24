@@ -20,7 +20,6 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
-	// "github.com/labstack/gommon/log"
 )
 
 type CustomValidator struct {
@@ -777,9 +776,7 @@ func TestGetRecommendBreakfast(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
 		assert.Equal(t, "access denied", response.Message)
 
@@ -1217,9 +1214,7 @@ func TestGetRecommendOverTime(t *testing.T) {
 		var response common.Response
 
 		json.Unmarshal([]byte(res.Body.Bytes()), &response)
-		// data := (response.Data).(map[string]interface{})
-		// log.Info(data)
-		// log.Info(response)
+
 		assert.Equal(t, float64(http.StatusBadRequest), response.Code)
 		assert.Equal(t, "impossible", response.Message)
 

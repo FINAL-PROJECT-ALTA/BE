@@ -293,45 +293,6 @@ func TestGetByID(t *testing.T) {
 
 	})
 
-	// t.Run("succes to create goal", func(t *testing.T) {
-	// 	db.Migrator().DropTable(&entities.User{}, &entities.Goal{})
-	// 	db.AutoMigrate(&entities.User{}, &entities.Goal{})
-	// 	mocUser := entities.User{
-	// 		Name:     "arya",
-	// 		Email:    "arya@mail.com",
-	// 		Password: "arya",
-	// 		Gender:   "male",
-	// 	}
-	// 	resU, errU := up.New(db).Register(mocUser)
-	// 	if errU != nil {
-	// 		t.Fail()
-	// 	}
-
-	// 	mockGoal := entities.Goal{
-	// 		User_uid:      resU.User_uid,
-	// 		Height:        170,
-	// 		Weight:        75,
-	// 		Age:           25,
-	// 		Daily_active:  "active",
-	// 		Weight_target: 10,
-	// 		Range_time:    365,
-	// 		Target:        "gain weight",
-	// 		Status:        "not active",
-	// 	}
-
-	// 	resG, errG := repo.Create(mockGoal)
-	// 	log.Info(resG)
-	// 	if errG != nil {
-	// 		t.Fail()
-	// 	}
-
-	// 	_, err := repo.GetById(resG.Goal_uid, resU.User_uid)
-	// 	log.Info(err)
-
-	// 	assert.NotNil(t, err)
-
-	// })
-
 }
 
 func TestUpdate(t *testing.T) {
@@ -678,48 +639,3 @@ func TestCancelGoall(t *testing.T) {
 
 	})
 }
-
-// func TestCheckGoal(t *testing.T) {
-// 	config := configs.GetConfig()
-// 	db := utils.InitDB(config)
-// 	repo := New(db)
-
-// 	t.Run("succes to create goal", func(t *testing.T) {
-// 		db.Migrator().DropTable(&entities.User{}, &entities.Goal{})
-// 		db.AutoMigrate(&entities.User{}, &entities.Goal{})
-
-// 		mocUser := entities.User{
-// 			Name:     "arya",
-// 			Email:    "arya@mail.com",
-// 			Password: "arya",
-// 			Gender:   "male",
-// 		}
-// 		resU, errU := up.New(db).Register(mocUser)
-// 		if errU != nil {
-// 			t.Fail()
-// 		}
-
-// 		mockGoal := entities.Goal{
-// 			User_uid:      resU.User_uid,
-// 			Height:        160,
-// 			Weight:        50,
-// 			Age:           25,
-// 			Daily_active:  "very active",
-// 			Weight_target: 2,
-// 			Range_time:    30,
-// 			Target:        "lose weight",
-// 			Status:        "active",
-// 		}
-
-// 		_, errG := repo.Create(mockGoal)
-// 		if errG != nil {
-// 			t.Fail()
-// 		}
-
-// 		err := repo.CheckGoal(resU.User_uid)
-
-// 		assert.NotNil(t, err)
-
-// 	})
-
-// }

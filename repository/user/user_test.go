@@ -77,19 +77,6 @@ func TestGetById(t *testing.T) {
 	})
 
 	t.Run("fail run GetById", func(t *testing.T) {
-		// mocUser := entities.User{
-		// 	Name:     "test",
-		// 	Email:    "test",
-		// 	Password: "test",
-		// 	Gender:   "male",
-		// }
-
-		// res, err := repo.Register(mocUser)
-		// if err != nil {
-		// 	t.Fatal()
-		// }
-		// log.Info(res)
-
 		resA, errA := repo.GetById("")
 
 		log.Info(resA)

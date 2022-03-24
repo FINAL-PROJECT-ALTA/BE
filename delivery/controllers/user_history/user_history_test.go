@@ -13,8 +13,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	// "github.com/aws/aws-sdk-go/aws/session"
-
 	"github.com/labstack/echo/v4"
 
 	"github.com/labstack/echo/v4/middleware"
@@ -23,7 +21,6 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
-	// "github.com/labstack/gommon/log"
 )
 
 type CustomValidator struct {
