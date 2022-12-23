@@ -141,7 +141,7 @@ Healthy Fit
 
 <img src="./doc/ERD.png" alt="display-preview">
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p bgcolor=”#800000" align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- Testing -->
 ## Unit Testing
