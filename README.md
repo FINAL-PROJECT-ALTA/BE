@@ -5,7 +5,7 @@
    <a href="https://aws.amazon.com/id/s3/?did=ft_card&trk=ft_card"><img src = https://img.shields.io/badge/AWS-S3%20Bucket-green></a>
    <a href="https://www.edamam.com/"><img src = https://img.shields.io/badge/ExtAPI-%20EDAMAM-green></a>
    <a href="https://hub.docker.com/"><img src = https://img.shields.io/badge/Deploy-%20Docker-blue></a>
-   <a href="https://www.okteto.com/"><img src = https://img.shields.io/badge/Deploy-%20Okteto-purple></a>
+   <a style="color:Tomato;" href="https://www.okteto.com/"><img src = https://img.shields.io/badge/Deploy-%20Okteto-purple></a>
 </div>
 
 # Healthy Fit
