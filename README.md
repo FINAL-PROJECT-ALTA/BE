@@ -16,7 +16,7 @@
     <img src="https://raw.githubusercontent.com/FINAL-PROJECT-ALTA/FE/development/image/logo-white.png" alt="Logo" width="250" height="180">
   </a>
 
-  <h3 bgcolor=”#800000" align="center">Healthy Fit</h3>
+  <h3 bgcolor=”#33475b" align="center">Healthy Fit</h3>
   <p align="center">
    An application that aims its users to monitor eating behavior on a daily basis
     <br />
